@@ -76,8 +76,13 @@ function Login() {
               </button>
             </div>
             <div className="flex justify-between">
-              <div className="flex gap-1 items-center">
-                <input type="checkbox" name="rememberme" id="rememberme" />
+              <div className="flex gap-2 items-center">
+                <input
+                  type="checkbox"
+                  name="rememberme"
+                  id="rememberme"
+                  className="scale-125"
+                />
                 <label>Remember Me</label>
               </div>
               <p className="text-red-500">Forgot Password?</p>
@@ -87,7 +92,6 @@ function Login() {
             </button>
             <div className="flex flex-col items-center gap-2">
               <p>Or With</p>
-              <hr />
             </div>
             <button className="flex items-center gap- border border-black p-2 rounded-lg">
               <img src="../../public/google.png" alt="logo" className="h-6" />
@@ -180,8 +184,13 @@ function Login() {
                 </button>
               </div>
               <div className="flex justify-between">
-                <div className="flex gap-1 items-center">
-                  <input type="checkbox" name="rememberme" id="rememberme" />
+                <div className="flex gap-2 items-center">
+                  <input
+                    type="checkbox"
+                    name="rememberme"
+                    id="rememberme"
+                    className="scale-125"
+                  />
                   <label>Remember Me</label>
                 </div>
                 <p className="text-red-500">Forgot Password?</p>
@@ -191,16 +200,15 @@ function Login() {
               </button>
               <div className="flex flex-col items-center gap-2">
                 <p>Or With</p>
-                <hr />
               </div>
               <button className="flex items-center gap-2 border border-black p-2 rounded-lg">
                 <img src="../../public/google.png" alt="logo" className="h-6" />
                 Login with Google
               </button>
               <div className="flex justify-center">
-                <p>
+                <p className="flex gap-2">
                   Don't have an account ?
-                  <a href="#" className="text-blue-500">
+                  <a href="#" className="text-blue-500 font-semibold">
                     Sign Up
                   </a>
                 </p>
