@@ -93,7 +93,7 @@ function Login() {
             <div className="flex flex-col items-center gap-2">
               <p>Or With</p>
             </div>
-            <button className="flex items-center gap- border border-black p-2 rounded-lg">
+            <button className="flex items-center gap-2 border border-black p-2 rounded-lg">
               <img src="../../public/google.png" alt="logo" className="h-6" />
               Login with Google
             </button>

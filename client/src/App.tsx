@@ -6,7 +6,7 @@ function App() {
   return (
     <RouterProvider router={createBrowserRouter([
       {path: '/login', element:<Login/>},
-      {path: '/register', element:<Register/>},
+      {path: '/signup', element:<Register/>},
     ])}>
 
     </RouterProvider>
