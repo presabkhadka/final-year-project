@@ -122,14 +122,17 @@ function Register() {
       <div className="hidden md:grid md:grid-cols-12 md:h-screen md:w-screen ">
         <div className="col-span-7">
           <img
-            src="../../public/basantapur.jpg"
+            src="/basantapur.jpg"
             alt="bhaktapur"
             className="h-full rounded-3xl"
           />
         </div>
         <div className="col-start-9 col-end-12">
           <div className="flex flex-col items-center mt-16 gap-6">
-            <h1 className="text-2xl font-bold">Hi, Welcome Back! 👋</h1>
+            <div>
+              <h1 className="text-2xl font-bold">Create an account</h1>
+              <p className="text-center">Explore them all!</p>
+            </div>
             <form action="#" className="flex flex-col gap-4 w-3/4">
               {/* username */}
               <div className="flex flex-col">
@@ -227,7 +230,7 @@ function Register() {
               <div className="flex justify-center">
                 <p>
                   Already have an account ?
-                  <a href="#" className="text-blue-500">
+                  <a href="/login" className="text-blue-500">
                     Login
                   </a>
                 </p>

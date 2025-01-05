@@ -202,13 +202,13 @@ function Login() {
                 <p>Or With</p>
               </div>
               <button className="flex items-center gap-2 border border-black p-2 rounded-lg">
-                <img src="../../public/google.png" alt="logo" className="h-6" />
+                <img src="/google.png" alt="logo" className="h-6" />
                 Login with Google
               </button>
               <div className="flex justify-center">
                 <p className="flex gap-2">
                   Don't have an account ?
-                  <a href="#" className="text-blue-500 font-semibold">
+                  <a href="/signup" className="text-blue-500 font-semibold">
                     Sign Up
                   </a>
                 </p>
