@@ -29,7 +29,6 @@ const RegisterForm: FC<RegisterFormInterface> = ({
 }) => {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md">
-      {/* Username Field */}
       <div className="flex flex-col">
         <label htmlFor="username" className="mb-2 font-medium">
           Username
@@ -44,7 +43,6 @@ const RegisterForm: FC<RegisterFormInterface> = ({
           required
         />
       </div>
-      {/* Email Field */}
       <div className="flex flex-col">
         <label htmlFor="email" className="mb-2 font-medium">
           Email
@@ -59,7 +57,6 @@ const RegisterForm: FC<RegisterFormInterface> = ({
           required
         />
       </div>
-      {/* Phone Number Field */}
       <div className="flex flex-col">
         <label htmlFor="contact" className="mb-2 font-medium">
           Phone Number
@@ -74,7 +71,6 @@ const RegisterForm: FC<RegisterFormInterface> = ({
           required
         />
       </div>
-      {/* Password Field */}
       <div className="flex flex-col relative">
         <label htmlFor="password" className="mb-2 font-medium">
           Password
@@ -136,11 +132,9 @@ const RegisterForm: FC<RegisterFormInterface> = ({
           )}
         </button>
       </div>
-      {/* Submit Button */}
       <button className="bg-blue-500 p-2 rounded-lg text-white font-semibold hover:bg-blue-600">
         Sign up
       </button>
-      {/* Signup with Google */}
       <div className="flex flex-col items-center gap-2 mt-4">
         <p className="text-gray-500">Or Signup With</p>
         <button className="flex items-center gap-2 border border-black p-2 rounded-lg hover:bg-gray-100">
@@ -148,7 +142,6 @@ const RegisterForm: FC<RegisterFormInterface> = ({
           Signup with Google
         </button>
       </div>
-      {/* Login Link */}
       <div className="text-center mt-4">
         <p>
           Already have an account?{" "}
