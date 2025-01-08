@@ -1,42 +1,29 @@
-import { FC, useState} from "react";
+import { FC, useState } from "react";
 
 interface loginFormInterface {
   showPassword: boolean;
-  togglePasswordVisibility: ()=> void;
- }
-
-function Login() {
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-
-  const togglePasswordVisibility = () => {
-    setShowPassword((prevState) => !prevState);
-  };
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-12 h-screen w-screen">
-      <div className="hidden md:block md:col-span-7">
-        <img
-          src="/bhaktapur.jpg"
-          alt="bhaktapur"
-          className="h-full w-full object-cover rounded-r-3xl"
-        />
-      </div>
-
-      <div className="col-span-1 md:col-span-5 flex flex-col items-center justify-center p-6">
-        <h1 className="text-2xl font-bold mb-6">Hi, Welcome Back! 👋</h1>
-        <LoginForm
-          showPassword={showPassword}
-          togglePasswordVisibility={togglePasswordVisibility}
-        />
-      </div>
-    </div>
-  );
+  togglePasswordVisibility: () => void;
+  handleSubmit: (e: React.FormEvent) => void;
+  email: string;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
+  password: string;
+  setPassword: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const LoginForm: FC<loginFormInterface> = ({ showPassword, togglePasswordVisibility }) => {
-
+const LoginForm: FC<loginFormInterface> = ({
+  showPassword,
+  togglePasswordVisibility,
+  handleSubmit,
+  email,
+  setEmail,
+  password,
+  setPassword,
+}) => {
   return (
-    <form className="flex flex-col gap-4 w-full max-w-md">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-4 w-full max-w-md"
+    >
       {/* Email Field */}
       <div className="flex flex-col">
         <label htmlFor="email" className="mb-2 font-medium">
@@ -47,6 +34,8 @@ const LoginForm: FC<loginFormInterface> = ({ showPassword, togglePasswordVisibil
           id="email"
           className="border p-2 rounded-lg"
           placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
       </div>
@@ -60,6 +49,8 @@ const LoginForm: FC<loginFormInterface> = ({ showPassword, togglePasswordVisibil
           id="password"
           className="border p-2 rounded-lg pr-10"
           placeholder="Enter your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           required
         />
         <button
@@ -113,11 +104,7 @@ const LoginForm: FC<loginFormInterface> = ({ showPassword, togglePasswordVisibil
 
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="rememberme"
-            className="scale-125"
-          />
+          <input type="checkbox" id="rememberme" className="scale-125" />
           <label htmlFor="rememberme" className="text-sm">
             Remember Me
           </label>
@@ -149,6 +136,65 @@ const LoginForm: FC<loginFormInterface> = ({ showPassword, togglePasswordVisibil
       </div>
     </form>
   );
-}
+};
+
+const Login: FC = () => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevState) => !prevState);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:1010/explorer/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+      } else {
+        const errorData = await response.json();
+        setErrorMessage(errorData.message);
+      }
+    } catch (error) {
+      setErrorMessage("Something went wrong. Please try again later.");
+    }
+  };
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-12 h-screen w-screen">
+      <div className="hidden md:block md:col-span-7">
+        <img
+          src="/bhaktapur.jpg"
+          alt="bhaktapur"
+          className="h-full w-full object-cover rounded-r-3xl"
+        />
+      </div>
+
+      <div className="col-span-1 md:col-span-5 flex flex-col items-center justify-center p-6">
+        <h1 className="text-2xl font-bold mb-6">Hi, Welcome Back! 👋</h1>
+        <LoginForm
+          showPassword={showPassword}
+          togglePasswordVisibility={togglePasswordVisibility}
+          handleSubmit={handleSubmit}
+          email={email}
+          setEmail={setEmail}
+          password={password}
+          setPassword={setPassword}
+        />
+      </div>
+    </div>
+  );
+};
 
 export default Login;

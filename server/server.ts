@@ -1,12 +1,23 @@
-import express from 'express'
+import express from "express";
+import { router } from "./routes/adminRoutes";
+import cors from "cors";
+import { explorerRouter } from "./routes/explorerRoutes";
+import { promoterRouter } from "./routes/promoterRoutes";
+
 const port = 1010;
-const app = express()
+const app = express();
 
-app.get('/', (req,res)=>{
-    res.send("Hi there!")
-})
+app.use(cors());
 
-app.listen(port, ()=>{
-    console.log(`server running on port ${port}`);
-    
-})
+app.use(express.json());
+
+// Use the admin routes
+app.use("/admin", router);
+
+app.use("/explorer", explorerRouter);
+
+app.use("/promoter", promoterRouter);
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
