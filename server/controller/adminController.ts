@@ -1,10 +1,9 @@
-import { Router, type Request, type Response } from "express";
-import adminMiddleware from "../middleware/adminMiddleware";
+import { type Request, type Response } from "express";
+import adminMiddleware from "../../server/middleware/adminMiddleware";
 import bcrypt from "bcrypt";
 import { Admin } from "../db/db";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-const router = Router();
 
 dotenv.config();
 
@@ -80,7 +79,7 @@ export async function adminLogin(req: Request, res: Response): Promise<void> {
     }
 
     let payload: payload = { email };
-    const jwtPass: string = process.env.JWT_SECRET || "defaultSecretKey";
+    const jwtPass: string = process.env.JWT_SECRET || "defaultkey";
     if (!jwtPass) {
       throw new Error("JWT_SECRET is not defined in the environment variables");
     }
