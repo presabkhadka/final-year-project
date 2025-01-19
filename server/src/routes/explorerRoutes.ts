@@ -1,6 +1,4 @@
 import { Router, type Request, type Response } from "express";
-import explorerMiddleware from "../middleware/explorerMiddleware";
-import { adminSignup, admingLogin } from "../controller/adminController";
 import {
   explorerLogin,
   explorerSignup,

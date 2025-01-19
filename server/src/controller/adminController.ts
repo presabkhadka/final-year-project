@@ -29,7 +29,7 @@ export async function adminSignup(req: Request, res: Response) {
       const saltRounds = 10;
       const hashedPassword = await bcrypt.hash(adminPassword, saltRounds);
 
-      Admin.create({
+      await Admin.create({
         adminName,
         adminEmail,
         adminPassword: hashedPassword,
@@ -47,26 +47,47 @@ export async function adminSignup(req: Request, res: Response) {
   }
 }
 
-export async function admingLogin(req: Request, res: Response) {
+export async function adminLogin(req: Request, res: Response): Promise<void> {
   try {
     const email = req.body.email;
     const password = req.body.password;
     const existingUser = await Admin.findOne({
       adminEmail: email,
     });
+
     if (!existingUser) {
       res.status(401).json({
         msg: "admin not found",
       });
-    } else {
-      let payload: payload = { email };
-      const jwtPass: string = process.env.JWT_SECRET || "defaultSecretKey";
-      console.log(payload);
-      let token = jwt.sign(payload, jwtPass);
-      res.status(200).json({
-        token,
-      });
+      return;
     }
+
+    if (typeof existingUser.adminPassword !== "string") {
+      res.status(403).json({
+        msg: "password is invalid or missing",
+      });
+      return;
+    }
+
+    const passwordMatch = await bcrypt.compare(
+      password,
+      existingUser.adminPassword
+    );
+
+    if (!passwordMatch) {
+      res.status(401).json({ msg: "Invalid password" });
+      return;
+    }
+
+    let payload: payload = { email };
+    const jwtPass: string = process.env.JWT_SECRET || "defaultSecretKey";
+    if (!jwtPass) {
+      throw new Error("JWT_SECRET is not defined in the environment variables");
+    }
+    let token = jwt.sign(payload, jwtPass);
+    res.status(200).json({
+      token,
+    });
   } catch (error) {
     res.status(500).json({
       msg: "something wrong with the server",
