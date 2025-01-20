@@ -19,7 +19,7 @@ async function adminMiddleware(
     });
   }
   const cleanToken = word[1];
-  const jwtPass = process.env.JWT_SECRET || "defaultSecureString";
+  const jwtPass = process.env.JWT_SECRET || "defaultkey"
   const decoded = jwt.verify(cleanToken, jwtPass);
   const existingUser = await Admin.findOne({});
   if (!existingUser) {
