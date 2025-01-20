@@ -20,7 +20,8 @@ async function promoterMiddleware(
     return;
   }
 
-  const cleanToken = word[1];
+  try {
+    const cleanToken = word[1];
   const jwtPass = process.env.JWT_SECRET || "defaultKey";
   const decoded = jwt.verify(cleanToken, jwtPass);
   const existingUser = Promoter.findOne({});
@@ -31,6 +32,11 @@ async function promoterMiddleware(
     return;
   }
   next();
+  } catch (error) {
+    res.status(401).json({
+      msg: "promoter not found in db",
+    });
+  }
 }
 
 export default promoterMiddleware;

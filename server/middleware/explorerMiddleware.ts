@@ -18,16 +18,22 @@ async function explorerMiddleware(
       msg: "invalid token format",
     });
   }
-  const cleanToken = word[1];
-  const jwtPass = process.env.JWT_SECRET || "defaultkey";
-  const decoded = jwt.verify(cleanToken, jwtPass);
-  const existingUser = await Explorer.findOne({});
-  if (!existingUser) {
-    return res.status(401).json({
+  try {
+    const cleanToken = word[1];
+    const jwtPass = process.env.JWT_SECRET || "defaultkey";
+    const decoded = jwt.verify(cleanToken, jwtPass);
+    const existingUser = await Explorer.findOne({});
+    if (!existingUser) {
+      return res.status(401).json({
+        msg: "explorer not found in db",
+      });
+    }
+    next();
+  } catch (error) {
+    res.status(401).json({
       msg: "explorer not found in db",
     });
   }
-  next();
 }
 
 export default explorerMiddleware;
