@@ -10,6 +10,7 @@ interface payload {
   userEmail: string;
 }
 
+// promoter signup
 export async function promoterSignup(
   req: Request,
   res: Response
@@ -67,6 +68,7 @@ export async function promoterSignup(
   }
 }
 
+// promoter login
 export async function promoterLogin(
   req: Request,
   res: Response
@@ -125,3 +127,4 @@ export async function promoterLogin(
     })
   }
 }
+
