@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 // connecting database
 mongoose.connect(
@@ -30,14 +30,41 @@ const adminSchmea = new mongoose.Schema({
   adminContact: String,
 });
 
+const treasureScema = new mongoose.Schema({
+  treasureName: String,
+  treasureLocation: String,
+  treasureDescription: String,
+  treasureType: String,
+  treasureImage: Buffer,
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Promoter",
+  },
+});
+
+const donationSchema = new mongoose.Schema({
+  donationType: String,
+  donationAmount: Number,
+  donater: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Explorer",
+  },
+});
+
 export const Explorer = mongoose.model("Explorer", explorerSchema);
 
 export const Promoter = mongoose.model("Promoter", promoterSchema);
 
 export const Admin = mongoose.model("Admin", adminSchmea);
 
+export const Treasure = mongoose.model("Treasure", treasureScema);
+
+export const Donation = mongoose.model("Donation", donationSchema);
+
 module.exports = {
   Explorer,
   Promoter,
   Admin,
+  Treasure,
+  Donation,
 };
