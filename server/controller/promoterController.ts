@@ -135,6 +135,25 @@ export async function addTreasure(req: Request, res: Response) {
     const treasureDescription = req.body.treasureDescription;
     const treasureType = req.body.treasureType;
     const treasureImage = req.file?.path;
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      res.status(401).json({
+        msg: "token not found",
+      });
+      return;
+    }
+
+    const decoded = jwt.decode(token);
+    if (typeof decoded === "string" || !decoded) {
+      res.status(401).json({
+        msg: "invalid token",
+      });
+      return;
+    }
+    const userEmail = (decoded as jwt.JwtPayload).userEmail;
+
+    const promoter = await Promoter.findOne({ userEmail: userEmail });
 
     const existingTreasure = await Treasure.findOne({
       treasureName,
@@ -163,11 +182,23 @@ export async function addTreasure(req: Request, res: Response) {
         treasureDescription,
         treasureType,
         treasureImage,
+        owner: promoter?._id,
       });
       res.status(200).json({
         msg: "treasure created successfully",
         newTreasure,
       });
+
+      await Promoter.updateOne(
+        {
+          userEmail,
+        },
+        {
+          $push: {
+            addedTreasure: newTreasure._id,
+          },
+        }
+      );
     }
   } catch (error) {
     console.log(error);

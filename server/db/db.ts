@@ -21,9 +21,15 @@ const promoterSchema = new mongoose.Schema({
   userContact: String,
   userType: String,
   isVerified: Boolean,
+  addedTreasure: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Treasure",
+    },
+  ],
 });
 
-const adminSchmea = new mongoose.Schema({
+const adminSchema = new mongoose.Schema({
   adminName: String,
   adminEmail: String,
   adminPassword: String,
@@ -39,6 +45,7 @@ const treasureScema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Promoter",
+    required: true,
   },
 });
 
@@ -55,7 +62,7 @@ export const Explorer = mongoose.model("Explorer", explorerSchema);
 
 export const Promoter = mongoose.model("Promoter", promoterSchema);
 
-export const Admin = mongoose.model("Admin", adminSchmea);
+export const Admin = mongoose.model("Admin", adminSchema);
 
 export const Treasure = mongoose.model("Treasure", treasureScema);
 
