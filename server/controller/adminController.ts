@@ -11,6 +11,7 @@ interface payload {
   email: string;
 }
 
+// admin signup
 export async function adminSignup(req: Request, res: Response) {
   try {
     const adminName = req.body.username;
@@ -46,6 +47,7 @@ export async function adminSignup(req: Request, res: Response) {
   }
 }
 
+// admin login
 export async function adminLogin(req: Request, res: Response): Promise<void> {
   try {
     const email = req.body.email;
