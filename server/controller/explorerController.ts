@@ -10,6 +10,7 @@ interface payload {
   userEmail: string;
 }
 
+// explorer signup
 export async function explorerSignup(
   req: Request,
   res: Response
@@ -67,6 +68,7 @@ export async function explorerSignup(
   }
 }
 
+// explorer login
 export async function explorerLogin(req: Request, res: Response) {
   try {
     const userEmail = req.body.email;
