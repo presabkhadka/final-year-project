@@ -1,6 +1,6 @@
 import { type Request, type Response } from "express";
 import bcrypt from "bcrypt";
-import { Explorer } from "../db/db";
+import { Explorer, Treasure } from "../db/db";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -121,6 +121,39 @@ export async function explorerLogin(req: Request, res: Response) {
     console.log(error);
     res.status(500).json({
       msg: "something wrong with the server at the moment",
+    });
+  }
+}
+
+// fn for explorer to search a treasure
+export async function searchTreasure(req: Request, res: Response) {
+  try {
+    const treasureName = req.body.treasureName;
+    if (treasureName == "") {
+      res.status(401).json({
+        msg: "treasure name cannot be left empty",
+      });
+      return;
+    }
+
+    const existingTreasure = await Treasure.findOne({
+      treasureName: treasureName,
+    });
+
+    if (!existingTreasure) {
+      res.status(404).json({
+        msg: "no such treasure found in the db",
+      });
+      return;
+    } else {
+      res.status(200).json({
+        existingTreasure,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "something is wrong with the server at the moment",
     });
   }
 }
