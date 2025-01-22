@@ -67,6 +67,15 @@ const reviewSchema = new mongoose.Schema({
   },
 });
 
+const kycSchema = new mongoose.Schema({
+  kycPhoto: Buffer,
+  kycDetail: String,
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Promoter",
+  },
+});
+
 export const Explorer = mongoose.model("Explorer", explorerSchema);
 
 export const Promoter = mongoose.model("Promoter", promoterSchema);
@@ -79,6 +88,8 @@ export const Donation = mongoose.model("Donation", donationSchema);
 
 export const Review = mongoose.model("Review", reviewSchema);
 
+export const Kyc = mongoose.model("KYC", kycSchema);
+
 module.exports = {
   Explorer,
   Promoter,
@@ -86,4 +97,5 @@ module.exports = {
   Treasure,
   Donation,
   Review,
+  kycSchema,
 };
