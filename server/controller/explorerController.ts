@@ -1,6 +1,6 @@
 import { type Request, type Response } from "express";
 import bcrypt from "bcrypt";
-import { Explorer, Treasure } from "../db/db";
+import { Donation, Explorer, Treasure } from "../db/db";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -129,7 +129,7 @@ export async function explorerLogin(req: Request, res: Response) {
 export async function searchTreasure(req: Request, res: Response) {
   try {
     const treasureName = req.body.treasureName;
-    if (treasureName == "") {
+    if (!treasureName) {
       res.status(401).json({
         msg: "treasure name cannot be left empty",
       });
@@ -154,6 +154,28 @@ export async function searchTreasure(req: Request, res: Response) {
     console.log(error);
     res.status(500).json({
       msg: "something is wrong with the server at the moment",
+    });
+  }
+}
+
+export async function fetchDonations(req: Request, res: Response) {
+  try {
+    const availableDonationCampaigns = await Donation.find({});
+
+    if (!availableDonationCampaigns) {
+      res.status(404).json({
+        msg: "there isnt any running donation campaign at the moment",
+      });
+      return;
+    } else {
+      res.status(200).json({
+        availableDonationCampaigns,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "something wrong with the server at the moment",
     });
   }
 }
