@@ -58,6 +58,15 @@ const donationSchema = new mongoose.Schema({
   },
 });
 
+const reviewSchema = new mongoose.Schema({
+  reviewType: String,
+  reviewComments: String,
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Explorer",
+  },
+});
+
 export const Explorer = mongoose.model("Explorer", explorerSchema);
 
 export const Promoter = mongoose.model("Promoter", promoterSchema);
