@@ -9,14 +9,15 @@ async function adminMiddleware(
   req: Request,
   res: Response,
   next: NextFunction
-) {
+): Promise<void> {
   const token = req.headers.authorization;
   const word = token?.split(" ");
 
   if (word?.length !== 2 || word[0] !== "Bearer") {
-    return res.status(401).json({
+    res.status(401).json({
       msg: "invalid token format",
     });
+    return;
   }
   try {
     const cleanToken = word[1];
@@ -24,9 +25,10 @@ async function adminMiddleware(
     const decoded = jwt.verify(cleanToken, jwtPass);
     const existingUser = await Admin.findOne({});
     if (!existingUser) {
-      return res.status(401).json({
+      res.status(401).json({
         msg: "admin not found in db",
       });
+      return;
     }
     next();
   } catch (error) {

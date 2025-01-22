@@ -36,7 +36,7 @@ const adminSchema = new mongoose.Schema({
   adminContact: String,
 });
 
-const treasureScema = new mongoose.Schema({
+const treasureSchema = new mongoose.Schema({
   treasureName: String,
   treasureLocation: String,
   treasureDescription: String,
@@ -50,8 +50,10 @@ const treasureScema = new mongoose.Schema({
 });
 
 const donationSchema = new mongoose.Schema({
+  donationTitle: String,
+  donationDescription: String,
   donationType: String,
-  donationAmount: Number,
+  donationGoal: Number,
   donater: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Explorer",
@@ -82,7 +84,7 @@ export const Promoter = mongoose.model("Promoter", promoterSchema);
 
 export const Admin = mongoose.model("Admin", adminSchema);
 
-export const Treasure = mongoose.model("Treasure", treasureScema);
+export const Treasure = mongoose.model("Treasure", treasureSchema);
 
 export const Donation = mongoose.model("Donation", donationSchema);
 

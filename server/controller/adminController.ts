@@ -1,7 +1,7 @@
 import { type Request, type Response } from "express";
 import adminMiddleware from "../../server/middleware/adminMiddleware";
 import bcrypt from "bcrypt";
-import { Admin } from "../db/db";
+import { Admin, Donation } from "../db/db";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -92,6 +92,42 @@ export async function adminLogin(req: Request, res: Response): Promise<void> {
   } catch (error) {
     res.status(500).json({
       msg: "something wrong with the server",
+    });
+  }
+}
+
+// fn for admin to add donation campaign
+export async function addDonation(req: Request, res: Response): Promise<void> {
+  try {
+    const donationTitle = req.body.donationTitle;
+    const donationDescription = req.body.donationDescription;
+    const donationType = req.body.donationType;
+    const donationGoal = req.body.donationGoal;
+
+    const existingDonation = await Donation.findOne({
+      donationTitle: donationTitle,
+    });
+
+    if (existingDonation) {
+      res.status(409).json({
+        msg: "a donation for this cause already exists",
+      });
+      return;
+    } else {
+      await Donation.create({
+        donationTitle,
+        donationDescription,
+        donationType,
+        donationGoal,
+      });
+      res.status(200).json({
+        msg: "a new donation campaign has successfully been created",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "something wrong with the server at the moment",
     });
   }
 }
