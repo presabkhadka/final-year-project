@@ -77,10 +77,13 @@ export const Treasure = mongoose.model("Treasure", treasureScema);
 
 export const Donation = mongoose.model("Donation", donationSchema);
 
+export const Review = mongoose.model("Review", reviewSchema);
+
 module.exports = {
   Explorer,
   Promoter,
   Admin,
   Treasure,
   Donation,
+  Review,
 };
