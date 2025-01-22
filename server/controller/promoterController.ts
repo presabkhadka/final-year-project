@@ -128,6 +128,7 @@ export async function promoterLogin(
   }
 }
 
+// fn for promoter to add a new treasure
 export async function addTreasure(req: Request, res: Response) {
   try {
     const treasureName = req.body.treasureName;
