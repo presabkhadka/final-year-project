@@ -208,3 +208,60 @@ export async function addTreasure(req: Request, res: Response) {
     });
   }
 }
+
+// fn for promoter to update existing treasure
+export async function updateTreasure(req: Request, res: Response) {
+  try {
+    const treasureId = req.params.treasureId;
+    const treasureName = req.body.treasureName;
+    const treasureLocation = req.body.treasureLocation;
+    const treasureDescription = req.body.treasureDescription;
+    const treasureType = req.body.treasureType;
+    const treasureImage = req.file?.path;
+
+    if (
+      treasureName == "" ||
+      treasureLocation == "" ||
+      treasureDescription == "" ||
+      treasureType == "" ||
+      treasureImage == ""
+    ) {
+      res.status(401).json({
+        msg: "treasure details cannot be left empty",
+      });
+    }
+
+    const fieldsToUpdate: Record<string, any> = {};
+    if (treasureName) fieldsToUpdate.treasureName = treasureName;
+    if (treasureLocation) fieldsToUpdate.treasureLocation = treasureLocation;
+    if (treasureDescription)
+      fieldsToUpdate.treasureDescription = treasureDescription;
+    if (treasureType) fieldsToUpdate.treasureType = treasureType;
+    if (treasureImage) fieldsToUpdate.treasureImage = treasureImage;
+
+    if (Object.keys(fieldsToUpdate).length === 0) {
+      res.status(400).json({
+        msg: "no fields to update",
+      });
+      return;
+    }
+
+    await Treasure.updateOne(
+      {
+        _id: treasureId,
+      },
+      {
+        $set: fieldsToUpdate,
+      }
+    );
+
+    res.status(200).json({
+      msg: "treasure updated successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "something went wrong while updating the treasure",
+    });
+  }
+}

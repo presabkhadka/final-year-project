@@ -4,6 +4,7 @@ import {
   promoterSignup,
   promoterLogin,
   addTreasure,
+  updateTreasure,
 } from "../controller/promoterController";
 import promoterMiddleware from "../middleware/promoterMiddleware";
 
@@ -19,5 +20,6 @@ promoterRouter.post(
   upload.single("treasureImage"),
   addTreasure
 );
+promoterRouter.patch("/update-treasures/:treasureId", promoterMiddleware, updateTreasure);
 
 export { promoterRouter };
