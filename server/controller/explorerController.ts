@@ -1,7 +1,7 @@
 import { type Request, type Response } from "express";
 import bcrypt from "bcrypt";
-import { Donation, Explorer, Treasure } from "../db/db";
-import jwt from "jsonwebtoken";
+import { Donation, Explorer, Review, Treasure } from "../db/db";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -158,6 +158,7 @@ export async function searchTreasure(req: Request, res: Response) {
   }
 }
 
+// fn for fetching donation campaigns
 export async function fetchDonations(req: Request, res: Response) {
   try {
     const availableDonationCampaigns = await Donation.find({});
@@ -172,6 +173,62 @@ export async function fetchDonations(req: Request, res: Response) {
         availableDonationCampaigns,
       });
     }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "something wrong with the server at the moment",
+    });
+  }
+}
+
+// fn for adding reviews
+export async function addReviews(req: Request, res: Response) {
+  try {
+    const treasureId = req.params.treasureId;
+    const reviewType = req.body.reviewType;
+    const reviewComments = req.body.reviewComments;
+    let token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      res.status(401).json({
+        msg: "token not found",
+      });
+      return;
+    }
+
+    const decoded = jwt.decode(token);
+    const explorerEmail = (decoded as jwt.JwtPayload).userEmail;
+    console.log(explorerEmail);
+
+    const explorer = await Explorer.findOne({
+      userEmail: explorerEmail,
+    });
+
+    const treasure = await Treasure.findOne({
+      _id: treasureId,
+    });
+
+    const newReview = await Review.create({
+      reviewType,
+      reviewComments,
+      author: explorer?._id,
+      reviewOf: treasure?._id,
+    });
+
+    await Treasure.updateOne(
+      {
+        _id: treasureId,
+      },
+      {
+        $push: {
+          ratings: newReview,
+        },
+      }
+    );
+
+    res.status(200).json({
+      msg: "review added successfully",
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({

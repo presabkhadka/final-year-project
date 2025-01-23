@@ -47,6 +47,10 @@ const treasureSchema = new mongoose.Schema({
     ref: "Promoter",
     required: true,
   },
+  ratings: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Review",
+  },
 });
 
 const donationSchema = new mongoose.Schema({
@@ -61,11 +65,19 @@ const donationSchema = new mongoose.Schema({
 });
 
 const reviewSchema = new mongoose.Schema({
-  reviewType: String,
+  reviewType: {
+    type: String,
+    enum: ["good", "bad"],
+    required: true,
+  },
   reviewComments: String,
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Explorer",
+  },
+  reviewOf: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Treasure",
   },
 });
 
