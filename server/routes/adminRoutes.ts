@@ -5,10 +5,18 @@ import {
   adminLogin,
   addDonation,
 } from "../controller/adminController";
+import multer from "multer";
 const router = Router();
+
+const upload = multer({ dest: "upload/" });
 
 router.post("/signup", adminSignup);
 router.post("/login", adminLogin);
-router.post("/add-donation-campaign", adminMiddleware, addDonation);
+router.post(
+  "/add-donation-campaign",
+  adminMiddleware,
+  upload.single("donationQR"),
+  addDonation
+);
 
 export { router };

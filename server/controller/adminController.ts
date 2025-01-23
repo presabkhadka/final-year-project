@@ -103,6 +103,7 @@ export async function addDonation(req: Request, res: Response): Promise<void> {
     const donationDescription = req.body.donationDescription;
     const donationType = req.body.donationType;
     const donationGoal = req.body.donationGoal;
+    const donationQR = req.file?.path;
 
     const existingDonation = await Donation.findOne({
       donationTitle: donationTitle,
@@ -119,6 +120,7 @@ export async function addDonation(req: Request, res: Response): Promise<void> {
         donationDescription,
         donationType,
         donationGoal,
+        donationQR,
       });
       res.status(200).json({
         msg: "a new donation campaign has successfully been created",

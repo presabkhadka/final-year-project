@@ -58,6 +58,7 @@ const donationSchema = new mongoose.Schema({
   donationDescription: String,
   donationType: String,
   donationGoal: Number,
+  donationQR: Buffer,
   donater: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Explorer",
