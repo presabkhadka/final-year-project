@@ -11,7 +11,16 @@ const explorerSchema = new mongoose.Schema({
   userEmail: String,
   userPassword: String,
   userContact: String,
-  userType: String,
+  userType: {
+    type: String,
+    enum: ["explorer"],
+  },
+  exploredHistory: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Treasure"
+    }
+  ]
 });
 
 const promoterSchema = new mongoose.Schema({
@@ -19,7 +28,10 @@ const promoterSchema = new mongoose.Schema({
   userEmail: String,
   userPassword: String,
   userContact: String,
-  userType: String,
+  userType: {
+    type: String,
+    enum: ["promoter"],
+  },
   isVerified: Boolean,
   addedTreasure: [
     {

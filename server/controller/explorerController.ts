@@ -1,8 +1,9 @@
-import { type Request, type Response } from "express";
+import { response, type Request, type Response } from "express";
 import bcrypt from "bcrypt";
 import { Donation, Explorer, Review, Treasure } from "../db/db";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
+import exp from "constants";
 
 dotenv.config();
 
@@ -63,7 +64,7 @@ export async function explorerSignup(
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      msg: "something wrong with the server at the moment",
+      msg: "something went wrong while registering the explorer",
     });
   }
 }
@@ -198,7 +199,6 @@ export async function addReviews(req: Request, res: Response) {
 
     const decoded = jwt.decode(token);
     const explorerEmail = (decoded as jwt.JwtPayload).userEmail;
-    console.log(explorerEmail);
 
     const explorer = await Explorer.findOne({
       userEmail: explorerEmail,
@@ -226,6 +226,23 @@ export async function addReviews(req: Request, res: Response) {
       }
     );
 
+    const exploredTreasure = await Explorer.findOne({
+      exploredHistory: treasureId,
+    });
+
+    if (!exploredTreasure) {
+      await Explorer.updateOne(
+        {
+          userEmail: explorerEmail,
+        },
+        {
+          $push: {
+            exploredHistory: treasureId,
+          },
+        }
+      );
+    }
+
     res.status(200).json({
       msg: "review added successfully",
     });
@@ -233,6 +250,41 @@ export async function addReviews(req: Request, res: Response) {
     console.log(error);
     res.status(500).json({
       msg: "something wrong with the server at the moment",
+    });
+  }
+}
+
+// fn for fetchin explored treasures
+export async function exploredTreasures(req: Request, res: Response) {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      res.status(401).json({
+        msg: "token not found",
+      });
+      return;
+    }
+    const decoded = jwt.decode(token);
+    const explorerEmail = (decoded as jwt.JwtPayload).userEmail;
+    const explorerData = await Explorer.find({
+      userEmail: explorerEmail,
+    }).populate("exploredHistory");
+    const traveledHistory = explorerData
+      .filter((x) => x.exploredHistory && x.exploredHistory.length > 0)
+      .map((x) => x.exploredHistory);
+    if (traveledHistory.length === 0) {
+      res.status(404).json({
+        msg: "you have not traveled any treasures yet",
+      });
+    } else {
+      res.status(200).json({
+        traveledHistory,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "error while fetching your travel history",
     });
   }
 }
