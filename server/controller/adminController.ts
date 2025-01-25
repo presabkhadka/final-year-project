@@ -1,7 +1,7 @@
 import { type Request, type Response } from "express";
 import adminMiddleware from "../../server/middleware/adminMiddleware";
 import bcrypt from "bcrypt";
-import { Admin, Donation } from "../db/db";
+import { Admin, Donation, Review, Treasure } from "../db/db";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -130,6 +130,29 @@ export async function addDonation(req: Request, res: Response): Promise<void> {
     console.log(error);
     res.status(500).json({
       msg: "something wrong with the server at the moment",
+    });
+  }
+}
+
+// fn for reviewing reviews
+export async function reviewReviews(
+  req: Request,
+  res: Response
+): Promise<void> {
+  try {
+    const reviews = await Review.find({});
+
+    const badReviews = reviews.filter((x) => {
+      return x.reviewType === "bad";
+    });
+    console.log(badReviews);
+    res.status(200).json({
+      badReviews,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "something went wrong while filtering the reviews",
     });
   }
 }

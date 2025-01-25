@@ -4,6 +4,7 @@ import {
   adminSignup,
   adminLogin,
   addDonation,
+  reviewReviews,
 } from "../controller/adminController";
 import multer from "multer";
 const router = Router();
@@ -18,5 +19,6 @@ router.post(
   upload.single("donationQR"),
   addDonation
 );
+router.get("/filter-reviews", adminMiddleware, reviewReviews);
 
 export { router };
