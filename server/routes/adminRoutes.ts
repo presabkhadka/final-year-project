@@ -5,6 +5,7 @@ import {
   adminLogin,
   addDonation,
   reviewReviews,
+  deleteTreasures,
 } from "../controller/adminController";
 import multer from "multer";
 const router = Router();
@@ -20,5 +21,6 @@ router.post(
   addDonation
 );
 router.get("/filter-reviews", adminMiddleware, reviewReviews);
+router.post("/delete-treasure", adminMiddleware, deleteTreasures);
 
 export { router };

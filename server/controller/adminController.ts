@@ -1,5 +1,4 @@
 import { type Request, type Response } from "express";
-import adminMiddleware from "../../server/middleware/adminMiddleware";
 import bcrypt from "bcrypt";
 import { Admin, Donation, Review, Treasure } from "../db/db";
 import jwt from "jsonwebtoken";
@@ -134,25 +133,53 @@ export async function addDonation(req: Request, res: Response): Promise<void> {
   }
 }
 
-// fn for reviewing reviews
+// fn for fetching reviews
 export async function reviewReviews(
   req: Request,
   res: Response
 ): Promise<void> {
   try {
-    const reviews = await Review.find({});
+    const goodReviewsCount = await Review.aggregate([
+      { $match: { reviewType: "good" } },
+      { $group: { _id: "$reviewOf", count: { $sum: 1 } } },
+    ]);
 
-    const badReviews = reviews.filter((x) => {
-      return x.reviewType === "bad";
-    });
-    console.log(badReviews);
+    const badReviewsCount = await Review.aggregate([
+      { $match: { reviewType: "bad" } },
+      { $group: { _id: "$reviewOf", count: { $sum: 1 } } },
+    ]);
+
     res.status(200).json({
-      badReviews,
+      goodReviewsCount,
+      badReviewsCount,
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
       msg: "something went wrong while filtering the reviews",
+    });
+  }
+}
+
+// fn for deleting bad reviewed treasuers
+export async function deleteTreasures(
+  req: Request,
+  res: Response
+): Promise<void> {
+  try {
+    const treasureId = req.body.treasureId;
+
+    await Treasure.deleteOne({
+      _id: treasureId,
+    });
+
+    res.status(200).json({
+      msg: "Treasure removed successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "something went wrong while removing the treasure",
     });
   }
 }
