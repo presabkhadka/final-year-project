@@ -169,13 +169,34 @@ export async function deleteTreasures(
   try {
     const treasureId = req.body.treasureId;
 
-    await Treasure.deleteOne({
+    if (!treasureId) {
+      res.status(404).json({
+        msg: "treasure id not found",
+      });
+      return;
+    }
+
+    const treasureExists = await Treasure.findOne({
       _id: treasureId,
     });
 
-    res.status(200).json({
-      msg: "Treasure removed successfully",
-    });
+    if (treasureExists) {
+      await Treasure.deleteOne({
+        _id: treasureId,
+      });
+
+      await Review.deleteMany({
+        reviewOf: treasureId,
+      });
+
+      res.status(200).json({
+        msg: "Treasure removed successfully",
+      });
+    } else {
+      res.status(404).json({
+        msg: "treasure not found",
+      });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json({
