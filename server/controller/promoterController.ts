@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import { Promoter, Treasure } from "../db/db";
+import crypto from "crypto";
+import { sendEmail } from "../services/mailer";
 
 dotenv.config();
 
