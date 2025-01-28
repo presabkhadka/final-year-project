@@ -141,4 +141,5 @@ module.exports = {
   Donation,
   Review,
   kycSchema,
+  Otp,
 };

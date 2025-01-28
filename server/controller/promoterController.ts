@@ -2,8 +2,9 @@ import { type Request, type Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
-import { Promoter, Treasure } from "../db/db";
-import crypto from "crypto";
+import { Otp, Promoter, Treasure } from "../db/db";
+import otpGenerator from "otp-generator";
+import nodemailer from "nodemailer";
 
 dotenv.config();
 
@@ -46,6 +47,33 @@ export async function promoterSignup(
       });
       return;
     } else {
+      const otp = otpGenerator.generate(4, {
+        digits: true,
+        specialChars: false,
+        lowerCaseAlphabets: false,
+        upperCaseAlphabets: false,
+      });
+
+      await Otp.create({
+        email: userEmail,
+        otp: otp,
+      });
+
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      });
+
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: userEmail,
+        subject: "OTP Verification",
+        text: `Your OTP for verification is: ${otp}`,
+      });
+
       let saltRounds = 10;
       let hashedPassword = await bcrypt.hash(userPassword, saltRounds);
 
@@ -268,3 +296,4 @@ export async function updateTreasure(req: Request, res: Response) {
 }
 
 // fn for sending otp to promoter
+export async function generateOtp(req: Request, res: Response) {}
