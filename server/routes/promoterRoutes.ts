@@ -5,6 +5,8 @@ import {
   promoterLogin,
   addTreasure,
   updateTreasure,
+  verifyOtp,
+  regenOTP,
 } from "../controller/promoterController";
 import promoterMiddleware from "../middleware/promoterMiddleware";
 
@@ -20,6 +22,12 @@ promoterRouter.post(
   upload.single("treasureImage"),
   addTreasure
 );
-promoterRouter.patch("/update-treasures/:treasureId", promoterMiddleware, updateTreasure);
+promoterRouter.patch(
+  "/update-treasures/:treasureId",
+  promoterMiddleware,
+  updateTreasure
+);
+promoterRouter.post("/verify-otp", promoterMiddleware, verifyOtp);
+promoterRouter.get("/regenerate-otp", promoterMiddleware, regenOTP);
 
 export { promoterRouter };

@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { Otp, Promoter, Treasure } from "../db/db";
 import otpGenerator from "otp-generator";
 import nodemailer from "nodemailer";
+import { log } from "util";
 
 dotenv.config();
 
@@ -47,33 +48,6 @@ export async function promoterSignup(
       });
       return;
     } else {
-      const otp = otpGenerator.generate(4, {
-        digits: true,
-        specialChars: false,
-        lowerCaseAlphabets: false,
-        upperCaseAlphabets: false,
-      });
-
-      await Otp.create({
-        email: userEmail,
-        otp: otp,
-      });
-
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASSWORD,
-        },
-      });
-
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: userEmail,
-        subject: "OTP Verification",
-        text: `Your OTP for verification is: ${otp}`,
-      });
-
       let saltRounds = 10;
       let hashedPassword = await bcrypt.hash(userPassword, saltRounds);
 
@@ -84,6 +58,7 @@ export async function promoterSignup(
         userContact,
         userType,
       });
+      generateOtp(userEmail);
 
       res.status(200).json({
         msg: "promoter created successfully",
@@ -295,5 +270,103 @@ export async function updateTreasure(req: Request, res: Response) {
   }
 }
 
-// fn for sending otp to promoter
-export async function generateOtp(req: Request, res: Response) {}
+// fn for generating otp to promoter
+export const generateOtp = async (userEmail: string): Promise<void> => {
+  const otp = otpGenerator.generate(4, {
+    digits: true,
+    specialChars: false,
+    lowerCaseAlphabets: false,
+    upperCaseAlphabets: false,
+  });
+
+  await Otp.create({
+    email: userEmail,
+    otp: otp,
+  });
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: userEmail,
+    subject: "OTP Verification",
+    text: `Your OTP for verification is: ${otp}`,
+  });
+};
+
+// fn for verifying otp
+export async function verifyOtp(req: Request, res: Response) {
+  try {
+    let token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      res.status(404).json({
+        msg: "token not found",
+      });
+      return;
+    }
+    let decoded = jwt.decode(token);
+    let userEmail = (decoded as jwt.JwtPayload).userEmail;
+    let inputOTP = req.body.inputOTP;
+    const dbOTP = await Otp.findOne({
+      email: userEmail,
+    });
+
+    const generatedOTP = dbOTP?.otp;
+
+    if (inputOTP == generatedOTP) {
+      try {
+        await Promoter.updateOne(
+          {
+            userEmail,
+          },
+          {
+            $set: { isVerified: "true" },
+          }
+        );
+      } catch (error) {
+        res.status(500).json({
+          msg: "something went wrong while verifying the promoter",
+        });
+        return;
+      }
+    }
+
+    res.status(200).json({
+      msg: "promoter verified successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "something went wrong while verifying the otp",
+    });
+  }
+}
+
+// fn for regenerating otp
+export async function regenOTP(req: Request, res: Response) {
+  try {
+    let token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      res.status(404).json({
+        msg: "token not found",
+      });
+      return;
+    }
+    let decoded = jwt.decode(token);
+    let userEmail = (decoded as jwt.JwtPayload).userEmail;
+    generateOtp(userEmail);
+    res.status(200).json({
+      msg: "check you email for regenerated otp",
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "something went wrong while regenerating the otp",
+    });
+  }
+}
