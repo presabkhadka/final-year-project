@@ -1,4 +1,5 @@
 import mongoose, { mongo } from "mongoose";
+import { DefaultDeserializer } from "v8";
 
 // connecting database
 mongoose.connect(
@@ -18,9 +19,9 @@ const explorerSchema = new mongoose.Schema({
   exploredHistory: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Treasure"
-    }
-  ]
+      ref: "Treasure",
+    },
+  ],
 });
 
 const promoterSchema = new mongoose.Schema({
@@ -32,7 +33,10 @@ const promoterSchema = new mongoose.Schema({
     type: String,
     enum: ["promoter"],
   },
-  isVerified: Boolean,
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
   addedTreasure: [
     {
       type: mongoose.Schema.Types.ObjectId,
