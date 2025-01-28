@@ -107,6 +107,16 @@ const kycSchema = new mongoose.Schema({
   },
 });
 
+const otpSchema = new mongoose.Schema({
+  email: String,
+  otp: Number,
+  createdAt: {
+    type: Date,
+    expires: "5m",
+    default: Date.now,
+  },
+});
+
 export const Explorer = mongoose.model("Explorer", explorerSchema);
 
 export const Promoter = mongoose.model("Promoter", promoterSchema);
@@ -120,6 +130,8 @@ export const Donation = mongoose.model("Donation", donationSchema);
 export const Review = mongoose.model("Review", reviewSchema);
 
 export const Kyc = mongoose.model("KYC", kycSchema);
+
+export const Otp = mongoose.model("OTP", otpSchema);
 
 module.exports = {
   Explorer,
