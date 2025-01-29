@@ -140,6 +140,7 @@ export async function addTreasure(req: Request, res: Response) {
     const treasureDescription = req.body.treasureDescription;
     const treasureType = req.body.treasureType;
     const treasureImage = req.file?.path;
+    let points = 0;
     const token = req.headers.authorization?.split(" ")[1];
 
     if (!token) {
@@ -201,6 +202,9 @@ export async function addTreasure(req: Request, res: Response) {
         {
           $push: {
             addedTreasure: newTreasure._id,
+          },
+          $inc: {
+            points: 10,
           },
         }
       );

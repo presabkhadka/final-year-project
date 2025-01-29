@@ -43,6 +43,7 @@ const promoterSchema = new mongoose.Schema({
       ref: "Treasure",
     },
   ],
+  points: Number,
 });
 
 const adminSchema = new mongoose.Schema({
