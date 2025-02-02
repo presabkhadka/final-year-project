@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 import { Otp, Promoter, Treasure } from "../db/db";
 import otpGenerator from "otp-generator";
 import nodemailer from "nodemailer";
-import { log } from "util";
 
 dotenv.config();
 
@@ -299,7 +298,7 @@ export const generateOtp = async (userEmail: string): Promise<void> => {
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
     to: userEmail,
-    subject: "OTP Verification",
+    subject: "Verify as a promoter in Urban Discoveries",
     text: `Your OTP for verification is: ${otp}`,
   });
 };
@@ -370,7 +369,7 @@ export async function regenOTP(req: Request, res: Response) {
     });
   } catch (error) {
     res.status(500).json({
-      msg: "something went wrong while regenerating the otp",
+      msg: "something went wrong while generating the otp",
     });
   }
 }
