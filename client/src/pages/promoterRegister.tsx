@@ -34,7 +34,7 @@ const RegisterForm: FC<RegisterFormInterface> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-4 w-full max-w-md"
+      className="flex flex-col gap-2 w-full max-w-md"
     >
       <div className="flex flex-col">
         <label htmlFor="username" className="mb-2 font-medium">
