@@ -1,4 +1,4 @@
-import Otp from "./otp";
+import Otp from "../components/otp";
 
 function promoterVerify() {
   return (
