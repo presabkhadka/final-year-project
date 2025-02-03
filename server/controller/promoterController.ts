@@ -322,7 +322,7 @@ export async function verifyOtp(req: Request, res: Response) {
 
     const generatedOTP = dbOTP?.otp;
 
-    if (inputOTP == generatedOTP) {
+    if (inputOTP === generatedOTP) {
       try {
         await Promoter.updateOne(
           {
@@ -332,17 +332,22 @@ export async function verifyOtp(req: Request, res: Response) {
             $set: { isVerified: "true" },
           }
         );
+        res.status(200).json({
+          msg: "promoter verified successfully",
+          success: true,
+        });
       } catch (error) {
         res.status(500).json({
           msg: "something went wrong while verifying the promoter",
         });
         return;
       }
+    } else {
+      res.status(400).json({
+        msg: "invald otp",
+        success: false,
+      });
     }
-
-    res.status(200).json({
-      msg: "promoter verified successfully",
-    });
   } catch (error) {
     console.log(error);
     res.status(500).json({
