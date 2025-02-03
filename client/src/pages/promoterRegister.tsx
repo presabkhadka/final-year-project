@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { FC, useState } from "react";
 
 interface RegisterFormInterface {
@@ -187,26 +188,22 @@ const PromoterRegister: FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const payload = {
+      name,
+      email,
+      password,
+      contact,
+      type,
+    };
+
     try {
-      const response = await fetch("http://localhost:1010/promoter/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: name,
-          email,
-          password,
-          contact,
-        }),
-      });
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-      } else {
-        const errorData = await response.json();
-        console.log(errorData);
-      }
+      axios
+        .post("http://localhost:1010/promoter/signup", payload)
+        .then((response) => {
+          console.log(response);
+          window.location.href = "/promoter/login";
+        });
     } catch (error) {
       console.log(error);
     }
