@@ -1,5 +1,6 @@
 import axios from "axios";
 import { FC, useState } from "react";
+import { useNavigate } from "react-router";
 
 interface loginFormInterface {
   showPassword: boolean;
@@ -139,6 +140,7 @@ const PromoterLogin: FC = () => {
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevState) => !prevState);
@@ -160,10 +162,9 @@ const PromoterLogin: FC = () => {
       const { token } = response.data;
       const bearerToken = `Bearer ${token}`;
 
-      sessionStorage.setItem("Authorization", bearerToken);
+      localStorage.setItem("Authorization", bearerToken);
       axios.defaults.headers.common["Authorization"] = bearerToken;
-
-      window.location.href = "/promoter/verify";
+      navigate("/promoter/verify");
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         setErrorMessage(

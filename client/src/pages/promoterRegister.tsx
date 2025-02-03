@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { FC, useState } from "react";
+import { useNavigate } from "react-router";
 
 interface RegisterFormInterface {
   showPassword: boolean;
@@ -179,6 +180,7 @@ const PromoterRegister: FC = () => {
   const [contact, setContact] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [type, setType] = useState<string>("");
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevState) => !prevState);
@@ -200,7 +202,7 @@ const PromoterRegister: FC = () => {
         .post("http://localhost:1010/promoter/signup", payload)
         .then((response) => {
           console.log(response);
-          window.location.href = "/promoter/login";
+          navigate("/promoter/login");
         });
     } catch (error) {
       console.log(error);
