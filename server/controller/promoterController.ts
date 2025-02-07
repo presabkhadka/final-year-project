@@ -116,11 +116,14 @@ export async function promoterLogin(
         return;
       }
 
+      let verificationStatus = existingUser.isVerified;
+
       let payload: payload = { userEmail };
       let token = jwt.sign(payload, process.env.JWT_SECRET || "defaultkey");
 
       res.status(200).json({
         token,
+        verificationStatus,
       });
     }
   } catch (error) {
@@ -139,7 +142,6 @@ export async function addTreasure(req: Request, res: Response) {
     const treasureDescription = req.body.treasureDescription;
     const treasureType = req.body.treasureType;
     const treasureImage = req.file?.path;
-    let points = 0;
     const token = req.headers.authorization?.split(" ")[1];
 
     if (!token) {
@@ -322,7 +324,7 @@ export async function verifyOtp(req: Request, res: Response) {
 
     const generatedOTP = dbOTP?.otp;
 
-    if (inputOTP === generatedOTP) {
+    if (inputOTP == generatedOTP) {
       try {
         await Promoter.updateOne(
           {
