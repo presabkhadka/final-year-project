@@ -69,24 +69,26 @@ export async function adminLogin(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const passwordMatch = await bcrypt.compare(
-      password,
-      existingUser.adminPassword
-    );
-
-    if (!passwordMatch) {
-      res.status(401).json({ msg: "Invalid password" });
+    if (password !== existingUser.adminPassword) {
+      res.status(401).json({
+        msg: "Invalid credentials",
+        success: false,
+      });
       return;
     }
 
     let payload: payload = { email };
     const jwtPass: string = process.env.JWT_SECRET || "defaultkey";
+
     if (!jwtPass) {
       throw new Error("JWT_SECRET is not defined in the environment variables");
     }
+
     let token = jwt.sign(payload, jwtPass);
     res.status(200).json({
+      msg: "Login successful",
       token,
+      success: true,
     });
   } catch (error) {
     res.status(500).json({
