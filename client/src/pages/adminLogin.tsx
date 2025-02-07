@@ -164,17 +164,17 @@ const AdminLogin: FC = () => {
       localStorage.setItem("Authorization", bearerToken);
       axios.defaults.headers.common["Authorization"] = bearerToken;
 
-      if (response.data.success === true) {
+      if (response.data.success !== true) {
+        toast({
+          title: "Login unsuccessful",
+          description: "Please check your credentials properly.",
+          variant: "destructive",
+        });
+      } else {
         navigate("/admin/dashboard");
         toast({
           title: "Login successful",
           description: "Hi! Admin, Welcome to Urband Discoveries",
-        });
-      } else {
-        toast({
-          title: "Login failed",
-          description: "Please check your credentials",
-          variant: "destructive",
         });
       }
     } catch (error) {
