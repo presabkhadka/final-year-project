@@ -6,16 +6,22 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { useNavigate } from "react-router";
+import { useToast } from "@/hooks/use-toast";
 
 function Otp() {
-  const [otp, setOTP] = useState<string>("");
+  const [inputOTP, setInputOTP] = useState<string>("");
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!otp.trim() || otp.length !== 4) {
-      console.log("Please enter a valid 4-digit OTP.");
+    if (!inputOTP.trim() || inputOTP.length !== 4) {
+      toast({
+        variant: "destructive",
+        title: "Invalid OTP",
+        description: "Please enter a valid 4-digit OTP.",
+      });
       return;
     }
 
@@ -24,7 +30,7 @@ function Otp() {
 
       const response = await axios.post(
         "http://localhost:1010/promoter/verify-otp",
-        { otp },
+        { inputOTP },
         {
           headers: {
             Authorization: token,
@@ -33,7 +39,10 @@ function Otp() {
       );
 
       if (response.status === 200 && response.data.success) {
-        console.log("OTP Verified:", response.data);
+        toast({
+          title: "Invalid OTP",
+          description: "Promoter verified successfully",
+        });
         navigate("/promoter/dashboard");
       } else {
         console.log("Invalid OTP. Please try again.");
@@ -77,7 +86,7 @@ function Otp() {
         onSubmit={handleSubmit}
         className="space-y-2 flex flex-col items-center"
       >
-        <InputOTP maxLength={4} value={otp} onChange={setOTP}>
+        <InputOTP maxLength={4} value={inputOTP} onChange={setInputOTP}>
           <InputOTPGroup>
             <InputOTPSlot index={0} />
             <InputOTPSlot index={1} />
