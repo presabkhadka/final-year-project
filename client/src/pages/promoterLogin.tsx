@@ -164,7 +164,12 @@ const PromoterLogin: FC = () => {
 
       localStorage.setItem("Authorization", bearerToken);
       axios.defaults.headers.common["Authorization"] = bearerToken;
-      navigate("/promoter/verify");
+
+      if (response.data.verificationStatus === true) {
+        navigate("/promoter/dashboard");
+      } else {
+        navigate("/promoter/verify");
+      }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         setErrorMessage(

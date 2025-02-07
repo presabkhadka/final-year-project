@@ -1,4 +1,6 @@
+import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
+import { title } from "process";
 import React, { FC, useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -181,6 +183,7 @@ const PromoterRegister: FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [type, setType] = useState<string>("");
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevState) => !prevState);
@@ -200,12 +203,19 @@ const PromoterRegister: FC = () => {
     try {
       axios
         .post("http://localhost:1010/promoter/signup", payload)
-        .then((response) => {
-          console.log(response);
+        .then(() => {
+          toast({
+            title: "Registration completed",
+            description: "Promoter registeres successfully",
+          });
           navigate("/promoter/login");
         });
     } catch (error) {
-      console.log(error);
+      toast({
+        title: "Registration Failed",
+        description: "Something went wrong while regestering the promoter",
+        variant: "destructive",
+      });
     }
   };
 
