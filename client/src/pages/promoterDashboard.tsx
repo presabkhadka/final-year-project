@@ -1,14 +1,13 @@
 import PromoterNavbar from "@/components/promoterNavbar";
-import PromoterSidebar from "@/components/promoterSidebar";
 
 export default function PromoterDashboard() {
   return (
-    <div className="grid grid-cols-1 h-screen md:grid md:grid-cols-12 ">
-      <div className="md:col-span-2 h-full">
-        <PromoterSidebar />
-      </div>
-      <div className="md:col-span-10 ">
-        
+    <div className="grid grid-cols-1 h-screen md:grid md:grid-cols-12 md: gap-x-4">
+      <div className="col-span-full ">
+        <PromoterNavbar />
+        <div className="p-6 flex justify-center items-center">
+          <h1>hi there</h1>
+        </div>
       </div>
     </div>
   );
