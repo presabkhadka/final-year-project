@@ -8,11 +8,12 @@ import {
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { NavLink } from "react-router-dom";
+import { ModeToggle } from "./mode-toggle";
 
 export default function PromoterNavbar() {
   return (
     <div className="py-4 px-12 shadow-md rounded-lg flex justify-between items-center">
-      <h1 className="text-2xl text-black font-bold">Urban Discovories</h1>
+      <h1 className="text-2xl font-bold">Urban Discovories</h1>
       <div className="flex gap-4 lg:hidden">
         <Sheet>
           <SheetTrigger>
@@ -129,7 +130,7 @@ export default function PromoterNavbar() {
             `flex p-2 items-center gap-4 hover:outline-none  cursor-pointer ${
               isActive
                 ? "text-green-500 text-lg font-semibold"
-                : "text-gray-600 font-semibold text-lg hover:text-black"
+                : "text-gray-600 font-semibold text-lg hover:text-lime-300"
             }`
           }
         >
@@ -141,7 +142,7 @@ export default function PromoterNavbar() {
             `flex p-2 items-center gap-4 hover:outline-none  cursor-pointer ${
               isActive
                 ? "text-green-500 text-lg font-semibold"
-                : "text-gray-600 font-semibold text-lg hover:text-black"
+                : "text-gray-600 font-semibold text-lg hover:text-lime-300"
             }`
           }
         >
@@ -153,7 +154,7 @@ export default function PromoterNavbar() {
             `flex p-2 items-center gap-4 hover:outline-none hover:text-black cursor-pointer ${
               isActive
                 ? "text-green-500 text-lg font-semibold"
-                : "text-gray-600 font-semibold text-lg"
+                : "text-gray-600 font-semibold text-lg hover:text-lime-300"
             }`
           }
         >
@@ -169,7 +170,7 @@ export default function PromoterNavbar() {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="size-6"
+              className="size-7"
             >
               <path
                 strokeLinecap="round"
@@ -187,8 +188,25 @@ export default function PromoterNavbar() {
             </SheetHeader>
           </SheetContent>
         </Sheet>
+        <ModeToggle/>
         <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" />
+          {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
+          <AvatarImage>
+          <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+              />
+            </svg>
+          </AvatarImage>
           <AvatarFallback>
             <svg
               xmlns="http://www.w3.org/2000/svg"
