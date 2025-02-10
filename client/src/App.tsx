@@ -8,10 +8,12 @@ import PromoterDashboard from "./pages/promoterDashboard";
 import { Toaster } from "@/components/ui/toaster";
 import AdminLogin from "./pages/adminLogin";
 import { ThemeProvider } from "./components/theme-provider";
+import { MantineProvider } from '@mantine/core';
 
 function App() {
   return (
     <>
+    <MantineProvider>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <RouterProvider
           router={createBrowserRouter([
@@ -26,6 +28,7 @@ function App() {
         ></RouterProvider>
         <Toaster />
       </ThemeProvider>
+      </MantineProvider>
     </>
   );
 }
