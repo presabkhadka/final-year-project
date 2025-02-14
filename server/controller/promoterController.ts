@@ -380,3 +380,28 @@ export async function regenOTP(req: Request, res: Response) {
     });
   }
 }
+
+export async function totalTreasures(req: Request, res: Response) {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      res.status(401).json({
+        msg: "token not found",
+      });
+      return;
+    }
+    let decoded = jwt.decode(token);
+    let userEmail = (decoded as jwt.JwtPayload).userEmail;
+    let promoter = await Promoter.findOne({
+      userEmail,
+    });
+    let totalTreasure = promoter?.addedTreasure.length;
+    res.status(200).json({
+      totalTreasure,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "something went wrong while getting the total treasures",
+    });
+  }
+}
