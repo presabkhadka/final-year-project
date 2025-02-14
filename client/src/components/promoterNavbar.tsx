@@ -12,7 +12,7 @@ import { ModeToggle } from "./mode-toggle";
 
 export default function PromoterNavbar() {
   return (
-    <div className="py-4 px-12 shadow-md rounded-lg flex justify-between items-center">
+    <div className="py-4 px-6 shadow-md rounded-lg flex justify-between items-center">
       <h1 className="text-2xl font-bold">Urban Discovories</h1>
       <div className="flex gap-4 lg:hidden">
         <Sheet>
@@ -188,11 +188,10 @@ export default function PromoterNavbar() {
             </SheetHeader>
           </SheetContent>
         </Sheet>
-        <ModeToggle/>
+        <ModeToggle />
         <Avatar>
-          {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
           <AvatarImage>
-          <svg
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
