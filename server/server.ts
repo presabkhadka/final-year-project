@@ -4,6 +4,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { explorerRouter } from "./routes/explorerRoutes";
 import { promoterRouter } from "./routes/promoterRoutes";
+import "./types/index";
+
 
 dotenv.config();
 const port = 1010;
