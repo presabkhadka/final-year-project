@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 export default function PromoterDashboard() {
   const [totalTreasure, setTotalTreasure] = useState(0);
+  const [ranking, setRanking] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("Authorization");
