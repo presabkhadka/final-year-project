@@ -22,16 +22,21 @@ async function promoterMiddleware(
 
   try {
     const cleanToken = word[1];
-  const jwtPass = process.env.JWT_SECRET || "defaultKey";
-  const decoded = jwt.verify(cleanToken, jwtPass);
-  const existingUser = Promoter.findOne({});
-  if (!existingUser) {
-    res.status(401).json({
-      msg: "promoter not found in db",
-    });
-    return;
-  }
-  next();
+    const jwtPass = process.env.JWT_SECRET || "defaultKey";
+    const decoded = jwt.verify(cleanToken, jwtPass);
+    const promoterEmail = (decoded as jwt.JwtPayload).userEmail;
+
+    const existingUser = Promoter.findOne({});
+    if (!existingUser) {
+      res.status(401).json({
+        msg: "promoter not found in db",
+      });
+      return;
+    }
+
+    req.user = promoterEmail;
+
+    next();
   } catch (error) {
     res.status(401).json({
       msg: "promoter not found in db",
