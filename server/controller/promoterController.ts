@@ -142,25 +142,9 @@ export async function addTreasure(req: Request, res: Response) {
     const treasureDescription = req.body.treasureDescription;
     const treasureType = req.body.treasureType;
     const treasureImage = req.file?.path;
-    const token = req.headers.authorization?.split(" ")[1];
+    const user = req.user
 
-    if (!token) {
-      res.status(401).json({
-        msg: "token not found",
-      });
-      return;
-    }
-
-    const decoded = jwt.decode(token);
-    if (typeof decoded === "string" || !decoded) {
-      res.status(401).json({
-        msg: "invalid token",
-      });
-      return;
-    }
-    const userEmail = (decoded as jwt.JwtPayload).userEmail;
-
-    const promoter = await Promoter.findOne({ userEmail: userEmail });
+    const promoter = await Promoter.findOne({ userEmail: user });
 
     const existingTreasure = await Treasure.findOne({
       treasureName,
@@ -198,7 +182,7 @@ export async function addTreasure(req: Request, res: Response) {
 
       await Promoter.updateOne(
         {
-          userEmail,
+          userEmail: user,
         },
         {
           $push: {
@@ -308,18 +292,10 @@ export const generateOtp = async (userEmail: string): Promise<void> => {
 // fn for verifying otp
 export async function verifyOtp(req: Request, res: Response) {
   try {
-    let token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      res.status(404).json({
-        msg: "token not found",
-      });
-      return;
-    }
-    let decoded = jwt.decode(token);
-    let userEmail = (decoded as jwt.JwtPayload).userEmail;
+    const user = req.user;
     let inputOTP = req.body.inputOTP;
     const dbOTP = await Otp.findOne({
-      email: userEmail,
+      email: user,
     });
 
     const generatedOTP = dbOTP?.otp;
@@ -328,7 +304,7 @@ export async function verifyOtp(req: Request, res: Response) {
       try {
         await Promoter.updateOne(
           {
-            userEmail,
+            userEmail: user,
           },
           {
             $set: { isVerified: "true" },
@@ -361,15 +337,8 @@ export async function verifyOtp(req: Request, res: Response) {
 // fn for regenerating otp
 export async function regenOTP(req: Request, res: Response) {
   try {
-    let token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      res.status(404).json({
-        msg: "token not found",
-      });
-      return;
-    }
-    let decoded = jwt.decode(token);
-    let userEmail = (decoded as jwt.JwtPayload).userEmail;
+    const user = req.user;
+    const userEmail = user as string;
     generateOtp(userEmail);
     res.status(200).json({
       msg: "check you email for regenerated otp",
@@ -381,19 +350,12 @@ export async function regenOTP(req: Request, res: Response) {
   }
 }
 
+// fn for getting total treasures of promoter
 export async function totalTreasures(req: Request, res: Response) {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      res.status(401).json({
-        msg: "token not found",
-      });
-      return;
-    }
-    let decoded = jwt.decode(token);
-    let userEmail = (decoded as jwt.JwtPayload).userEmail;
+    const user = req.user;
     let promoter = await Promoter.findOne({
-      userEmail,
+      userEmail: user,
     });
     let totalTreasure = promoter?.addedTreasure.length;
     res.status(200).json({
@@ -402,6 +364,16 @@ export async function totalTreasures(req: Request, res: Response) {
   } catch (error) {
     res.status(500).json({
       msg: "something went wrong while getting the total treasures",
+    });
+  }
+}
+
+// fn for getting promoter ranking
+export async function promoterRankinng(req: Request, res: Response) {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    res.status(401).json({
+      msg: "token not found",
     });
   }
 }
