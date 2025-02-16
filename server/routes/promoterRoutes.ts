@@ -8,6 +8,7 @@ import {
   verifyOtp,
   regenOTP,
   totalTreasures,
+  goodRatedTreasures,
 } from "../controller/promoterController";
 import promoterMiddleware from "../middleware/promoterMiddleware";
 
@@ -30,6 +31,7 @@ promoterRouter.patch(
 );
 promoterRouter.post("/verify-otp", promoterMiddleware, verifyOtp);
 promoterRouter.get("/regenerate-otp", promoterMiddleware, regenOTP);
-promoterRouter.get("/total-treasure", promoterMiddleware, totalTreasures)
+promoterRouter.get("/total-treasure", promoterMiddleware, totalTreasures);
+promoterRouter.get("/good-treasures", promoterMiddleware, goodRatedTreasures)
 
 export { promoterRouter };
