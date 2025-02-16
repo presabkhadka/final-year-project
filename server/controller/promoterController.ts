@@ -2,7 +2,7 @@ import { type Request, type Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
-import { Otp, Promoter, Treasure } from "../db/db";
+import { Otp, Promoter, Review, Treasure } from "../db/db";
 import otpGenerator from "otp-generator";
 import nodemailer from "nodemailer";
 
@@ -142,7 +142,7 @@ export async function addTreasure(req: Request, res: Response) {
     const treasureDescription = req.body.treasureDescription;
     const treasureType = req.body.treasureType;
     const treasureImage = req.file?.path;
-    const user = req.user
+    const user = req.user;
 
     const promoter = await Promoter.findOne({ userEmail: user });
 
@@ -368,12 +368,39 @@ export async function totalTreasures(req: Request, res: Response) {
   }
 }
 
-// fn for getting promoter ranking
-export async function promoterRankinng(req: Request, res: Response) {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) {
-    res.status(401).json({
-      msg: "token not found",
+// fn for getting good rated treasures
+export async function goodRatedTreasures(req: Request, res: Response) {
+  try {
+    const user = req.user;
+    const promoter = await Promoter.findOne({
+      userEmail: user,
+    });
+
+    const treasure = await Treasure.find({
+      owner: promoter?._id,
+    });
+
+    const treasureIds = treasure.map((t) => t._id);
+
+    const goodTreasures = await Review.find({
+      reviewOf: { $in: treasureIds },
+    })
+      .where("reviewType")
+      .equals("good");
+
+    const goodTreasuresLength = goodTreasures.length
+
+    res.status(200).json({
+      goodTreasuresLength
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "error while finding the good treasures",
     });
   }
+}
+
+// fn for getting promoter ranking
+export async function promoterRankinng(req: Request, res: Response) {
+  const user = req.user;
 }
