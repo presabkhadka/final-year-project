@@ -388,14 +388,45 @@ export async function goodRatedTreasures(req: Request, res: Response) {
       .where("reviewType")
       .equals("good");
 
-    const goodTreasuresLength = goodTreasures.length
+    const goodTreasuresLength = goodTreasures.length;
 
     res.status(200).json({
-      goodTreasuresLength
+      goodTreasuresLength,
     });
   } catch (error) {
     res.status(500).json({
       msg: "error while finding the good treasures",
+    });
+  }
+}
+
+// fn for getting bad rated treasures
+export async function badRatedTreasures(req: Request, res: Response) {
+  try {
+    const user = req.user;
+    const promoter = await Promoter.findOne({
+      userEmail: user,
+    });
+
+    const treasures = await Treasure.find({
+      owner: promoter?._id,
+    });
+
+    const treasureIds = treasures.map((t) => t._id);
+
+    const badReviews = await Review.find({
+      reviewOf: { $in: treasureIds },
+    })
+      .where("reviewType")
+      .equals("bad");
+
+    const badTreasuresLenght = badReviews.length;
+    res.status(200).json({
+      badTreasuresLenght,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "something went wrong while finding the bad rated treasures",
     });
   }
 }
