@@ -7,6 +7,7 @@ export default function PromoterDashboard() {
   const [goodTreasure, setGoodTreasure] = useState(0);
   const [badTreasure, setBadTreasure] = useState(0);
 
+  // ue for total treasures
   useEffect(() => {
     const token = localStorage.getItem("Authorization");
     const cleanedToken = token?.split(" ")[1];
@@ -32,6 +33,7 @@ export default function PromoterDashboard() {
     return () => clearInterval(interval);
   }, []);
 
+  // ue for good treasures
   useEffect(() => {
     const token = localStorage.getItem("Authorization")?.split(" ")[1];
     let fetchGoodTreasure = async () => {
@@ -73,9 +75,9 @@ export default function PromoterDashboard() {
           <div className="rounded-xl shadow-lg bg-muted/80 flex justify-center items-center hover:shadow-xl min-h-[10rem]">
           <div className="w-full flex flex-col gap-2 py-2 justify-center items-center">
               <h1 className="font-bold text-xl sm:text-2xl md:text-2xl text-gray-800 dark:text-gray-200">
-                Good Treasures
+                Total Good Comments
               </h1>
-              <h1 className="font-semibold text-2xl sm:text-2xl md:text-3xl text-indigo-600 dark:text-indigo-400">
+              <h1 className="font-semibold text-2xl sm:text-2xl md:text-3xl text-green-600 dark:text-green-400">
                 {goodTreasure}
               </h1>
             </div>
@@ -84,9 +86,9 @@ export default function PromoterDashboard() {
           <div className="rounded-xl shadow-lg bg-muted/80 flex justify-center items-center hover:shadow-xl col-span-1 sm:col-span-2 md:col-span-1 min-h-[10rem]">
           <div className="w-full flex flex-col gap-2 py-2 justify-center items-center">
               <h1 className="font-bold text-xl sm:text-2xl md:text-2xl text-gray-800 dark:text-gray-200">
-                Bad Treasures
+                Total Bad Comments
               </h1>
-              <h1 className="font-semibold text-2xl sm:text-2xl md:text-3xl text-indigo-600 dark:text-indigo-400">
+              <h1 className="font-semibold text-2xl sm:text-2xl md:text-3xl text-red-600 dark:text-red-400">
                 {badTreasure}
               </h1>
             </div>
