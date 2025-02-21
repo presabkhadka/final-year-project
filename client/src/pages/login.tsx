@@ -129,7 +129,7 @@ const LoginForm: FC<loginFormInterface> = ({
       <div className="text-center mt-4">
         <p>
           Don't have an account?{" "}
-          <a href="/signup" className="text-blue-500 font-semibold">
+          <a href="/explorer/signup" className="text-blue-500 font-semibold">
             Sign Up
           </a>
         </p>
@@ -176,7 +176,7 @@ const Login: FC = () => {
     <div className="grid grid-cols-1 md:grid-cols-12 h-screen w-screen">
       <div className="hidden md:block md:col-span-7">
         <img
-          src="/bhaktapur.jpg"
+          src="/patan.jpeg"
           alt="bhaktapur"
           className="h-full w-full object-cover rounded-r-3xl"
         />
