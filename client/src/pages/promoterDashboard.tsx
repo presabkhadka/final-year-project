@@ -1,6 +1,7 @@
 import PromoterNavbar from "@/components/promoterNavbar";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton"; // Import the skeleton loader
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,7 +36,7 @@ export default function PromoterDashboard() {
     },
   } satisfies ChartConfig;
 
-  // ue for total treasures
+  // useEffect for total treasures
   useEffect(() => {
     const token = localStorage.getItem("Authorization");
     const cleanedToken = token?.split(" ")[1];
@@ -61,7 +62,7 @@ export default function PromoterDashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  // ue for good treasures
+  // useEffect for good treasures
   useEffect(() => {
     const token = localStorage.getItem("Authorization")?.split(" ")[1];
     let fetchGoodTreasure = async () => {
@@ -84,7 +85,7 @@ export default function PromoterDashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  // ue for bad treasures
+  // useEffect for bad treasures
   useEffect(() => {
     const token = localStorage.getItem("Authorization")?.split(" ")[1];
     let fetchGoodTreasure = async () => {
@@ -112,72 +113,93 @@ export default function PromoterDashboard() {
       <div className="col-span-full">
         <PromoterNavbar />
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 p-4">
+          {/* Skeleton Loader for Total Treasures */}
           <div className="rounded-xl shadow-lg bg-muted/80 flex justify-center items-center hover:shadow-xl min-h-[10rem]">
-            <div className="w-full flex flex-col gap-2 py-2 justify-center items-center">
-              <h1 className="font-bold text-xl sm:text-2xl md:text-2xl text-gray-800 dark:text-gray-200">
-                Total Treasures
-              </h1>
-              <h1 className="font-semibold text-2xl sm:text-2xl md:text-3xl text-indigo-600 dark:text-indigo-400">
-                {totalTreasure}
-              </h1>
-            </div>
+            {totalTreasure === 0 ? (
+              <Skeleton height={100} width="80%" />
+            ) : (
+              <div className="w-full flex flex-col gap-2 py-2 justify-center items-center">
+                <h1 className="font-bold text-xl sm:text-2xl md:text-2xl text-gray-800 dark:text-gray-200">
+                  Total Treasures
+                </h1>
+                <h1 className="font-semibold text-2xl sm:text-2xl md:text-3xl text-indigo-600 dark:text-indigo-400">
+                  {totalTreasure}
+                </h1>
+              </div>
+            )}
           </div>
 
+          {/* Skeleton Loader for Good Comments */}
           <div className="rounded-xl shadow-lg bg-muted/80 flex justify-center items-center hover:shadow-xl min-h-[10rem]">
-            <div className="w-full flex flex-col gap-2 py-2 justify-center items-center">
-              <h1 className="font-bold text-xl sm:text-2xl md:text-2xl text-gray-800 dark:text-gray-200">
-                Total Good Comments
-              </h1>
-              <h1 className="font-semibold text-2xl sm:text-2xl md:text-3xl text-green-600 dark:text-green-400">
-                {goodTreasure}
-              </h1>
-            </div>
+            {goodTreasure === 0 ? (
+              <Skeleton height={100} width="80%" />
+            ) : (
+              <div className="w-full flex flex-col gap-2 py-2 justify-center items-center">
+                <h1 className="font-bold text-xl sm:text-2xl md:text-2xl text-gray-800 dark:text-gray-200">
+                  Total Good Comments
+                </h1>
+                <h1 className="font-semibold text-2xl sm:text-2xl md:text-3xl text-green-600 dark:text-green-400">
+                  {goodTreasure}
+                </h1>
+              </div>
+            )}
           </div>
 
+          {/* Skeleton Loader for Bad Comments */}
           <div className="rounded-xl shadow-lg bg-muted/80 flex justify-center items-center hover:shadow-xl col-span-1 sm:col-span-2 md:col-span-1 min-h-[10rem]">
-            <div className="w-full flex flex-col gap-2 py-2 justify-center items-center">
-              <h1 className="font-bold text-xl sm:text-2xl md:text-2xl text-gray-800 dark:text-gray-200">
-                Total Bad Comments
-              </h1>
-              <h1 className="font-semibold text-2xl sm:text-2xl md:text-3xl text-red-600 dark:text-red-400">
-                {badTreasure}
-              </h1>
-            </div>
+            {badTreasure === 0 ? (
+              <Skeleton height={100} width="80%" />
+            ) : (
+              <div className="w-full flex flex-col gap-2 py-2 justify-center items-center">
+                <h1 className="font-bold text-xl sm:text-2xl md:text-2xl text-gray-800 dark:text-gray-200">
+                  Total Bad Comments
+                </h1>
+                <h1 className="font-semibold text-2xl sm:text-2xl md:text-3xl text-red-600 dark:text-red-400">
+                  {badTreasure}
+                </h1>
+              </div>
+            )}
           </div>
+
+          {/* Skeleton Loader for Chart */}
           <div className="col-span-full rounded-xl shadow-lg hover:shadow-xl">
-            <Card className="bg-muted/80">
-              <CardHeader>
-                <CardTitle>Ratings Chart</CardTitle>
-              </CardHeader>
-              <CardContent className="rounded-xl">
-                <ChartContainer config={chartConfig}>
-                  <BarChart accessibilityLayer data={chartData}>
-                    <CartesianGrid vertical={false} />
-                    <XAxis
-                      dataKey="month"
-                      tickLine={false}
-                      tickMargin={10}
-                      axisLine={false}
-                      tickFormatter={(value) => value.slice(0, 3)}
-                    />
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent indicator="dashed" />}
-                    />
-                    <Bar
-                      dataKey="desktop"
-                      fill="var(--color-desktop)"
-                      radius={4}
-                    />
-                    <Bar
-                      dataKey="mobile"
-                      fill="var(--color-mobile)"
-                      radius={4}
-                    />
-                  </BarChart>
-                </ChartContainer>
-              </CardContent>
-            </Card>
+            {chartData.length === 0 ? (
+              <Skeleton height={300} width="100%" />
+            ) : (
+              <Card className="bg-muted/80">
+                <CardHeader>
+                  <CardTitle>Ratings Chart</CardTitle>
+                </CardHeader>
+                <CardContent className="rounded-xl">
+                  <ChartContainer config={chartConfig}>
+                    <BarChart accessibilityLayer data={chartData}>
+                      <CartesianGrid vertical={false} />
+                      <XAxis
+                        dataKey="month"
+                        tickLine={false}
+                        tickMargin={10}
+                        axisLine={false}
+                        tickFormatter={(value) => value.slice(0, 3)}
+                      />
+                      <ChartTooltip
+                        cursor={false}
+                        content={<ChartTooltipContent indicator="dashed" />}
+                      />
+                      <Bar
+                        dataKey="desktop"
+                        fill="var(--color-desktop)"
+                        radius={4}
+                      />
+                      <Bar
+                        dataKey="mobile"
+                        fill="var(--color-mobile)"
+                        radius={4}
+                      />
+                    </BarChart>
+                  </ChartContainer>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>
