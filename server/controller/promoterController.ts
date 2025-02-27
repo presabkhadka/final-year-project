@@ -432,6 +432,68 @@ export async function badRatedTreasures(req: Request, res: Response) {
 }
 
 // fn for getting promoter ranking
-export async function promoterRankinng(req: Request, res: Response) {
-  const user = req.user;
+export const promoterRanking = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+    const promoters = await Promoter.find();
+
+    const rankings = await Promise.all(
+      promoters.map(async (promoter) => {
+        const treasureCount = await Treasure.countDocuments({
+          promoter: promoter._id,
+        });
+        return { promoter: promoter.userEmail, treasureCount };
+      })
+    );
+
+    rankings.sort((a, b) => b.treasureCount - a.treasureCount);
+
+    res.status(200).json({ rankings });
+  } catch (error) {
+    console.error("Error fetching promoter rankings:", error);
+    res.status(500).json({
+      message: "Something went wrong while fetching the promoter rank",
+    });
+  }
+};
+
+// fn for getting table details of treasure
+export async function treasureDetails(req: Request, res: Response) {
+  try {
+    const user = req.user;
+    if (!user) {
+      res.status(500).json({
+        msg: "user not found",
+      });
+    }
+    const treasures = await Treasure.find();
+    const treasureData = await Promise.all(
+      treasures.map(async (treasure) => {
+        const goodReviews = await Review.countDocuments({
+          reviewOf: treasure._id,
+          reviewType: "good",
+        });
+
+        const badReviews = await Review.countDocuments({
+          reviewOf: treasure._id,
+          reviewType: "bad",
+        });
+
+        return {
+          name: treasure.treasureName,
+          positiveReviews: goodReviews,
+          negativeReviews: badReviews,
+          status: goodReviews > badReviews ? "Good" : "Bad",
+        };
+      })
+    );
+
+    res.status(200).json({ success: true, treasures: treasureData });
+  } catch (error) {
+    console.error("Error fetching treasure reviews:", error);
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong while fetching the table data",
+    });
+  }
 }
