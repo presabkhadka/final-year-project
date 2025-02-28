@@ -10,6 +10,8 @@ import {
   totalTreasures,
   goodRatedTreasures,
   badRatedTreasures,
+  promoterRanking,
+  treasureDetails,
 } from "../controller/promoterController";
 import promoterMiddleware from "../middleware/promoterMiddleware";
 
@@ -33,7 +35,9 @@ promoterRouter.patch(
 promoterRouter.post("/verify-otp", promoterMiddleware, verifyOtp);
 promoterRouter.get("/regenerate-otp", promoterMiddleware, regenOTP);
 promoterRouter.get("/total-treasure", promoterMiddleware, totalTreasures);
-promoterRouter.get("/good-treasures", promoterMiddleware, goodRatedTreasures)
-promoterRouter.get("/bad-treasures", promoterMiddleware, badRatedTreasures)
+promoterRouter.get("/good-treasures", promoterMiddleware, goodRatedTreasures);
+promoterRouter.get("/bad-treasures", promoterMiddleware, badRatedTreasures);
+promoterRouter.get("/rankings", promoterMiddleware, promoterRanking);
+promoterRouter.get("/treasure-table", promoterMiddleware, treasureDetails);
 
 export { promoterRouter };
