@@ -111,7 +111,9 @@ export default function PromoterDashboard() {
   return (
     <div className="grid grid-cols-1 h-screen md:grid md:grid-cols-12 gap-x-4">
       <div className="col-span-full">
-        <PromoterNavbar />
+        <div className="bg-white shadow-md dark:bg-black">
+          <PromoterNavbar />
+        </div>
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 p-4">
           {/* Skeleton Loader for Total Treasures */}
           <div className="rounded-xl shadow-lg bg-muted/80 flex justify-center items-center hover:shadow-xl min-h-[10rem]">
