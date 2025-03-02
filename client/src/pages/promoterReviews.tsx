@@ -59,12 +59,11 @@ export default function PromoterReview() {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="sticky top-0 z-50 bg-white shadow-md">
+      <div className="sticky top-0 z-50 bg-white shadow-md dark:bg-black">
         <PromoterNavbar />
       </div>
 
       <div className="flex-1 overflow-auto p-4">
-        {/* Loading Skeleton */}
         {loading ? (
           <Skeleton count={5} height={40} />
         ) : (
@@ -104,7 +103,9 @@ export default function PromoterReview() {
                         className={`p-3 border ${
                           treasure.status === "Good"
                             ? "text-green-500 dark:text-green-400"
-                            : "text-red-500 dark:text-red-400"
+                            : treasure.status === "Bad"
+                            ? "text-red-500 dark:text-red-400"
+                            : "text-yellow-500 dark:text-yellow-400"
                         } dark:border-gray-600`}
                       >
                         {treasure.status}
