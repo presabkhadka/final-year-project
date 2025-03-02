@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea"
+
 
 interface TreasureFormProps {
   treasure?: any; // Optional prop for updating an existing treasure
@@ -84,7 +87,8 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure }) => {
           <label htmlFor="treasureName" className="block">
             Treasure Name
           </label>
-          <input
+
+          <Input
             type="text"
             id="treasureName"
             value={treasureName}
@@ -98,7 +102,7 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure }) => {
           <label htmlFor="treasureLocation" className="block">
             Treasure Location
           </label>
-          <input
+          <Input
             type="text"
             id="treasureLocation"
             value={treasureLocation}
@@ -112,7 +116,7 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure }) => {
           <label htmlFor="treasureDescription" className="block">
             Treasure Description
           </label>
-          <textarea
+          <Textarea
             id="treasureDescription"
             value={treasureDescription}
             onChange={(e) => setTreasureDescription(e.target.value)}
@@ -125,7 +129,7 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure }) => {
           <label htmlFor="treasureType" className="block">
             Treasure Type
           </label>
-          <input
+          <Input
             type="text"
             id="treasureType"
             value={treasureType}
@@ -139,7 +143,7 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure }) => {
           <label htmlFor="treasureImage" className="block">
             Treasure Image
           </label>
-          <input
+          <Input
             type="file"
             id="treasureImage"
             onChange={handleImageChange}
