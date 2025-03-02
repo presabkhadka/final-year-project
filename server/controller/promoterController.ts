@@ -483,7 +483,7 @@ export async function treasureDetails(req: Request, res: Response) {
           name: treasure.treasureName,
           positiveReviews: goodReviews,
           negativeReviews: badReviews,
-          status: goodReviews > badReviews ? "Good" : "Bad",
+          status: goodReviews > badReviews ? "Good" : goodReviews < badReviews ? "Bad" : "Neutral",
         };
       })
     );
@@ -497,3 +497,5 @@ export async function treasureDetails(req: Request, res: Response) {
     });
   }
 }
+
+
