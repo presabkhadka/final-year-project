@@ -111,7 +111,7 @@ export default function PromoterDashboard() {
   return (
     <div className="grid grid-cols-1 h-screen md:grid md:grid-cols-12 gap-x-4">
       <div className="col-span-full">
-        <div className="bg-white shadow-md dark:bg-black">
+        <div className="bg-white shadow-md dark:bg-black sticky top-0 z-50">
           <PromoterNavbar />
         </div>
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 p-4">
