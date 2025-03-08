@@ -14,10 +14,11 @@ interface Treasure {
   _id: string;
   treasureName: string;
   treasureLocation: string;
+  treasureType: String;
   openingTime: string;
   closingTime: string;
   owner: string;
-  treasureImage: {
+  treasureImage?: {
     data: Uint8Array;
   };
 }
@@ -33,17 +34,22 @@ export default function Promote() {
         if (!token) {
           throw new Error("No authentication token found");
         }
+
         const response = await axios.get(
           "http://localhost:1010/promoter/card-details",
           {
-            method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        setTreasures(response.data.treasures);
+
+        if (response.data && Array.isArray(response.data.treasures)) {
+          setTreasures(response.data.treasures);
+        } else {
+          console.error("Unexpected response structure", response);
+        }
       } catch (error) {
         console.error("Error fetching treasures:", error);
       }
@@ -51,7 +57,7 @@ export default function Promote() {
 
     fetchTreasures();
 
-    let interval = setInterval(fetchTreasures, 2000);
+    const interval = setInterval(fetchTreasures, 2000);
 
     return () => clearInterval(interval);
   }, []);
@@ -81,22 +87,27 @@ export default function Promote() {
 
         <main className="max-w-7xl mx-auto px-4 py-6">
           <div className="space-y-4 overflow-auto">
-            {treasures.map((treasure: any) => (
+            {treasures.map((treasure: Treasure) => (
               <div
                 key={treasure._id}
                 className="rounded-lg shadow overflow-hidden border"
               >
                 <div className="flex">
                   <div className="w-1/3">
-                    <img
-                      src={`data:image/jpeg;base64,${btoa(
-                        String.fromCharCode(
-                          ...new Uint8Array(treasure.treasureImage.data)
-                        )
-                      )}`}
-                      alt={treasure.treasureName}
-                      className="h-full w-full object-cover"
-                    />
+                    {/* Check if treasure.treasureImage and treasure.treasureImage.data exist */}
+                    {treasure.treasureImage && treasure.treasureImage.data ? (
+                      <img
+                        src={`data:image/jpeg;base64,${btoa(
+                          String.fromCharCode(
+                            ...new Uint8Array(treasure.treasureImage.data)
+                          )
+                        )}`}
+                        alt={treasure.treasureName}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="h-full w-full bg-gray-200">No Image</div> // Placeholder if no image
+                    )}
                   </div>
                   <div className="w-2/3 p-4">
                     <h2 className="text-lg font-medium">
