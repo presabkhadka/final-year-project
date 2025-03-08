@@ -53,6 +53,10 @@ export default function PromoterReview() {
     };
 
     fetchTreasures();
+
+    let interval = setInterval(fetchTreasures, 2000);
+
+    return () => clearInterval(interval);
   }, []);
 
   if (error) return <p className="text-red-500">{error}</p>;
@@ -87,7 +91,7 @@ export default function PromoterReview() {
                 {treasures.length > 0 ? (
                   treasures.map((treasure) => (
                     <tr
-                      className="border-b-2 last:border-0 even:bg-blue-100 dark:even:bg-gray-700"
+                      className="border-b-2 last:border-0 even:bg-muted/100 dark:even:bg-gray-700"
                       key={treasure.name}
                     >
                       <td className="p-3 border dark:border-gray-600">
