@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea"
-
+import { Textarea } from "@/components/ui/textarea";
+import toast from "react-hot-toast";
 
 interface TreasureFormProps {
   treasure?: any; // Optional prop for updating an existing treasure
@@ -18,9 +18,23 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure }) => {
   const [treasureDescription, setTreasureDescription] = useState<string>(
     treasure?.treasureDescription || ""
   );
+
+  const [treasureContact, setTreasureContact] = useState<string>(
+    treasure?.treasureContact || ""
+  );
+
   const [treasureType, setTreasureType] = useState<string>(
     treasure?.treasureType || ""
   );
+
+  const [openingTime, setOpeningTime] = useState<string>(
+    treasure?.treasureOpeningTime || ""
+  );
+
+  const [closingTime, setClosingTime] = useState<string>(
+    treasure?.treasureClosingTime || ""
+  );
+
   const [treasureImage, setTreasureImage] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,30 +55,32 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure }) => {
     formData.append("treasureName", treasureName);
     formData.append("treasureLocation", treasureLocation);
     formData.append("treasureDescription", treasureDescription);
+    formData.append("treasureContact", treasureContact);
     formData.append("treasureType", treasureType);
+    formData.append("treasureOpeningTime", openingTime);
+    formData.append("treasureClosingTime", closingTime);
     if (treasureImage) {
       formData.append("treasureImage", treasureImage);
     }
 
     try {
       const token = localStorage.getItem("Authorization")?.split(" ")[1];
-      const url = treasure
-        ? `http://localhost:1010/promoter/update-treasure/${treasure._id}`
-        : "http://localhost:1010/promoter/add-treasure";
-      const method = treasure ? "PUT" : "POST";
 
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
+      const response = await fetch(
+        "http://localhost:1010/promoter/add-treasure",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
 
       const data = await response.json();
 
       if (response.ok) {
-        alert(data.msg);
+        toast.success(data.msg);
         navigate("/promoter/dashboard");
       } else {
         setError(data.msg || "Something went wrong.");
@@ -78,9 +94,7 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure }) => {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold">
-        {treasure ? "Update Treasure" : "Add New Treasure"}
-      </h1>
+      <h1 className="text-2xl font-bold">Add New Treasure</h1>
       {error && <p className="text-red-500">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -126,6 +140,19 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure }) => {
         </div>
 
         <div>
+          <label htmlFor="treasureDescription" className="block">
+            Treasure Contact
+          </label>
+          <Textarea
+            id="treasureContact"
+            value={treasureContact}
+            onChange={(e) => setTreasureContact(e.target.value)}
+            className="w-full p-2 border rounded"
+            required
+          />
+        </div>
+
+        <div>
           <label htmlFor="treasureType" className="block">
             Treasure Type
           </label>
@@ -140,12 +167,40 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure }) => {
         </div>
 
         <div>
+          <label htmlFor="treasureOpeningTime" className="block">
+            Opening Time
+          </label>
+          <Input
+            type="text"
+            id="treasureOpeningTime"
+            value={openingTime}
+            onChange={(e) => setOpeningTime(e.target.value)}
+            className="w-full p-2 border rounded"
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="treasureClosingTime" className="block">
+            Closing Time
+          </label>
+          <Input
+            type="text"
+            id="treasureClosingTime"
+            value={closingTime}
+            onChange={(e) => setClosingTime(e.target.value)}
+            className="w-full p-2 border rounded"
+            required
+          />
+        </div>
+
+        <div>
           <label htmlFor="treasureImage" className="block">
             Treasure Image
           </label>
           <Input
             type="file"
             id="treasureImage"
+            name="treasureImage"
             onChange={handleImageChange}
             className="w-full p-2 border rounded"
           />
