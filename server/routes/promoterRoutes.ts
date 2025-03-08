@@ -12,6 +12,7 @@ import {
   badRatedTreasures,
   promoterRanking,
   treasureDetails,
+  cardDetails,
 } from "../controller/promoterController";
 import promoterMiddleware from "../middleware/promoterMiddleware";
 
@@ -39,5 +40,6 @@ promoterRouter.get("/good-treasures", promoterMiddleware, goodRatedTreasures);
 promoterRouter.get("/bad-treasures", promoterMiddleware, badRatedTreasures);
 promoterRouter.get("/rankings", promoterMiddleware, promoterRanking);
 promoterRouter.get("/treasure-table", promoterMiddleware, treasureDetails);
+promoterRouter.get("/card-details", promoterMiddleware, cardDetails);
 
 export { promoterRouter };
