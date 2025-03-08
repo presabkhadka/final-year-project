@@ -5,7 +5,7 @@ import PromoterLogin from "./pages/promoterLogin";
 import PromoterRegister from "./pages/promoterRegister";
 import PromoterVerify from "./pages/promoterVerify";
 import PromoterDashboard from "./pages/promoterDashboard";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "react-hot-toast";
 import AdminLogin from "./pages/adminLogin";
 import { ThemeProvider } from "./components/theme-provider";
 import PromoterReview from "./pages/promoterReviews";
@@ -28,7 +28,7 @@ function App() {
             { path: "/promoter/promote", element: <Promote /> },
           ])}
         ></RouterProvider>
-        <Toaster />
+        <Toaster position="bottom-right" />
       </ThemeProvider>
     </>
   );
