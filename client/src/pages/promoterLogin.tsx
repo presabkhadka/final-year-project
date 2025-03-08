@@ -1,5 +1,6 @@
 import axios from "axios";
 import { FC, useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 
 interface loginFormInterface {
@@ -166,6 +167,7 @@ const PromoterLogin: FC = () => {
       axios.defaults.headers.common["Authorization"] = bearerToken;
 
       if (response.data.verificationStatus === true) {
+        toast.success("Logged in successfully!");
         navigate("/promoter/dashboard");
       } else {
         navigate("/promoter/verify");
