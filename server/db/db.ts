@@ -57,9 +57,10 @@ const treasureSchema = new mongoose.Schema({
   treasureName: String,
   treasureLocation: String,
   treasureDescription: String,
+  treasureContact: String,
   treasureType: String,
-  openingTime: Date,
-  closingTime: Date,
+  openingTime: String,
+  closingTime: String,
   treasureImage: Buffer,
   owner: {
     type: mongoose.Schema.Types.ObjectId,
