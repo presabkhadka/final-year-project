@@ -137,69 +137,73 @@ export async function promoterLogin(
 // fn for promoter to add a new treasure
 export async function addTreasure(req: Request, res: Response) {
   try {
-    const treasureName = req.body.treasureName;
-    const treasureLocation = req.body.treasureLocation;
-    const treasureDescription = req.body.treasureDescription;
-    const treasureType = req.body.treasureType;
+    const {
+      treasureName,
+      treasureLocation,
+      treasureDescription,
+      treasureContact,
+      treasureType,
+      treasureOpeningTime,
+      treasureClosingTime,
+    } = req.body;
     const treasureImage = req.file?.path;
     const user = req.user;
 
+    const requiredFields = [
+      "treasureName",
+      "treasureLocation",
+      "treasureDescription",
+      "treasureContact",
+      "treasureType",
+      "treasureOpeningTime",
+      "treasureClosingTime",
+    ];
+    const isEmpty = requiredFields.some((field) => !req.body[field]?.trim());
+    const isImageMissing = !treasureImage;
+
+    if (isEmpty || isImageMissing) {
+      res.status(400).json({ msg: "Input fields cannot be left empty" });
+      return;
+    }
+
+    const existingTreasure = await Treasure.findOne({ treasureName });
+    if (existingTreasure) {
+      res.status(409).json({ msg: "Treasure already exists" });
+      return;
+    }
+
     const promoter = await Promoter.findOne({ userEmail: user });
 
-    const existingTreasure = await Treasure.findOne({
+    const newTreasure = await Treasure.create({
       treasureName,
+      treasureLocation,
+      treasureDescription,
+      treasureContact,
+      treasureType,
+      treasureImage,
+      openingTime: treasureOpeningTime,
+      closingTime: treasureClosingTime,
+      owner: promoter?._id,
     });
 
-    if (
-      treasureName == "" ||
-      treasureLocation == "" ||
-      treasureDescription == "" ||
-      treasureType == "" ||
-      treasureImage == ""
-    ) {
-      res.status(400).json({
-        msg: "input fields cannot be left empty",
-      });
-    }
+    await Promoter.updateOne(
+      { userEmail: user },
+      {
+        $push: { addedTreasure: newTreasure._id },
+        $inc: { points: 10 },
+      }
+    );
 
-    if (existingTreasure) {
-      res.status(409).json({
-        msg: "treasure already exists",
-      });
-    } else {
-      const newTreasure = await Treasure.create({
-        treasureName,
-        treasureLocation,
-        treasureDescription,
-        treasureType,
-        treasureImage,
-        owner: promoter?._id,
-      });
-      res.status(200).json({
-        msg: "treasure created successfully",
-        newTreasure,
-      });
-
-      await Promoter.updateOne(
-        {
-          userEmail: user,
-        },
-        {
-          $push: {
-            addedTreasure: newTreasure._id,
-          },
-          $inc: {
-            points: 10,
-          },
-        }
-      );
-    }
+    res.status(201).json({
+      msg: "Treasure created successfully",
+      newTreasure,
+    });
+    return;
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      msg: "something wrong with the server at the moment",
-    });
+    console.error(error);
+    res.status(500).json({ msg: "Something went wrong with the server" });
   }
+  return;
 }
 
 // fn for promoter to update existing treasure
@@ -483,7 +487,12 @@ export async function treasureDetails(req: Request, res: Response) {
           name: treasure.treasureName,
           positiveReviews: goodReviews,
           negativeReviews: badReviews,
-          status: goodReviews > badReviews ? "Good" : goodReviews < badReviews ? "Bad" : "Neutral",
+          status:
+            goodReviews > badReviews
+              ? "Good"
+              : goodReviews < badReviews
+              ? "Bad"
+              : "Neutral",
         };
       })
     );
@@ -498,4 +507,29 @@ export async function treasureDetails(req: Request, res: Response) {
   }
 }
 
+// fn for getting card details of treasures
+export async function cardDetails(req: Request, res: Response) {
+  try {
+    const user = req.user;
+    if (!user) {
+      res.status(401).json({
+        msg: "unauthorized promoter",
+      });
+      return;
+    }
+    const promoter = await Promoter.findOne({
+      userEmail: user,
+    });
 
+    const treasures = await Treasure.find({
+      owner: promoter,
+    });
+    res.status(200).json({
+      treasures,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "something went wrong while fetching the card details",
+    });
+  }
+}
