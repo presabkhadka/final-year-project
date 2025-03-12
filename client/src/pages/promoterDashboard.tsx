@@ -1,7 +1,7 @@
 import PromoterNavbar from "@/components/promoterNavbar";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Skeleton from "react-loading-skeleton"; // Import the skeleton loader
+import Skeleton from "react-loading-skeleton";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
