@@ -3,6 +3,8 @@ import axios from "axios";
 import PromoterNavbar from "@/components/promoterNavbar";
 import TreasureForm from "./promoterCRUD";
 import { Store } from "lucide-react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import {
   Dialog,
   DialogContent,
@@ -87,51 +89,75 @@ export default function Promote() {
 
         <main className="max-w-7xl mx-auto px-4 py-6">
           <div className="space-y-4 overflow-auto">
-            {treasures.map((treasure: Treasure) => (
-              <div
-                key={treasure._id}
-                className="rounded-lg shadow overflow-hidden border"
-              >
-                <div className="flex">
-                  <div className="w-1/3">
-                    {/* Check if treasure.treasureImage and treasure.treasureImage.data exist */}
-                    {treasure.treasureImage && treasure.treasureImage.data ? (
-                      <img
-                        src={`data:image/jpeg;base64,${btoa(
-                          String.fromCharCode(
-                            ...new Uint8Array(treasure.treasureImage.data)
-                          )
-                        )}`}
-                        alt={treasure.treasureName}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="h-full w-full bg-gray-200">No Image</div> // Placeholder if no image
-                    )}
-                  </div>
-                  <div className="w-2/3 p-4">
-                    <h2 className="text-lg font-medium">
-                      {treasure.treasureName}
-                    </h2>
-                    <p className="text-sm mt-2 text-slate-500 dark:text-slate-300">
-                      {treasure.treasureLocation}
-                    </p>
-                    <p className="text-sm mt-2 text-slate-500 dark:text-slate-300">
-                      Opening Time: {treasure.openingTime} -{" "}
-                      {treasure.closingTime}
-                    </p>
-                    <p className="text-sm mt-2 text-slate-500 dark:text-slate-300">
-                      Type: {treasure.treasureType}
-                    </p>
-                    <div className="mt-4 flex justify-end">
-                      <button className="text-blue-600 border border-blue-600 hover:bg-blue-500 hover:text-white px-4 py-1 rounded-md text-sm">
-                        Edit
-                      </button>
+            {treasures.length === 0
+              ? // Show skeletons if treasures are loading or empty
+                Array(5)
+                  .fill(0)
+                  .map((_, index) => (
+                    <div
+                      key={index}
+                      className="rounded-lg shadow overflow-hidden border"
+                    >
+                      <div className="flex">
+                        <div className="w-1/3">
+                          <Skeleton height="100%" width="100%" />
+                        </div>
+                        <div className="w-2/3 p-4">
+                          <Skeleton count={2} />
+                          <Skeleton width="80%" />
+                          <Skeleton width="60%" />
+                          <Skeleton width="30%" />
+                        </div>
+                      </div>
+                    </div>
+                  ))
+              : treasures.map((treasure: Treasure) => (
+                  <div
+                    key={treasure._id}
+                    className="rounded-lg shadow overflow-hidden border"
+                  >
+                    <div className="flex">
+                      <div className="w-1/3">
+                        {treasure.treasureImage &&
+                        treasure.treasureImage.data ? (
+                          <img
+                            src={`data:image/jpeg;base64,${btoa(
+                              String.fromCharCode(
+                                ...new Uint8Array(treasure.treasureImage.data)
+                              )
+                            )}`}
+                            alt={treasure.treasureName}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="h-full w-full bg-gray-200">
+                            No Image
+                          </div>
+                        )}
+                      </div>
+                      <div className="w-2/3 p-4">
+                        <h2 className="text-lg font-medium">
+                          {treasure.treasureName}
+                        </h2>
+                        <p className="text-sm mt-2 text-slate-500 dark:text-slate-300">
+                          {treasure.treasureLocation}
+                        </p>
+                        <p className="text-sm mt-2 text-slate-500 dark:text-slate-300">
+                          Opening Time: {treasure.openingTime} -{" "}
+                          {treasure.closingTime}
+                        </p>
+                        <p className="text-sm mt-2 text-slate-500 dark:text-slate-300">
+                          Type: {treasure.treasureType}
+                        </p>
+                        <div className="mt-4 flex justify-end">
+                          <button className="text-blue-600 border border-blue-600 hover:bg-blue-500 hover:text-white px-4 py-1 rounded-md text-sm">
+                            Edit
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                ))}
           </div>
         </main>
       </div>
