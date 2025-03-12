@@ -71,6 +71,7 @@ const treasureSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Review",
   },
+  visitors: Number,
 });
 
 const donationSchema = new mongoose.Schema({
