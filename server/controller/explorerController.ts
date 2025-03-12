@@ -243,6 +243,17 @@ export async function addReviews(req: Request, res: Response) {
       );
     }
 
+    await Treasure.updateOne(
+      {
+        _id: treasureId,
+      },
+      {
+        $inc: {
+          visitors: 1,
+        },
+      }
+    );
+
     res.status(200).json({
       msg: "review added successfully",
     });
