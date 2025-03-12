@@ -93,11 +93,11 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure }) => {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold">Add New Treasure</h1>
+    <div className="p-6 flex flex-col gap-4">
+      <h1 className="text-2xl font-bold col-span-2">Add New Treasure</h1>
       {error && <p className="text-red-500">{error}</p>}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
+      <form onSubmit={handleSubmit} className="md:grid md:grid-cols-2 md:gap-2">
+        <div className="col-span-1">
           <label htmlFor="treasureName" className="block">
             Treasure Name
           </label>
@@ -112,7 +112,7 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure }) => {
           />
         </div>
 
-        <div>
+        <div className="col-span-1">
           <label htmlFor="treasureLocation" className="block">
             Treasure Location
           </label>
@@ -126,7 +126,7 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure }) => {
           />
         </div>
 
-        <div>
+        <div className="col-span-1">
           <label htmlFor="treasureDescription" className="block">
             Treasure Description
           </label>
@@ -139,7 +139,7 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure }) => {
           />
         </div>
 
-        <div>
+        <div className="col-span-1">
           <label htmlFor="treasureDescription" className="block">
             Treasure Contact
           </label>
@@ -152,21 +152,7 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure }) => {
           />
         </div>
 
-        <div>
-          <label htmlFor="treasureType" className="block">
-            Treasure Type
-          </label>
-          <Input
-            type="text"
-            id="treasureType"
-            value={treasureType}
-            onChange={(e) => setTreasureType(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-
-        <div>
+        <div className="col-span-1">
           <label htmlFor="treasureOpeningTime" className="block">
             Opening Time
           </label>
@@ -179,7 +165,7 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure }) => {
             required
           />
         </div>
-        <div>
+        <div className="col-span-1">
           <label htmlFor="treasureClosingTime" className="block">
             Closing Time
           </label>
@@ -193,7 +179,21 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure }) => {
           />
         </div>
 
-        <div>
+        <div className="col-span-1">
+          <label htmlFor="treasureType" className="block">
+            Treasure Type
+          </label>
+          <Input
+            type="text"
+            id="treasureType"
+            value={treasureType}
+            onChange={(e) => setTreasureType(e.target.value)}
+            className="w-full p-2 border rounded"
+            required
+          />
+        </div>
+
+        <div className="col-span-1">
           <label htmlFor="treasureImage" className="block">
             Treasure Image
           </label>
@@ -206,7 +206,7 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure }) => {
           />
         </div>
 
-        <div className="mt-4">
+        <div className="mt-4 col-span-full flex justify-center">
           <button
             type="submit"
             className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-400"
