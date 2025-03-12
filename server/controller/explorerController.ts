@@ -260,7 +260,7 @@ export async function addReviews(req: Request, res: Response) {
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      msg: "something wrong with the server at the moment",
+      msg: "something went wrong while adding the reviews, please try again later!",
     });
   }
 }
