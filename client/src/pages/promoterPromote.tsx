@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import toast from "react-hot-toast";
 
 interface Treasure {
   _id: string;
@@ -64,6 +65,48 @@ export default function Promote() {
     return () => clearInterval(interval);
   }, []);
 
+  const handleCreateTreasure = async (formData: FormData) => {
+    try {
+      const token = localStorage.getItem("Authorization")?.split(" ")[1];
+
+      const response = await fetch(
+        "http://localhost:1010/promoter/add-treasure",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+      if (response.ok) {
+        toast.success(data.msg);
+      } else {
+        toast.error(data.msg || "Something went wrong.");
+      }
+    } catch (error) {
+      toast.error("Something went wrong while submitting the form.");
+    }
+  };
+
+  function arrayBufferToBase64(buffer: any): string {
+    if (!buffer) {
+      return "";
+    }
+
+    // Check if it's an array or array-like object
+    const bytes =
+      buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
+    let binary = "";
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50 bg-white shadow-md dark:bg-black">
@@ -81,7 +124,7 @@ export default function Promote() {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <TreasureForm />
+                <TreasureForm onSubmit={handleCreateTreasure} />
               </DialogHeader>
             </DialogContent>
           </Dialog>
@@ -118,23 +161,18 @@ export default function Promote() {
                   >
                     <div className="flex">
                       <div className="w-1/3">
-                        {treasure.treasureImage &&
-                        treasure.treasureImage.data ? (
+                        {treasure.treasureImage ? (
                           <img
-                            src={`data:image/jpeg;base64,${btoa(
-                              String.fromCharCode(
-                                ...new Uint8Array(treasure.treasureImage.data)
-                              )
-                            )}`}
+                            src={`data:image/jpeg;base64,${treasure.treasureImage}`}
                             alt={treasure.treasureName}
-                            className="h-full w-full object-cover"
                           />
                         ) : (
-                          <div className="h-full w-full bg-gray-200">
+                          <div className="h-full w-full bg-gray-200 flex items-center justify-center">
                             No Image
                           </div>
                         )}
                       </div>
+
                       <div className="w-2/3 p-4">
                         <h2 className="text-lg font-medium">
                           {treasure.treasureName}
