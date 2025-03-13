@@ -38,10 +38,14 @@ export default function PromoterDashboard() {
 
   // useEffect for total treasures
   useEffect(() => {
-    const token = localStorage.getItem("Authorization");
-    const cleanedToken = token?.split(" ")[1];
     let fetchTotalTreasure = async () => {
       try {
+        const token = localStorage.getItem("Authorization");
+        if (!token) {
+          throw new Error("No authentication token found");
+        }
+
+        const cleanedToken = token?.split(" ")[1];
         let response = await axios.get(
           "http://localhost:1010/promoter/total-treasure",
           {
