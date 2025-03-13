@@ -1,6 +1,13 @@
 import { type Request, type Response } from "express";
 import bcrypt from "bcrypt";
-import { Admin, Donation, Explorer, Review, Treasure } from "../db/db";
+import {
+  Admin,
+  Donation,
+  Explorer,
+  Promoter,
+  Review,
+  Treasure,
+} from "../db/db";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -218,6 +225,21 @@ export async function totalExplorer(req: Request, res: Response) {
   } catch (error) {
     res.status(500).json({
       msg: "something went wrong while finding the total explorer",
+    });
+  }
+}
+
+// fn for getting total promoter
+export async function totalPromoter(req: Request, res: Response) {
+  try {
+    const promoter = await Promoter.find({});
+    const totalPromoter = promoter.length;
+    res.status(200).json({
+      totalPromoter,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "something went wrong while fetching the total promoters",
     });
   }
 }
