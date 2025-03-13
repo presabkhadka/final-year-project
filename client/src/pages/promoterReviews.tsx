@@ -69,7 +69,7 @@ export default function PromoterReview() {
 
       <div className="flex-1 overflow-auto p-4">
         {loading ? (
-          <Skeleton count={5} height={40} />
+          <Skeleton count={20} height={40} />
         ) : (
           <div className="overflow-x-auto rounded-lg shadow-lg">
             <table className="w-full table-auto">
