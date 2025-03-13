@@ -6,11 +6,13 @@ import {
   addDonation,
   reviewReviews,
   deleteTreasures,
+  totalExplorer,
 } from "../controller/adminController";
 import multer from "multer";
+import path from "path";
 const router = Router();
 
-const upload = multer({ dest: "upload/" });
+const upload = multer({ dest: path.join(__dirname, "../uploads/") });
 
 router.post("/signup", adminSignup);
 router.post("/login", adminLogin);
@@ -22,5 +24,6 @@ router.post(
 );
 router.get("/filter-reviews", adminMiddleware, reviewReviews);
 router.post("/delete-treasure", adminMiddleware, deleteTreasures);
+router.get("/total-explorer", adminMiddleware, totalExplorer);
 
 export { router };
