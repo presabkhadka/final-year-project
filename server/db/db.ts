@@ -61,7 +61,7 @@ const treasureSchema = new mongoose.Schema({
   treasureType: String,
   openingTime: String,
   closingTime: String,
-  treasureImage: Buffer,
+  treasureImage: String,
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Promoter",
