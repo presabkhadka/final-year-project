@@ -24,9 +24,8 @@ async function adminMiddleware(
     const jwtPass = process.env.JWT_SECRET || "defaultkey";
     const decoded = jwt.verify(cleanToken, jwtPass);
     const adminEmail = (decoded as jwt.JwtPayload).email;
-    console.log("🚀 ~ adminEmail wewewe:", adminEmail);
     const existingUser = await Admin.findOne({
-      adminEmail
+      adminEmail,
     });
     if (!existingUser) {
       res.status(401).json({
