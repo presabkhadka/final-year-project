@@ -163,7 +163,7 @@ export default function Promote() {
                       <div className="w-1/3">
                         {treasure.treasureImage ? (
                           <img
-                            src={`data:image/jpeg;base64,${treasure.treasureImage}`}
+                            src={`http://localhost:1010${treasure.treasureImage}`}
                             alt={treasure.treasureName}
                           />
                         ) : (
@@ -178,10 +178,10 @@ export default function Promote() {
                           {treasure.treasureName}
                         </h2>
                         <p className="text-sm mt-2 text-slate-500 dark:text-slate-300">
-                          {treasure.treasureLocation}
+                          Treasure Location: {treasure.treasureLocation}
                         </p>
                         <p className="text-sm mt-2 text-slate-500 dark:text-slate-300">
-                          Opening Time: {treasure.openingTime} -{" "}
+                          Opening Hours: {treasure.openingTime} -{" "}
                           {treasure.closingTime}
                         </p>
                         <p className="text-sm mt-2 text-slate-500 dark:text-slate-300">
