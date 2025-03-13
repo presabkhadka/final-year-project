@@ -1,5 +1,6 @@
 import { Router, type Request, type Response } from "express";
 import multer from "multer";
+import path from "path";
 import {
   promoterSignup,
   promoterLogin,
@@ -13,10 +14,11 @@ import {
   promoterRanking,
   treasureDetails,
   cardDetails,
+  promoterDetails,
 } from "../controller/promoterController";
 import promoterMiddleware from "../middleware/promoterMiddleware";
 
-const upload = multer({ dest: "upload/" });
+const upload = multer({ dest: path.join(__dirname, "../uploads/") });
 
 const promoterRouter = Router();
 
@@ -41,5 +43,6 @@ promoterRouter.get("/bad-treasures", promoterMiddleware, badRatedTreasures);
 promoterRouter.get("/rankings", promoterMiddleware, promoterRanking);
 promoterRouter.get("/treasure-table", promoterMiddleware, treasureDetails);
 promoterRouter.get("/card-details", promoterMiddleware, cardDetails);
+promoterRouter.get("/promoter-details", promoterMiddleware, promoterDetails);
 
 export { promoterRouter };
