@@ -1,6 +1,6 @@
 import { type Request, type Response } from "express";
 import bcrypt from "bcrypt";
-import { Admin, Donation, Review, Treasure } from "../db/db";
+import { Admin, Donation, Explorer, Review, Treasure } from "../db/db";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -203,6 +203,21 @@ export async function deleteTreasures(
     console.log(error);
     res.status(500).json({
       msg: "something went wrong while removing the treasure",
+    });
+  }
+}
+
+// fn for getting total explorer
+export async function totalExplorer(req: Request, res: Response) {
+  try {
+    const explorers = await Explorer.find({});
+    const totalExplorers = explorers.length;
+    res.status(200).json({
+      totalExplorers,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "something went wrong while finding the total explorer",
     });
   }
 }
