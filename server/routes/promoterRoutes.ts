@@ -18,7 +18,36 @@ import {
 } from "../controller/promoterController";
 import promoterMiddleware from "../middleware/promoterMiddleware";
 
-const upload = multer({ dest: path.join(__dirname, "../uploads/") });
+// Configure storage
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join("D:", "final-year-project", "server", "uploads"));
+  },
+  filename: function (req, file, cb) {
+    // Create unique filename
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(
+      null,
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
+    );
+  },
+});
+
+// Create the multer instance
+const upload = multer({
+  storage: storage,
+  fileFilter: function (req, file, cb) {
+    // Accept only images
+    if (file.mimetype.startsWith("image/")) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only image files are allowed!"));
+    }
+  },
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB max file size
+  },
+});
 
 const promoterRouter = Router();
 
