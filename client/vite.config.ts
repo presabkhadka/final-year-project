@@ -9,4 +9,16 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      "/uploads": {
+        target: "http://localhost:1010",
+        changeOrigin: true,
+      },
+      "/api": {
+        target: "http://localhost:1010",
+        changeOrigin: true,
+      },
+    },
+  },
 });
