@@ -538,7 +538,6 @@ export async function cardDetails(req: Request, res: Response) {
 export async function promoterDetails(req: Request, res: Response) {
   try {
     const user = req.user;
-    console.log("🚀 ~ promoterDetails ~ user:", user);
     if (!user) {
       res.status(401).json({
         msg: "unauthorized promoter",
