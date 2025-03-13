@@ -23,7 +23,11 @@ async function adminMiddleware(
     const cleanToken = word[1];
     const jwtPass = process.env.JWT_SECRET || "defaultkey";
     const decoded = jwt.verify(cleanToken, jwtPass);
-    const existingUser = await Admin.findOne({});
+    const adminEmail = (decoded as jwt.JwtPayload).email;
+    console.log("🚀 ~ adminEmail wewewe:", adminEmail);
+    const existingUser = await Admin.findOne({
+      adminEmail
+    });
     if (!existingUser) {
       res.status(401).json({
         msg: "admin not found in db",
@@ -31,6 +35,7 @@ async function adminMiddleware(
       return;
     }
     next();
+    req.user = adminEmail;
   } catch (error) {
     res.status(401).json({
       msg: "admin not found in db",
