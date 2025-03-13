@@ -243,3 +243,18 @@ export async function totalPromoter(req: Request, res: Response) {
     });
   }
 }
+
+// fn for getting total treasure
+export async function totalTreasure(req: Request, res: Response) {
+  try {
+    const treasure = await Treasure.find({});
+    const totalTreasure = treasure.length;
+    res.status(200).json({
+      totalTreasure,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "something went wrong while fetching the total treasure",
+    });
+  }
+}
