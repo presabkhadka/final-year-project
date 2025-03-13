@@ -533,3 +533,27 @@ export async function cardDetails(req: Request, res: Response) {
     });
   }
 }
+
+// fn for gettin promoter details
+export async function promoterDetails(req: Request, res: Response) {
+  try {
+    const user = req.user;
+    console.log("🚀 ~ promoterDetails ~ user:", user);
+    if (!user) {
+      res.status(401).json({
+        msg: "unauthorized promoter",
+      });
+      return;
+    }
+    const promoter = await Promoter.findOne({
+      userEmail: user,
+    });
+    res.status(200).json({
+      promoter,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "something went wrong while fetching the promoter details",
+    });
+  }
+}
