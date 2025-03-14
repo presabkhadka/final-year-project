@@ -1,3 +1,4 @@
+import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { FC, useState } from "react";
 import toast from "react-hot-toast";
@@ -32,7 +33,7 @@ const LoginForm: FC<loginFormInterface> = ({
         <label htmlFor="email" className="mb-2 font-medium">
           Email
         </label>
-        <input
+        <Input
           type="email"
           id="email"
           className="border p-2 rounded-lg"
@@ -47,7 +48,7 @@ const LoginForm: FC<loginFormInterface> = ({
         <label htmlFor="password" className="mb-2 font-medium">
           Password
         </label>
-        <input
+        <Input
           type={showPassword ? "text" : "password"}
           id="password"
           className="border p-2 rounded-lg pr-10"
