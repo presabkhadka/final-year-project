@@ -1,3 +1,4 @@
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import { title } from "process";
@@ -44,7 +45,7 @@ const RegisterForm: FC<RegisterFormInterface> = ({
         <label htmlFor="username" className="mb-2 font-medium">
           Username
         </label>
-        <input
+        <Input
           type="text"
           id="username"
           className="border p-2 rounded-lg outline-blue-200"
@@ -58,7 +59,7 @@ const RegisterForm: FC<RegisterFormInterface> = ({
         <label htmlFor="email" className="mb-2 font-medium">
           Email
         </label>
-        <input
+        <Input
           type="email"
           id="email"
           className="border p-2 rounded-lg outline-blue-200"
@@ -72,7 +73,7 @@ const RegisterForm: FC<RegisterFormInterface> = ({
         <label htmlFor="contact" className="mb-2 font-medium">
           Phone Number
         </label>
-        <input
+        <Input
           type="text"
           id="contact"
           className="border p-2 rounded-lg outline-blue-200"
@@ -86,7 +87,7 @@ const RegisterForm: FC<RegisterFormInterface> = ({
         <label htmlFor="password" className="mb-2 font-medium">
           Password
         </label>
-        <input
+        <Input
           type={showPassword ? "text" : "password"}
           id="password"
           className="border p-2 rounded-lg outline-blue-200 pr-10"
@@ -139,20 +140,7 @@ const RegisterForm: FC<RegisterFormInterface> = ({
           )}
         </button>
       </div>
-      <div className="flex flex-col">
-        <label htmlFor="type" className="mb-2 font-medium">
-          Type
-        </label>
-        <input
-          type="text"
-          id="type"
-          className="border p-2 rounded-lg outline-blue-200"
-          placeholder="Enter your account type"
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-          required
-        />
-      </div>
+
       <button className="bg-blue-500 p-2 rounded-lg text-white font-semibold hover:bg-blue-600">
         Sign up
       </button>
@@ -201,15 +189,13 @@ const PromoterRegister: FC = () => {
     };
 
     try {
-      axios
-        .post("http://localhost:1010/promoter/signup", payload)
-        .then(() => {
-          toast({
-            title: "Registration completed",
-            description: "Promoter registeres successfully",
-          });
-          navigate("/promoter/login");
+      axios.post("http://localhost:1010/promoter/signup", payload).then(() => {
+        toast({
+          title: "Registration completed",
+          description: "Promoter registeres successfully",
         });
+        navigate("/promoter/login");
+      });
     } catch (error) {
       toast({
         title: "Registration Failed",
