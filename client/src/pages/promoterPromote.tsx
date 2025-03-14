@@ -91,22 +91,6 @@ export default function Promote() {
     }
   };
 
-  function arrayBufferToBase64(buffer: any): string {
-    if (!buffer) {
-      return "";
-    }
-
-    // Check if it's an array or array-like object
-    const bytes =
-      buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
-    let binary = "";
-    const len = bytes.byteLength;
-    for (let i = 0; i < len; i++) {
-      binary += String.fromCharCode(bytes[i]);
-    }
-    return btoa(binary);
-  }
-
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50 bg-white shadow-md dark:bg-black">
