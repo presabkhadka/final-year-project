@@ -10,6 +10,7 @@ import AdminLogin from "./pages/adminLogin";
 import { ThemeProvider } from "./components/theme-provider";
 import PromoterReview from "./pages/promoterReviews";
 import Promote from "./pages/promoterPromote";
+import PromoterAuthGuard from "./components/PromoterAuthGuard";
 
 function App() {
   return (
@@ -23,9 +24,16 @@ function App() {
             { path: "/explorer/signup", element: <Register /> },
             { path: "/promoter/signup", element: <PromoterRegister /> },
             { path: "/promoter/verify", element: <PromoterVerify /> },
-            { path: "/promoter/dashboard", element: <PromoterDashboard /> },
-            { path: "/promoter/reviews", element: <PromoterReview /> },
-            { path: "/promoter/promote", element: <Promote /> },
+
+            {
+              path: "/promoter",
+              element: <PromoterAuthGuard />,
+              children: [
+                { path: "/promoter/dashboard", element: <PromoterDashboard /> },
+                { path: "/promoter/reviews", element: <PromoterReview /> },
+                { path: "/promoter/promote", element: <Promote /> },
+              ],
+            },
           ])}
         ></RouterProvider>
         <Toaster position="bottom-right" />
