@@ -1,4 +1,7 @@
+import axios from "axios";
 import { FC, useState } from "react";
+import toast from "react-hot-toast";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface loginFormInterface {
   showPassword: boolean;
@@ -144,6 +147,8 @@ const Login: FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const navigate = useNavigate();
+
   const togglePasswordVisibility = () => {
     setShowPassword((prevState) => !prevState);
   };
@@ -152,21 +157,37 @@ const Login: FC = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:1010/explorer/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-      } else {
-        const errorData = await response.json();
-        setErrorMessage(errorData.message);
-        alert(errorData.message)
-      }
+      //     const response = await fetch("http://localhost:1010/explorer/login", {
+      //       method: "POST",
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //       body: JSON.stringify({ email, password }),
+      //     });
+      //     if (response.ok) {
+      //       const data = await response.json();
+      //       console.log(data);
+      //     } else {
+      //       const errorData = await response.json();
+      //       setErrorMessage(errorData.message);
+      //       alert(errorData.message)
+      //     }
+
+      const response = await axios.post(
+        "http://localhost:1010/explorer/login",
+        {
+          email,
+          password,
+        }
+      );
+
+      const { token } = response.data;
+      const bearerToken = `Bearer ${token}`;
+
+      localStorage.setItem("Authorization", bearerToken);
+      axios.defaults.headers.common["Authorization"] = bearerToken;
+      toast.success("Logged in successfully!");
+      navigate("/explorer/landing");
     } catch (error) {
       setErrorMessage("Something went wrong. Please try again later.");
     }
