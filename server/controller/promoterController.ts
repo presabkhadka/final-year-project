@@ -22,7 +22,7 @@ export async function promoterSignup(
     const userEmail = req.body.email;
     const userPassword = req.body.password;
     const userContact = req.body.contact;
-    const userType = req.body.type;
+    const userType = "promoter";
 
     const existingUser = await Promoter.findOne({
       userEmail: userEmail,
@@ -32,8 +32,7 @@ export async function promoterSignup(
       userName == "" ||
       userEmail == "" ||
       userPassword == "" ||
-      userContact == "" ||
-      userType == ""
+      userContact == ""
     ) {
       res.status(401).json({
         msg: "input fields cannot be left empty",
