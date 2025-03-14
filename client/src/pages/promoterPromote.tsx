@@ -149,6 +149,7 @@ export default function Promote() {
                           <img
                             src={`http://localhost:1010${treasure.treasureImage}`}
                             alt={treasure.treasureName}
+                            className="aspect-video"
                           />
                         ) : (
                           <div className="h-full w-full bg-gray-200 flex items-center justify-center">
