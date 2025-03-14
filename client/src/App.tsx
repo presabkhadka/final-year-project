@@ -11,6 +11,8 @@ import { ThemeProvider } from "./components/theme-provider";
 import PromoterReview from "./pages/promoterReviews";
 import Promote from "./pages/promoterPromote";
 import PromoterAuthGuard from "./components/PromoterAuthGuard";
+import AdminAuthGuard from "./components/AdminAuthGuard";
+import AdminDashboard from "./pages/adminDashboard";
 
 function App() {
   return (
@@ -32,6 +34,13 @@ function App() {
                 { path: "/promoter/dashboard", element: <PromoterDashboard /> },
                 { path: "/promoter/reviews", element: <PromoterReview /> },
                 { path: "/promoter/promote", element: <Promote /> },
+              ],
+            },
+            {
+              path: "/admin",
+              element: <AdminAuthGuard />,
+              children: [
+                { path: "/admin/dashboard", element: <AdminDashboard /> },
               ],
             },
           ])}
