@@ -66,7 +66,7 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure, onSubmit }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg flex flex-col gap-4 sm:grid sm:grid-cols-2"
+      className="max-w-2xl mx-auto p-6 shadow-md rounded-lg flex flex-col gap-4 sm:grid sm:grid-cols-2"
     >
       <h1 className="text-2xl font-bold col-span-full text-center">
         {treasure ? "Update Treasure" : "Add New Treasure"}
