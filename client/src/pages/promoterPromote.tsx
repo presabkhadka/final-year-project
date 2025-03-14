@@ -157,7 +157,7 @@ export default function Promote() {
               : treasures.map((treasure: Treasure) => (
                   <div
                     key={treasure._id}
-                    className="rounded-lg shadow overflow-hidden border"
+                    className="rounded-lg overflow-hidden border shadow-md"
                   >
                     <div className="flex">
                       <div className="w-1/3">
