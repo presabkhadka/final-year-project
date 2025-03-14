@@ -21,7 +21,7 @@ export async function explorerSignup(
     const userEmail = req.body.email;
     const userPassword = req.body.password;
     const userContact = req.body.contact;
-    const userType = req.body.type;
+    const userType = "explorer";
 
     const existingUser = await Explorer.findOne({
       userEmail: userEmail,
@@ -31,8 +31,7 @@ export async function explorerSignup(
       userName == "" ||
       userEmail == "" ||
       userPassword == "" ||
-      userContact == "" ||
-      userType == ""
+      userContact == ""
     ) {
       res.status(401).json({
         msg: "input fields cannot be left empty",
