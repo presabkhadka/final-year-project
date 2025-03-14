@@ -1,3 +1,4 @@
+import { Input } from "@/components/ui/input";
 import { toast, useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import { FC, useState } from "react";
@@ -32,7 +33,7 @@ const LoginForm: FC<loginFormInterface> = ({
         <label htmlFor="email" className="mb-2 font-medium">
           Email
         </label>
-        <input
+        <Input
           type="email"
           id="email"
           className="border p-2 rounded-lg"
@@ -47,7 +48,7 @@ const LoginForm: FC<loginFormInterface> = ({
         <label htmlFor="password" className="mb-2 font-medium">
           Password
         </label>
-        <input
+        <Input
           type={showPassword ? "text" : "password"}
           id="password"
           className="border p-2 rounded-lg pr-10"
@@ -160,11 +161,13 @@ const AdminLogin: FC = () => {
 
       const { token } = response.data;
       const bearerToken = `Bearer ${token}`;
+      const role = "admin";
 
       localStorage.setItem("Authorization", bearerToken);
+      localStorage.setItem("UserRole", role);
       axios.defaults.headers.common["Authorization"] = bearerToken;
 
-      if (response.data.success !== true) {
+      if (response.data.success != true) {
         toast({
           title: "Login unsuccessful",
           description: "Please check your credentials properly.",
