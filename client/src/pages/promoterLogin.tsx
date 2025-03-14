@@ -163,8 +163,10 @@ const PromoterLogin: FC = () => {
 
       const { token } = response.data;
       const bearerToken = `Bearer ${token}`;
+      const role = "promoter";
 
       localStorage.setItem("Authorization", bearerToken);
+      localStorage.setItem("UserRole", role);
       axios.defaults.headers.common["Authorization"] = bearerToken;
 
       if (response.data.verificationStatus === true) {
