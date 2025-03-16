@@ -33,8 +33,8 @@ async function adminMiddleware(
       });
       return;
     }
-    next();
     req.user = adminEmail;
+    next();
   } catch (error) {
     res.status(401).json({
       msg: "admin not found in db",
