@@ -1,7 +1,8 @@
 import { Input } from "@/components/ui/input";
-import { toast, useToast } from "@/hooks/use-toast";
+
 import axios from "axios";
 import { FC, useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 
 interface loginFormInterface {
@@ -143,7 +144,6 @@ const AdminLogin: FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevState) => !prevState);
@@ -168,17 +168,10 @@ const AdminLogin: FC = () => {
       axios.defaults.headers.common["Authorization"] = bearerToken;
 
       if (response.data.success != true) {
-        toast({
-          title: "Login unsuccessful",
-          description: "Please check your credentials properly.",
-          variant: "destructive",
-        });
+        toast.error("Please check your credentials properly.");
       } else {
         navigate("/admin/dashboard");
-        toast({
-          title: "Login successful",
-          description: "Hi! Admin, Welcome to Urband Discoveries",
-        });
+        toast.success("Logged in successfully");
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -186,6 +179,7 @@ const AdminLogin: FC = () => {
           error.response.data.message ||
             "Invalid credentials. Please try again."
         );
+        toast.error("Please check your credentials properly.");
       } else {
         setErrorMessage("Something went wrong. Please try again later.");
       }
