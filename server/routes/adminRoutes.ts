@@ -9,6 +9,7 @@ import {
   totalExplorer,
   totalPromoter,
   totalTreasure,
+  adminDetails,
 } from "../controller/adminController";
 import multer from "multer";
 import path from "path";
@@ -29,5 +30,6 @@ router.post("/delete-treasure", adminMiddleware, deleteTreasures);
 router.get("/total-explorer", adminMiddleware, totalExplorer);
 router.get("/total-promoter", adminMiddleware, totalPromoter);
 router.get("/total-treasure", adminMiddleware, totalTreasure);
+router.get("/admin-details", adminMiddleware, adminDetails);
 
 export { router };
