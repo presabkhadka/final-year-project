@@ -181,6 +181,7 @@ const PromoterLogin: FC = () => {
           error.response.data.message ||
             "Invalid credentials. Please try again."
         );
+        toast.error("Invalid credentials. Please try again.");
       } else {
         setErrorMessage("Something went wrong. Please try again later.");
       }
