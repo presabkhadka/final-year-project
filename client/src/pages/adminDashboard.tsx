@@ -15,6 +15,7 @@ export default function AdminDashboard() {
   const [promoter, setPromoter] = useState(null);
   const [treasure, setTreasure] = useState(null);
 
+  // ue for total explorer
   useEffect(() => {
     const token = localStorage.getItem("Authorization")?.split(" ")[1];
     if (!token) {
@@ -39,6 +40,8 @@ export default function AdminDashboard() {
     let interval = setInterval(fetchTotalExplorer, 2000);
     return () => clearInterval(interval);
   }, []);
+
+  // ue for total promoter
   useEffect(() => {
     const token = localStorage.getItem("Authorization")?.split(" ")[1];
     if (!token) {
@@ -64,6 +67,7 @@ export default function AdminDashboard() {
     return () => clearInterval(interval);
   }, []);
 
+  // ue for total treasure
   useEffect(() => {
     const token = localStorage.getItem("Authorization")?.split(" ")[1];
     if (!token) {
