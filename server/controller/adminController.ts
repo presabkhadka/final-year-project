@@ -258,3 +258,26 @@ export async function totalTreasure(req: Request, res: Response) {
     });
   }
 }
+
+// fn for gettin admin details
+export async function adminDetails(req: Request, res: Response) {
+  try {
+    const user = req.user;
+    const admin = await Admin.findOne({
+      adminEmail: user,
+    });
+    if (!admin) {
+      res.status(404).json({
+        msg: "admin not found",
+      });
+      return;
+    }
+    res.status(200).json({
+      admin,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "something went wrong while fetching the admin details",
+    });
+  }
+}
