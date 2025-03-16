@@ -143,6 +143,14 @@ export default function AdminDashboard() {
               {treasure}
             </h1>
           </CardWrapper>
+          <CardWrapper>
+            <h1 className="font-bold text-xl sm:text-2xl md:text-2xl text-gray-800 dark:text-gray-200">
+              Active Donation Campaigns
+            </h1>
+            <h1 className="font-semibold text-2xl sm:text-2xl md:text-3xl text-indigo-600 dark:text-indigo-400">
+              0
+            </h1>
+          </CardWrapper>
           <div className="col-span-full">
             <Card className="bg-muted/80">
               <CardHeader>
