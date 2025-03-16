@@ -118,7 +118,7 @@ export default function AdminDashboard() {
         <div className="bg-white shadow-md dark:bg-black sticky top-0 z-50">
           <AdminNavbar />
         </div>
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 p-4">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 p-4">
           <CardWrapper>
             <h1 className="font-bold text-xl sm:text-2xl md:text-2xl text-gray-800 dark:text-gray-200">
               Total Explorer
@@ -145,7 +145,7 @@ export default function AdminDashboard() {
           </CardWrapper>
           <CardWrapper>
             <h1 className="font-bold text-xl sm:text-2xl md:text-2xl text-gray-800 dark:text-gray-200">
-              Active Donation Campaigns
+              Donation Campaings
             </h1>
             <h1 className="font-semibold text-2xl sm:text-2xl md:text-3xl text-indigo-600 dark:text-indigo-400">
               0
