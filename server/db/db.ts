@@ -12,6 +12,7 @@ const explorerSchema = new mongoose.Schema({
   userEmail: String,
   userPassword: String,
   userContact: String,
+  profilePicture: String,
   userType: {
     type: String,
     enum: ["explorer"],
@@ -29,6 +30,7 @@ const promoterSchema = new mongoose.Schema({
   userEmail: String,
   userPassword: String,
   userContact: String,
+  profilePicture: String,
   userType: {
     type: String,
     enum: ["promoter"],
@@ -51,6 +53,7 @@ const adminSchema = new mongoose.Schema({
   adminEmail: String,
   adminPassword: String,
   adminContact: String,
+  profilePicture: String,
 });
 
 const treasureSchema = new mongoose.Schema({
