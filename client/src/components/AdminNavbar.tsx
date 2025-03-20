@@ -107,7 +107,7 @@ export default function AdminNavbar() {
                     Reviews
                   </NavLink>
                   <NavLink
-                    to={"/admin/donations"}
+                    to={"/admin/donation"}
                     className={({ isActive }) =>
                       `flex p-2 items-center gap-4 hover:outline-none hover:text-black cursor-pointer ${
                         isActive
@@ -216,9 +216,9 @@ export default function AdminNavbar() {
           Reviews
         </NavLink>
         <NavLink
-          to={"/admin/donations"}
+          to={"/admin/donation"}
           className={({ isActive }) =>
-            `flex p-2 items-center gap-4 hover:outline-none hover:text-black cursor-pointer ${
+            `flex p-2 items-center gap-4 hover:outline-none  cursor-pointer ${
               isActive
                 ? "text-green-500 text-lg font-semibold"
                 : "text-gray-600 font-semibold text-lg hover:text-lime-300"
