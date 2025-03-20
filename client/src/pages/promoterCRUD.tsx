@@ -4,8 +4,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useNavigate } from "react-router-dom";
 
 interface TreasureFormProps {
-  treasure?: any; // Optional: Pass an existing treasure for update
-  onSubmit: (formData: FormData) => Promise<void>; // Function to handle submit
+  treasure?: any; //
+  onSubmit: (formData: FormData) => Promise<void>;
 }
 
 const TreasureForm: React.FC<TreasureFormProps> = ({ treasure, onSubmit }) => {
