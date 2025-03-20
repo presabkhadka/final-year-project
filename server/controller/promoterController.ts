@@ -217,7 +217,7 @@ export async function updateTreasure(req: Request, res: Response) {
       treasureDescription,
       treasureType,
     } = req.body;
-    const treasureImage = req.file?.path;
+    const treasureImage = req.file ? `/uploads/${req.file.filename}` : null;
 
     const fieldsToUpdate: Record<string, any> = {};
 
