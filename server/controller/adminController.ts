@@ -105,39 +105,72 @@ export async function adminLogin(req: Request, res: Response): Promise<void> {
 }
 
 // fn for admin to add donation campaign
-export async function addDonation(req: Request, res: Response): Promise<void> {
+export async function addDonation(req: Request, res: Response) {
   try {
-    const donationTitle = req.body.donationTitle;
-    const donationDescription = req.body.donationDescription;
-    const donationType = req.body.donationType;
-    const donationGoal = req.body.donationGoal;
-    const donationQR = req.file?.path;
+    const user = req.user;
+    if (!user) {
+      res.status(404).json({
+        msg: "admin not found",
+      });
+      return;
+    }
+    let donationTitle = req.body.donationTitle;
+    let donationDescription = req.body.donationDescription;
+    let donationGoal = req.body.donationGoal;
+    let donationQR = req.file ? `/uploads/${req.file.filename}` : null;
 
-    const existingDonation = await Donation.findOne({
+    if (!(donationTitle || donationDescription || donationGoal || donationQR)) {
+      res.status(400).json({
+        msg: "please make sure none of the input fields are empty",
+      });
+      return;
+    }
+
+    let exisitingCampaign = await Donation.findOne({
       donationTitle: donationTitle,
     });
 
-    if (existingDonation) {
+    if (exisitingCampaign) {
       res.status(409).json({
-        msg: "a donation for this cause already exists",
+        msg: "there already exists a donation with this title",
       });
       return;
-    } else {
-      await Donation.create({
-        donationTitle,
-        donationDescription,
-        donationType,
-        donationGoal,
-        donationQR,
-      });
-      res.status(200).json({
-        msg: "a new donation campaign has successfully been created",
-      });
     }
+
+    const donation = await Donation.create({
+      donationTitle,
+      donationDescription,
+      donationGoal,
+      donationQR,
+    });
+
+    res.status(200).json({
+      donation,
+    });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
-      msg: "something wrong with the server at the moment",
+      msg: "something went wrong while creating donation campaign",
+    });
+  }
+}
+
+// fn for seeing active donation campaigns
+export async function fetchDonation(req: Request, res: Response) {
+  try {
+    const activeCampaigns = await Donation.find({});
+    if (activeCampaigns.length == 0) {
+      res.status(200).json({
+        msg: "there is no any active donation campaigns going on",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      activeCampaigns,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "something went wrong while fetching the donations",
     });
   }
 }
@@ -338,6 +371,50 @@ export async function treasureReviews(req: Request, res: Response) {
   } catch (error) {
     res.status(500).json({
       nsg: "something went wrong while fetching the table details",
+    });
+  }
+}
+
+// fn for updating donation campaigns
+export async function updateCampaign(req: Request, res: Response) {
+  try {
+    const donationId = req.params.donationId;
+    const { donationTitle, donationDescription, donationGoal } = req.body;
+    const donationQR = req.file ? `/uploads/${req.file.filename}` : null;
+
+    const fieldsToUpdate: Record<string, any> = {};
+
+    if (donationTitle) fieldsToUpdate.donationTitle = donationTitle;
+    if (donationDescription)
+      fieldsToUpdate.donationDescription = donationDescription;
+    if (donationGoal) fieldsToUpdate.donationGoal = donationGoal;
+    if (donationQR) fieldsToUpdate.donationQR = donationQR;
+
+    if (Object.keys(fieldsToUpdate).length === 0) {
+      res.status(400).json({
+        msg: "no fields to update",
+      });
+      return;
+    }
+
+    const result = await Donation.updateOne(
+      { _id: donationId },
+      { $set: fieldsToUpdate }
+    );
+
+    if (result.matchedCount === 0) {
+      res.status(404).json({
+        msg: "donation not found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      msg: "donation updated successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "something went wrong while updating the donation",
     });
   }
 }
