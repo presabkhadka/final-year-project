@@ -1,6 +1,15 @@
 import PromoterNavbar from "@/components/promoterNavbar";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface Treasure {
   name: string;
@@ -13,6 +22,7 @@ export default function PromoterReview() {
   const [treasures, setTreasures] = useState<Treasure[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState("");
 
   useEffect(() => {
     const fetchTreasures = async () => {
@@ -61,6 +71,14 @@ export default function PromoterReview() {
 
   if (error) return <p className="text-red-500">{error}</p>;
 
+  const filteredTreasure = treasures.filter(
+    (treasures) =>
+      treasures.name.toLowerCase().includes(filter.toLowerCase()) ||
+      treasures.positiveReviews.toString().includes(filter) ||
+      treasures.negativeReviews.toString().includes(filter) ||
+      treasures.status.toLowerCase().includes(filter.toLowerCase())
+  );
+
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50 shadow-md">
@@ -71,39 +89,50 @@ export default function PromoterReview() {
         {loading ? (
           <Skeleton count={treasures.length} height={40} />
         ) : (
-          <div className="overflow-x-auto rounded-lg shadow-lg">
-            <table className="w-full table-auto">
-              <thead>
-                <tr className="bg-blue-500 text-white dark:bg-blue-800">
-                  <th className="p-3 border dark:border-gray-600">
+          <div className="overflow-x-auto rounded-lg shadow-lg flex flex-col gap-2">
+            <div className="self-end">
+              <input
+                type="text"
+                className="border p-2 rounded-lg"
+                placeholder="Filter"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+              />
+            </div>
+            <Table className="w-full table-auto">
+              <TableHeader>
+                <TableRow className="bg-blue-500 text-white dark:bg-blue-800">
+                  <TableHead className="p-3 border dark:border-gray-600">
                     Treasure Name
-                  </th>
-                  <th className="p-3 border dark:border-gray-600">
+                  </TableHead>
+                  <TableHead className="p-3 border dark:border-gray-600">
                     Good Reviews
-                  </th>
-                  <th className="p-3 border dark:border-gray-600">
+                  </TableHead>
+                  <TableHead className="p-3 border dark:border-gray-600">
                     Bad Reviews
-                  </th>
-                  <th className="p-3 border dark:border-gray-600">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {treasures.length > 0 ? (
-                  treasures.map((treasure) => (
-                    <tr
+                  </TableHead>
+                  <TableHead className="p-3 border dark:border-gray-600">
+                    Status
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredTreasure.length > 0 ? (
+                  filteredTreasure.map((treasure) => (
+                    <TableRow
                       className="border-b-2 last:border-0 even:bg-muted/100 dark:even:bg-gray-700"
                       key={treasure.name}
                     >
-                      <td className="p-3 border dark:border-gray-600">
+                      <TableCell className="p-3 border dark:border-gray-600">
                         {treasure.name}
-                      </td>
-                      <td className="p-3 border dark:border-gray-600">
+                      </TableCell>
+                      <TableCell className="p-3 border dark:border-gray-600">
                         {treasure.positiveReviews}
-                      </td>
-                      <td className="p-3 border dark:border-gray-600">
+                      </TableCell>
+                      <TableCell className="p-3 border dark:border-gray-600">
                         {treasure.negativeReviews}
-                      </td>
-                      <td
+                      </TableCell>
+                      <TableCell
                         className={`p-3 border ${
                           treasure.status === "Good"
                             ? "text-green-500 dark:text-green-400"
@@ -113,21 +142,21 @@ export default function PromoterReview() {
                         } dark:border-gray-600`}
                       >
                         {treasure.status}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))
                 ) : (
-                  <tr>
-                    <td
+                  <TableRow>
+                    <TableCell
                       colSpan={4}
                       className="text-center p-4 text-gray-500 dark:text-gray-400"
                     >
                       No data available
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>
