@@ -61,6 +61,7 @@ promoterRouter.post(
 );
 promoterRouter.patch(
   "/update-treasures/:treasureId",
+  upload.single("treasureImage"),
   promoterMiddleware,
   updateTreasure
 );
