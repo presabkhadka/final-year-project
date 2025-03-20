@@ -145,7 +145,6 @@ export async function addTreasure(req: Request, res: Response) {
       treasureOpeningTime,
       treasureClosingTime,
     } = req.body;
-    const baseURL = "http://localhost:1010";
     const treasureImage = req.file ? `/uploads/${req.file.filename}` : null;
 
     const user = req.user;
