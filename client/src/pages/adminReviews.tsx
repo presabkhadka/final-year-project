@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 export default function AdminReviews() {
   interface Treasure {
@@ -76,11 +77,11 @@ export default function AdminReviews() {
         ) : (
           <div className="overflow-x-auto rounded-lg shadow-lg flex flex-col gap-2">
             <div className="self-end relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground  bg-muted/80" />
-              <input
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground  bg-muted/80" />
+              <Input
                 type="text"
                 value={filter}
-                className="border rounded-lg p-2 bg-muted/80 outline-none pl-9"
+                className="border rounded-lg p-2 bg-muted/80 outline-none focus-visible:ring-0 pl-9"
                 placeholder="Filter"
                 onChange={(e) => setFilter(e.target.value)}
               />

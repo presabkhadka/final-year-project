@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 interface Treasure {
   name: string;
@@ -93,9 +94,9 @@ export default function PromoterReview() {
           <div className="overflow-x-auto rounded-lg shadow-lg flex flex-col gap-2">
             <div className="self-end relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground  bg-muted/80" />
-              <input
+              <Input
                 type="text"
-                className="border p-2 rounded-lg bg-muted/80 outline-none pl-9"
+                className="border p-2 rounded-lg bg-muted/80 outline-none focus-visible:ring-0 pl-9"
                 placeholder="Filter"
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
