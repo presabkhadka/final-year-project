@@ -82,13 +82,54 @@ export default function AdminDontaion() {
     }
   };
 
+  const handleUpdateDonation = async (formData: FormData) => {
+    if (!selectedDonation) {
+      console.error("No donation selected for update.");
+      return;
+    }
+
+    console.log("Updating treasure with ID:", selectedDonation._id);
+
+    try {
+      let token = localStorage.getItem("Authorization")?.split(" ")[1];
+      if (!token) {
+        throw new Error("token not found");
+      }
+
+      if (!formData.get("treasureImage")) {
+        formData.delete("treasureImage");
+      }
+
+      for (let pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+
+      const response = await axios.patch(
+        `http://localhost:1010/admin/update-donation-campaign/${selectedDonation._id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("Update Success:", response.data);
+      setIsDialogOpen(false);
+      toast.success("Campaign updated successfully!");
+    } catch (error) {
+      console.error("Update failed");
+      toast.error("Something went wrong while updating.");
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50 overflow-y-hidden shadow-md">
         <AdminNavbar />
       </div>
       <div className="flex-1 overflow-auto p-4">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center  border shadow-lg rounded-xl backdrop-blur-sm bg-opacity-90">
+        <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center  border shadow-md rounded-xl">
           <div className="flex items-center space-x-3">
             <CircleDollarSign className="h-7 w-7 text-blue-600" />
             <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
@@ -110,7 +151,11 @@ export default function AdminDontaion() {
               <DialogHeader>
                 <DonationForm
                   donation={selectedDonation}
-                  onSubmit={handleCreateDonation}
+                  onSubmit={
+                    selectedDonation
+                      ? handleUpdateDonation
+                      : handleCreateDonation
+                  }
                 />
               </DialogHeader>
             </DialogContent>
