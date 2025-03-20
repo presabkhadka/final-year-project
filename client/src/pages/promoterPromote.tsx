@@ -83,12 +83,10 @@ export default function Promote() {
         throw new Error("Token not found");
       }
 
-      // Remove image from formData if user didn't upload a new one
       if (!formData.get("treasureImage")) {
-        formData.delete("treasureImage"); // Ensure it's not sent as `null`
+        formData.delete("treasureImage");
       }
 
-      // Log formData contents
       for (let pair of formData.entries()) {
         console.log(pair[0], pair[1]);
       }
@@ -141,7 +139,7 @@ export default function Promote() {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="sticky top-0 z-50 bg-white shadow-md dark:bg-black">
+      <div className="sticky top-0 z-50 shadow-md">
         <PromoterNavbar />
       </div>
       <div className="flex-1 overflow-auto p-4">
