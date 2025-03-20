@@ -211,7 +211,7 @@ export default function Promote() {
                           <img
                             src={`http://localhost:1010${treasure.treasureImage}`}
                             alt={treasure.treasureName}
-                            className="aspect-video"
+                            className="h-full aspect-video"
                           />
                         ) : (
                           <div className="h-full w-full bg-gray-200 flex items-center justify-center">
@@ -220,21 +220,23 @@ export default function Promote() {
                         )}
                       </div>
 
-                      <div className="w-2/3 p-4">
-                        <h2 className="text-lg font-medium">
-                          {treasure.treasureName}
-                        </h2>
-                        <p className="text-sm mt-2 text-slate-500 dark:text-slate-300">
-                          Treasure Location: {treasure.treasureLocation}
-                        </p>
-                        <p className="text-sm mt-2 text-slate-500 dark:text-slate-300">
-                          Opening Hours: {treasure.openingTime} -{" "}
-                          {treasure.closingTime}
-                        </p>
-                        <p className="text-sm mt-2 text-slate-500 dark:text-slate-300">
-                          Type: {treasure.treasureType}
-                        </p>
-                        <div className=" flex justify-end gap-2">
+                      <div className="w-2/3 p-4 flex flex-col justify-between">
+                        <div className="flex flex-col gap-4">
+                          <h2 className="text-lg font-medium">
+                            {treasure.treasureName}
+                          </h2>
+                          <p className="text-sm  text-slate-500 dark:text-slate-300">
+                            Treasure Location: {treasure.treasureLocation}
+                          </p>
+                          <p className="text-sm  text-slate-500 dark:text-slate-300">
+                            Opening Hours: {treasure.openingTime} -{" "}
+                            {treasure.closingTime}
+                          </p>
+                          <p className="text-sm  text-slate-500 dark:text-slate-300">
+                            Type: {treasure.treasureType}
+                          </p>
+                        </div>
+                        <div className=" flex justify-end gap-2 mt-2">
                           <button
                             onClick={() => {
                               setSelectedTreasure(treasure); // Load existing data
