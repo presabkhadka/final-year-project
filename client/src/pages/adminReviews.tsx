@@ -2,6 +2,14 @@ import AdminNavbar from "@/components/AdminNavbar";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function AdminReviews() {
   interface Treasure {
@@ -18,6 +26,7 @@ export default function AdminReviews() {
 
   const [treasure, setTreasure] = useState<Treasure[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("");
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -44,6 +53,17 @@ export default function AdminReviews() {
     let interval = setInterval(fetchDetails, 2000);
     return () => clearInterval(interval);
   }, []);
+
+  const filteredTreasure = treasure.filter(
+    (treasure) =>
+      treasure.treasureName.toLowerCase().includes(filter.toLowerCase()) ||
+      treasure.owner?.userName.toLowerCase().includes(filter.toLowerCase()) ||
+      treasure.treasureContact.includes(filter) ||
+      treasure.owner?.userEmail.toLowerCase().includes(filter.toLowerCase()) ||
+      treasure.treasureType.toLowerCase().includes(filter.toLowerCase()) ||
+      treasure.status?.toLowerCase().includes(filter.toLowerCase())
+  );
+
   return (
     <div className="flex flex-col h-screen">
       <div className="top-0 sticky z-50 overflow-y-hidden shadow-md">
@@ -53,47 +73,62 @@ export default function AdminReviews() {
         {loading ? (
           <Skeleton count={treasure.length || 5} height={40} />
         ) : (
-          <div className="overflow-x-auto rounded-lg shadow-lg">
-            <table className="w-full table-auto">
-              <thead>
-                <tr className="bg-blue-500 text-white dark:bg-blue-800">
-                  <th className="p-3 border dark:border-gray-600">
+          <div className="overflow-x-auto rounded-lg shadow-lg flex flex-col gap-2">
+            <div className="self-end">
+              <input
+                type="text"
+                value={filter}
+                className="border rounded-lg p-2 bg-muted/80"
+                placeholder="Filter"
+                onChange={(e) => setFilter(e.target.value)}
+              />
+            </div>
+            <Table className="w-full table-auto">
+              <TableHeader>
+                <TableRow className="bg-blue-500 text-white dark:bg-blue-800">
+                  <TableHead className="p-3 border dark:border-gray-600">
                     Treasure Name
-                  </th>
-                  <th className="p-3 border dark:border-gray-600">
+                  </TableHead>
+                  <TableHead className="p-3 border dark:border-gray-600">
                     Promoter Name
-                  </th>
-                  <th className="p-3 border dark:border-gray-600">
+                  </TableHead>
+                  <TableHead className="p-3 border dark:border-gray-600">
                     Contact Number
-                  </th>
-                  <th className="p-3 border dark:border-gray-600">Email</th>
-                  <th className="p-3 border dark:border-gray-600">Type</th>
-                  <th className="p-3 border dark:border-gray-600">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {treasure.length > 0 ? (
-                  treasure.map((treasure) => (
-                    <tr
+                  </TableHead>
+                  <TableHead className="p-3 border dark:border-gray-600">
+                    Email
+                  </TableHead>
+                  <TableHead className="p-3 border dark:border-gray-600">
+                    Type
+                  </TableHead>
+                  <TableHead className="p-3 border dark:border-gray-600">
+                    Status
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredTreasure.length > 0 ? (
+                  filteredTreasure.map((treasure) => (
+                    <TableRow
                       className="border-b-2 last:border-0 even:bg-muted/100 dark:even:bg-gray-700"
                       key={treasure.treasureName}
                     >
-                      <td className="p-3 border dark:border-gray-600">
+                      <TableCell className="p-3 border dark:border-gray-600">
                         {treasure.treasureName}
-                      </td>
-                      <td className="p-3 border dark:border-gray-600">
+                      </TableCell>
+                      <TableCell className="p-3 border dark:border-gray-600">
                         {treasure.owner?.userName || "Unknown"}
-                      </td>
-                      <td className="p-3 border dark:border-gray-600">
+                      </TableCell>
+                      <TableCell className="p-3 border dark:border-gray-600">
                         {treasure.treasureContact}
-                      </td>
-                      <td className="p-3 border dark:border-gray-600">
+                      </TableCell>
+                      <TableCell className="p-3 border dark:border-gray-600">
                         {treasure.owner?.userEmail || "N/A"}
-                      </td>
-                      <td className="p-3 border dark:border-gray-600">
+                      </TableCell>
+                      <TableCell className="p-3 border dark:border-gray-600">
                         {treasure.treasureType}
-                      </td>
-                      <td
+                      </TableCell>
+                      <TableCell
                         className={`p-3 border ${
                           treasure.status === "Good"
                             ? "text-green-500 dark:text-green-400"
@@ -103,21 +138,21 @@ export default function AdminReviews() {
                         } dark:border-gray-600`}
                       >
                         {treasure.status || "Pending"}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))
                 ) : (
-                  <tr>
-                    <td
+                  <TableRow>
+                    <TableCell
                       colSpan={6}
                       className="text-center p-4 text-gray-500 dark:text-gray-400"
                     >
                       No data available
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>
