@@ -13,6 +13,7 @@ import Promote from "./pages/promoterPromote";
 import PromoterAuthGuard from "./components/PromoterAuthGuard";
 import AdminAuthGuard from "./components/AdminAuthGuard";
 import AdminDashboard from "./pages/adminDashboard";
+import AdminReviews from "./pages/adminReviews";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
               element: <AdminAuthGuard />,
               children: [
                 { path: "/admin/dashboard", element: <AdminDashboard /> },
+                { path: "/admin/reviews", element: <AdminReviews /> },
               ],
             },
           ])}
