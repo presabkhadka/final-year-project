@@ -211,25 +211,16 @@ export async function addTreasure(req: Request, res: Response) {
 export async function updateTreasure(req: Request, res: Response) {
   try {
     const treasureId = req.params.treasureId;
-    const treasureName = req.body.treasureName;
-    const treasureLocation = req.body.treasureLocation;
-    const treasureDescription = req.body.treasureDescription;
-    const treasureType = req.body.treasureType;
+    const {
+      treasureName,
+      treasureLocation,
+      treasureDescription,
+      treasureType,
+    } = req.body;
     const treasureImage = req.file?.path;
 
-    if (
-      treasureName == "" ||
-      treasureLocation == "" ||
-      treasureDescription == "" ||
-      treasureType == "" ||
-      treasureImage == ""
-    ) {
-      res.status(401).json({
-        msg: "treasure details cannot be left empty",
-      });
-    }
-
     const fieldsToUpdate: Record<string, any> = {};
+
     if (treasureName) fieldsToUpdate.treasureName = treasureName;
     if (treasureLocation) fieldsToUpdate.treasureLocation = treasureLocation;
     if (treasureDescription)
@@ -244,20 +235,22 @@ export async function updateTreasure(req: Request, res: Response) {
       return;
     }
 
-    await Treasure.updateOne(
-      {
-        _id: treasureId,
-      },
-      {
-        $set: fieldsToUpdate,
-      }
+    const result = await Treasure.updateOne(
+      { _id: treasureId },
+      { $set: fieldsToUpdate }
     );
+
+    if (result.matchedCount === 0) {
+      res.status(404).json({
+        msg: "treasure not found",
+      });
+      return;
+    }
 
     res.status(200).json({
       msg: "treasure updated successfully",
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       msg: "something went wrong while updating the treasure",
     });
