@@ -292,9 +292,48 @@ export async function treasureReviews(req: Request, res: Response) {
       });
       return;
     }
-    const treasures = await Treasure.find({}).populate("owner", "userName userEmail");
+    const treasures = await Treasure.find({}).populate(
+      "owner",
+      "userName userEmail"
+    );
+
+    const treasureData = await Promise.all(
+      treasures.map(async (treasure) => {
+        const goodReviews = await Review.countDocuments({
+          reviewOf: treasure._id,
+          reviewType: "good",
+        });
+
+        const badReviews = await Review.countDocuments({
+          reviewOf: treasure._id,
+          reviewType: "bad",
+        });
+
+        return {
+          _id: treasure._id,
+          treasureName: treasure.treasureName,
+          treasureLocation: treasure.treasureLocation,
+          treasureDescription: treasure.treasureDescription,
+          treasureContact: treasure.treasureContact,
+          treasureType: treasure.treasureType,
+          openingTime: treasure.openingTime,
+          closingTime: treasure.closingTime,
+          treasureImage: treasure.treasureImage,
+          owner: treasure.owner,
+          positiveReviews: goodReviews,
+          negativeReviews: badReviews,
+          status:
+            goodReviews > badReviews
+              ? "Good"
+              : goodReviews < badReviews
+              ? "Bad"
+              : "Neutral",
+        };
+      })
+    );
+
     res.status(200).json({
-      treasures,
+      treasures: treasureData,
     });
   } catch (error) {
     res.status(500).json({
