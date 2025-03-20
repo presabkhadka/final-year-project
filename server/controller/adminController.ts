@@ -259,7 +259,7 @@ export async function totalTreasure(req: Request, res: Response) {
   }
 }
 
-// fn for gettin admin details
+// fn for getting admin details
 export async function adminDetails(req: Request, res: Response) {
   try {
     const user = req.user;
@@ -278,6 +278,27 @@ export async function adminDetails(req: Request, res: Response) {
   } catch (error) {
     res.status(500).json({
       msg: "something went wrong while fetching the admin details",
+    });
+  }
+}
+
+// fn for getting table details in admin reviews
+export async function treasureReviews(req: Request, res: Response) {
+  try {
+    const user = req?.user;
+    if (!user) {
+      res.status(404).json({
+        msg: "no user found",
+      });
+      return;
+    }
+    const treasures = await Treasure.find({}).populate("owner", "userName userEmail");
+    res.status(200).json({
+      treasures,
+    });
+  } catch (error) {
+    res.status(500).json({
+      nsg: "something went wrong while fetching the table details",
     });
   }
 }
