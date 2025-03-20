@@ -80,9 +80,8 @@ const treasureSchema = new mongoose.Schema({
 const donationSchema = new mongoose.Schema({
   donationTitle: String,
   donationDescription: String,
-  donationType: String,
-  donationGoal: Number,
-  donationQR: Buffer,
+  donationGoal: String,
+  donationQR: String,
   donater: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Explorer",
