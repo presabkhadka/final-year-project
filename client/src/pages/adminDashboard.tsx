@@ -14,6 +14,7 @@ export default function AdminDashboard() {
   const [explorer, setExplorer] = useState(null);
   const [promoter, setPromoter] = useState(null);
   const [treasure, setTreasure] = useState(null);
+  const [campaign, setCampaign] = useState(null);
 
   // ue for total explorer
   useEffect(() => {
@@ -93,6 +94,34 @@ export default function AdminDashboard() {
     return () => clearInterval(interval);
   }, []);
 
+  // ue for donation campaigns
+  useEffect(() => {
+    let fetchCampaigns = async () => {
+      try {
+        let token = localStorage.getItem("Authorization")?.split(" ")[1];
+        if (!token) {
+          throw new Error("no token found");
+        }
+
+        let response = await axios.get(
+          "http://localhost:1010/admin/active-donation-campaigns",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        let number = response.data.activeCampaigns.length;
+        setCampaign(number);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchCampaigns();
+    let interval = setInterval(fetchCampaigns, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
   const chartData = [
     { month: "January", desktop: 186, mobile: 80 },
     { month: "February", desktop: 305, mobile: 200 },
@@ -148,7 +177,7 @@ export default function AdminDashboard() {
               Donation Campaings
             </h1>
             <h1 className="font-semibold text-2xl sm:text-2xl md:text-3xl text-indigo-600 dark:text-indigo-400">
-              0
+              {campaign}
             </h1>
           </CardWrapper>
           <div className="col-span-full">
