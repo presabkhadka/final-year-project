@@ -10,6 +10,7 @@ import {
   totalPromoter,
   totalTreasure,
   adminDetails,
+  treasureReviews,
 } from "../controller/adminController";
 import multer from "multer";
 import path from "path";
@@ -31,5 +32,6 @@ router.get("/total-explorer", adminMiddleware, totalExplorer);
 router.get("/total-promoter", adminMiddleware, totalPromoter);
 router.get("/total-treasure", adminMiddleware, totalTreasure);
 router.get("/admin-details", adminMiddleware, adminDetails);
+router.get("/treasure-details", adminMiddleware, treasureReviews);
 
 export { router };
