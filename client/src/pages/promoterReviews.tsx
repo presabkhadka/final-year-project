@@ -63,7 +63,7 @@ export default function PromoterReview() {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="sticky top-0 z-50 bg-white shadow-md dark:bg-black">
+      <div className="sticky top-0 z-50 shadow-md">
         <PromoterNavbar />
       </div>
 
