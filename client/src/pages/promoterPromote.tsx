@@ -28,6 +28,10 @@ interface Treasure {
 
 export default function Promote() {
   const [treasures, setTreasures] = useState<Treasure[]>([]);
+  const [selectedTreasure, setSelectedTreasure] = useState<Treasure | null>(
+    null
+  );
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchTreasures = async () => {
@@ -64,6 +68,50 @@ export default function Promote() {
 
     return () => clearInterval(interval);
   }, []);
+
+  const handleUpdateTreasure = async (formData: FormData) => {
+    if (!selectedTreasure) {
+      console.error("No treasure selected for update.");
+      return;
+    }
+
+    console.log("Updating treasure with ID:", selectedTreasure._id);
+
+    try {
+      const token = localStorage.getItem("Authorization")?.split(" ")[1];
+      if (!token) {
+        throw new Error("Token not found");
+      }
+
+      // Remove image from formData if user didn't upload a new one
+      if (!formData.get("treasureImage")) {
+        formData.delete("treasureImage"); // Ensure it's not sent as `null`
+      }
+
+      // Log formData contents
+      for (let pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
+
+      const response = await axios.patch(
+        `http://localhost:1010/promoter/update-treasures/${selectedTreasure._id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("Update Success:", response.data);
+      setIsDialogOpen(false);
+      toast.success("Treasure updated successfully!");
+    } catch (error) {
+      console.error("Update failed");
+      toast.error("Something went wrong while updating.");
+    }
+  };
 
   const handleCreateTreasure = async (formData: FormData) => {
     try {
@@ -102,13 +150,27 @@ export default function Promote() {
             <Store className="h-6 w-6 text-blue-600 mr-2" />
             <h1 className="text-xl font-semibold">Promote Treasures</h1>
           </div>
-          <Dialog>
-            <DialogTrigger className="border px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-400">
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger
+              onClick={() => {
+                setSelectedTreasure(null); // Ensure form is empty
+                setIsDialogOpen(true);
+              }}
+              className="border px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-400"
+            >
               Add
             </DialogTrigger>
+
             <DialogContent>
               <DialogHeader>
-                <TreasureForm onSubmit={handleCreateTreasure} />
+                <TreasureForm
+                  treasure={selectedTreasure} // If null, it's a new entry
+                  onSubmit={
+                    selectedTreasure
+                      ? handleUpdateTreasure
+                      : handleCreateTreasure
+                  }
+                />
               </DialogHeader>
             </DialogContent>
           </Dialog>
@@ -172,9 +234,19 @@ export default function Promote() {
                         <p className="text-sm mt-2 text-slate-500 dark:text-slate-300">
                           Type: {treasure.treasureType}
                         </p>
-                        <div className="mt-4 flex justify-end">
-                          <button className="text-blue-600 border border-blue-600 hover:bg-blue-500 hover:text-white px-4 py-1 rounded-md text-sm">
+                        <div className=" flex justify-end gap-2">
+                          <button
+                            onClick={() => {
+                              setSelectedTreasure(treasure); // Load existing data
+                              setIsDialogOpen(true);
+                            }}
+                            className="text-blue-600 border border-blue-600 hover:bg-blue-500 hover:text-white px-4 py-1 rounded-md text-sm"
+                          >
                             Edit
+                          </button>
+
+                          <button className="text-red-600 border border-red-600 hover:bg-red-500 hover:text-white px-4 py-1 rounded-md text-sm">
+                            Delete
                           </button>
                         </div>
                       </div>
