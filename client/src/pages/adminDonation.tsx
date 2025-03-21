@@ -96,8 +96,8 @@ export default function AdminDontaion() {
         throw new Error("token not found");
       }
 
-      if (!formData.get("treasureImage")) {
-        formData.delete("treasureImage");
+      if (!formData.get("donationQR")) {
+        formData.delete("donationQR");
       }
 
       for (let pair of formData.entries()) {
@@ -140,7 +140,7 @@ export default function AdminDontaion() {
             <DialogTrigger
               onClick={() => {
                 setSelectedDonation(null);
-                setIsDialogOpen(true);
+                // The DialogTrigger will automatically set isDialogOpen to true
               }}
               className="px-6 py-2.5 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors duration-200 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
             >
