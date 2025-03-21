@@ -65,7 +65,7 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure, onSubmit }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-2xl mx-auto p-6 shadow-md rounded-lg flex flex-col gap-4 sm:grid sm:grid-cols-2"
+      className="max-w-2xl mx-auto p-6  rounded-lg flex flex-col gap-4 sm:grid sm:grid-cols-2"
     >
       <h1 className="text-2xl font-bold col-span-full text-center">
         {treasure ? "Update Treasure" : "Add New Treasure"}
@@ -177,17 +177,19 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure, onSubmit }) => {
         />
       </div>
 
-      <button
-        type="submit"
-        className="col-span-full w-full px-4 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 transition disabled:bg-gray-400"
-        disabled={loading}
-      >
-        {loading
-          ? "Submitting..."
-          : treasure
-          ? "Update Treasure"
-          : "Add Treasure"}
-      </button>
+      <div className="col-span-2 flex justify-center">
+        <button
+          type="submit"
+          className="col-span-full w-full px-4 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 transition disabled:bg-gray-400"
+          disabled={loading}
+        >
+          {loading
+            ? "Submitting..."
+            : treasure
+            ? "Update Treasure"
+            : "Add Treasure"}
+        </button>
+      </div>
     </form>
   );
 };
