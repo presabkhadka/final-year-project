@@ -49,7 +49,7 @@ const DonationForm: React.FC<DonationFormProps> = ({ donation, onSubmit }) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-2xl mx-auto p-6 shadow-md rounded-lg flex flex-col gap-4 sm:grid sm:grid-cols-2"
+      className="max-w-2xl p-6 rounded-lg flex flex-col gap-4 sm:grid sm:grid-cols-2"
     >
       <h1 className="text-2xl font-bold col-span-full text-center">
         {donation ? "Update Donation Campaign" : "Create New Donation Campaign"}
@@ -107,23 +107,25 @@ const DonationForm: React.FC<DonationFormProps> = ({ donation, onSubmit }) => {
           required={!donation} // Only required for new campaigns
         />
         {donation?.donationQR && !donationQR && (
-          <p className="text-sm text-gray-600">
+          <i className="text-xs text-gray-600">
             Current QR code already uploaded
-          </p>
+          </i>
         )}
       </div>
 
-      <button
-        type="submit"
-        className="col-span-full w-full px-4 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 transition disabled:bg-gray-400"
-        disabled={loading}
-      >
-        {loading
-          ? "Submitting..."
-          : donation
-          ? "Update Donation Campaign"
-          : "Create Donation Campaign"}
-      </button>
+      <div className="col-span-2 flex justify-center">
+        <button
+          type="submit"
+          className="col-span-full w-fit px-4 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 transition disabled:bg-gray-400"
+          disabled={loading}
+        >
+          {loading
+            ? "Submitting..."
+            : donation
+            ? "Update Donation Campaign"
+            : "Create Donation Campaign"}
+        </button>
+      </div>
     </form>
   );
 };
