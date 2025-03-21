@@ -282,7 +282,39 @@ export const generateOtp = async (userEmail: string): Promise<void> => {
     from: process.env.EMAIL_USER,
     to: userEmail,
     subject: "Verify as a promoter in Urban Discoveries",
-    text: `Your OTP for verification is: ${otp}`,
+    // text: `Your OTP for verification is: ${otp}`,
+    html: `
+    <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 20px; background: #ffffff; border-radius: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); text-align: center;">
+      
+      <div style="background: linear-gradient(90deg, #007BFF, #00ADEF); padding: 15px; border-radius: 10px 10px 0 0;">
+        <h2 style="color: #ffffff; margin: 0;">Urban Discoveries</h2>
+        <p style="color: #ffffff; font-size: 14px;">OTP Verification</p>
+      </div>
+  
+      <div style="padding: 20px;">
+        <p style="font-size: 16px; color: #333;">Hello,</p>
+        <p style="font-size: 16px; color: #555;">Your OTP for verification is:</p>
+        
+        <p style="font-size: 32px; font-weight: bold; color: #007BFF; background: #F0F8FF; display: inline-block; padding: 10px 20px; border-radius: 8px; letter-spacing: 3px;">
+          ${otp}
+        </p>
+  
+        <p style="font-size: 14px; color: #555; margin-top: 15px;">
+          This OTP is valid for only <strong style="color: #ff4500;">5 minutes</strong>. Do not share it with anyone.
+        </p>
+  
+        <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+        
+        <p style="font-size: 12px; color: #777;">
+          If you did not request this, please ignore this email or contact support.
+        </p>
+      </div>
+  
+      <div style="background: #f8f8f8; padding: 10px; border-radius: 0 0 10px 10px; font-size: 12px; color: #666;">
+        <p>© 2025 Urban Discoveries. All Rights Reserved.</p>
+      </div>
+    </div>
+  `,
   });
 };
 
@@ -336,6 +368,9 @@ export async function regenOTP(req: Request, res: Response) {
   try {
     const user = req.user;
     const userEmail = user as string;
+    await Otp.deleteMany({
+      email: userEmail,
+    });
     generateOtp(userEmail);
     res.status(200).json({
       msg: "check you email for regenerated otp",
