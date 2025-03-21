@@ -143,20 +143,22 @@ export default function Promote() {
         <PromoterNavbar />
       </div>
       <div className="flex-1 overflow-auto p-4">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center dark:bg-muted/80 shadow-md rounded-lg">
-          <div className="flex items-center">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center border shadow-md rounded-xl">
+          <div className="flex items-center space-x-3">
             <Store className="h-6 w-6 text-blue-600 mr-2" />
-            <h1 className="text-xl font-semibold">Promote Treasures</h1>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+              Promote Treasures
+            </h1>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger
               onClick={() => {
-                setSelectedTreasure(null); // Ensure form is empty
+                setSelectedTreasure(null);
                 setIsDialogOpen(true);
               }}
-              className="border px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-400"
+              className="px-6 py-2.5 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors duration-200 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
             >
-              Add
+              Add Treasure
             </DialogTrigger>
 
             <DialogContent>
@@ -240,12 +242,12 @@ export default function Promote() {
                               setSelectedTreasure(treasure); // Load existing data
                               setIsDialogOpen(true);
                             }}
-                            className="text-blue-600 border border-blue-600 hover:bg-blue-500 hover:text-white px-4 py-1 rounded-md text-sm"
+                            className="text-blue-600 border border-blue-600 hover:bg-blue-500 hover:text-white px-4 py-1 rounded-md text-sm transition-colors duration-200 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                           >
                             Edit
                           </button>
 
-                          <button className="text-red-600 border border-red-600 hover:bg-red-500 hover:text-white px-4 py-1 rounded-md text-sm">
+                          <button className="text-red-600 border border-red-600 hover:bg-red-500 hover:text-white px-4 py-1 rounded-md text-sm transition-colors duration-200 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                             Delete
                           </button>
                         </div>
