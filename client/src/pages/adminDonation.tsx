@@ -123,6 +123,30 @@ export default function AdminDontaion() {
     }
   };
 
+  const handleDeleteDonation = async (donation: any) => {
+    if (!donation) {
+      console.log("no donation campaign to delete");
+      return;
+    }
+    try {
+      let token = localStorage.getItem("Authorization")?.split(" ")[1];
+      if (!token) {
+        throw new Error("token not found in headers");
+      }
+      const response = await axios.delete(
+        `http://localhost:1010/admin/delete-donation-campaign/${donation._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("Donation campaign deleted");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50 overflow-y-hidden shadow-md">
@@ -140,7 +164,6 @@ export default function AdminDontaion() {
             <DialogTrigger
               onClick={() => {
                 setSelectedDonation(null);
-                // The DialogTrigger will automatically set isDialogOpen to true
               }}
               className="px-6 py-2.5 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors duration-200 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
             >
@@ -163,9 +186,8 @@ export default function AdminDontaion() {
         </div>
         <main className="max-w-7xl mx-auto px-4 py-6">
           <div className="space-y-4 overflow-auto">
-            {donations.length === 0
-              ? // Show skeletons if treasures are loading or empty
-                Array(5)
+            {donations?.length === 0
+              ? Array(5)
                   .fill(0)
                   .map((_, index) => (
                     <div
@@ -185,7 +207,7 @@ export default function AdminDontaion() {
                       </div>
                     </div>
                   ))
-              : donations.map((donation: Donation) => (
+              : donations?.map((donation: Donation) => (
                   <div
                     key={donation._id}
                     className="rounded-lg overflow-hidden border shadow-md"
@@ -233,7 +255,12 @@ export default function AdminDontaion() {
                             Edit
                           </button>
 
-                          <button className="text-red-600 border border-red-600 hover:bg-red-500 hover:text-white px-4 py-1 rounded-md text-sm transition-colors duration-200 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                          <button
+                            onClick={() => {
+                              handleDeleteDonation(donation);
+                            }}
+                            className="text-red-600 border border-red-600 hover:bg-red-500 hover:text-white px-4 py-1 rounded-md text-sm transition-colors duration-200 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                          >
                             Delete
                           </button>
                         </div>
