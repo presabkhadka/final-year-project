@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import axios from "axios";
-import { title } from "process";
 import React, { FC, useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -9,6 +9,7 @@ interface RegisterFormInterface {
   showPassword: boolean;
   togglePasswordVisibility: () => void;
   handleSubmit: (e: React.FormEvent) => void;
+  handleGoogleLogin: (response: CredentialResponse) => void;
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
   password: string;
@@ -25,6 +26,7 @@ const RegisterForm: FC<RegisterFormInterface> = ({
   showPassword,
   togglePasswordVisibility,
   handleSubmit,
+  handleGoogleLogin,
   email,
   setEmail,
   password,
@@ -33,8 +35,6 @@ const RegisterForm: FC<RegisterFormInterface> = ({
   setName,
   contact,
   setContact,
-  type,
-  setType,
 }) => {
   return (
     <form
@@ -146,10 +146,7 @@ const RegisterForm: FC<RegisterFormInterface> = ({
       </button>
       <div className="flex flex-col items-center gap-2 mt-4">
         <p className="text-gray-500">Or Signup With</p>
-        <button className="flex items-center gap-2 border border-black p-2 rounded-lg hover:bg-gray-100">
-          <img src="/google.png" alt="Google" className="h-6" />
-          Signup with Google
-        </button>
+        <GoogleLogin onSuccess={handleGoogleLogin} />
       </div>
       <div className="text-center mt-4">
         <p>
@@ -177,6 +174,40 @@ const PromoterRegister: FC = () => {
     setShowPassword((prevState) => !prevState);
   };
 
+  const handleGoogleLogin = (response: CredentialResponse) => {
+    const { credential } = response;
+
+    if (!credential) {
+      toast({
+        title: "Google Login Failed",
+        description: "No credentials received from Google",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    axios
+      .post("http://localhost:1010/promoter/signup", {
+        tokenId: credential,
+      })
+      .then((res) => {
+        console.log(res.data);
+        toast({
+          title: "Google Login Successful",
+          description: "You have been registered successfully",
+        });
+        navigate("/promoter/login");
+      })
+      .catch((error) => {
+        console.error("Error during Google login:", error);
+        toast({
+          title: "Google Login Failed",
+          description: "Something went wrong with Google authentication",
+          variant: "destructive",
+        });
+      });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -189,17 +220,16 @@ const PromoterRegister: FC = () => {
     };
 
     try {
-      axios.post("http://localhost:1010/promoter/signup", payload).then(() => {
-        toast({
-          title: "Registration completed",
-          description: "Promoter registeres successfully",
-        });
-        navigate("/promoter/login");
+      await axios.post("/api/promoter/signup", payload);
+      toast({
+        title: "Registration completed",
+        description: "Promoter registered successfully",
       });
+      navigate("/promoter/login");
     } catch (error) {
       toast({
         title: "Registration Failed",
-        description: "Something went wrong while regestering the promoter",
+        description: "Something went wrong while registering the promoter",
         variant: "destructive",
       });
     }
@@ -220,6 +250,7 @@ const PromoterRegister: FC = () => {
           showPassword={showPassword}
           togglePasswordVisibility={togglePasswordVisibility}
           handleSubmit={handleSubmit}
+          handleGoogleLogin={handleGoogleLogin}
           email={email}
           setEmail={setEmail}
           password={password}
