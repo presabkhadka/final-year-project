@@ -5,8 +5,11 @@ import dotenv from "dotenv";
 import { Otp, Promoter, Review, Treasure } from "../db/db";
 import otpGenerator from "otp-generator";
 import nodemailer from "nodemailer";
+import { OAuth2Client } from "google-auth-library";
 
 dotenv.config();
+
+const client: any = new OAuth2Client(process.env.CLIENT_ID);
 
 interface payload {
   userEmail: string;
@@ -18,55 +21,86 @@ export async function promoterSignup(
   res: Response
 ): Promise<void> {
   try {
-    const userName = req.body.username;
-    const userEmail = req.body.email;
-    const userPassword = req.body.password;
-    const userContact = req.body.contact;
+    const { tokenId, username, email, password, contact } = req.body;
     const userType = "promoter";
 
-    const existingUser = await Promoter.findOne({
-      userEmail: userEmail,
-    });
+    if (tokenId) {
+      try {
+        const ticket = await client.verifyIdToken({
+          idToken: tokenId,
+          audience: process.env.GOOGLE_CLIENT_ID, // Use environment variable
+        });
 
-    if (
-      userName == "" ||
-      userEmail == "" ||
-      userPassword == "" ||
-      userContact == ""
-    ) {
-      res.status(401).json({
-        msg: "input fields cannot be left empty",
-      });
-      return;
+        const payload = ticket.getPayload();
+        if (!payload) {
+          res.status(400).json({ msg: "Invalid Google token" });
+          return;
+        }
+
+        const userEmail = payload.email;
+        if (!userEmail) {
+          res.status(400).json({ msg: "Email not found in Google account" });
+          return;
+        }
+
+        const userName = payload.name || "Google User";
+
+        const existingUser = await Promoter.findOne({ userEmail });
+        if (existingUser) {
+          res.status(409).json({ msg: "User already exists with such email" });
+          return;
+        }
+
+        await Promoter.create({
+          userName,
+          userEmail,
+          userType,
+        });
+
+        res
+          .status(200)
+          .json({ msg: "Promoter created successfully with Google login" });
+      } catch (googleError) {
+        console.error("Google verification error:", googleError);
+        res.status(400).json({
+          msg: "Google authentication failed",
+        });
+        return;
+      }
     }
+    else if (username && email && password && contact) {
+      const existingUser = await Promoter.findOne({ userEmail: email });
+      if (existingUser) {
+        res
+          .status(409)
+          .json({ msg: "Promoter already exists with such email" });
+        return;
+      }
 
-    if (existingUser) {
-      res.status(409).json({
-        msg: "promoter already exists with such email",
-      });
-      return;
-    } else {
-      let saltRounds = 10;
-      let hashedPassword = await bcrypt.hash(userPassword, saltRounds);
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
 
       await Promoter.create({
-        userName,
-        userEmail,
+        userName: username,
+        userEmail: email,
         userPassword: hashedPassword,
-        userContact,
+        userContact: contact,
         userType,
       });
-      generateOtp(userEmail);
 
       res.status(200).json({
-        msg: "promoter created successfully",
+        msg: "Promoter created successfully with traditional sign-up",
       });
+    } else {
+      res
+        .status(400)
+        .json({ msg: "Required fields are missing for traditional sign-up" });
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      msg: "something wrong with the server at the moment",
-    });
+    console.error("Server error:", error);
+    res
+      .status(500)
+      .json({ msg: "Something went wrong with the server at the moment" });
   }
 }
 
@@ -76,60 +110,89 @@ export async function promoterLogin(
   res: Response
 ): Promise<void> {
   try {
-    const userEmail = req.body.email;
-    const userPassword = req.body.password;
+    const { tokenId, email, password } = req.body;
 
-    const existingUser = await Promoter.findOne({
-      userEmail,
-    });
+    if (tokenId) {
+      try {
+        const ticket = await client.verifyIdToken({
+          idToken: tokenId,
+          audience: process.env.GOOGLE_CLIENT_ID,
+        });
 
-    if (userEmail == "" || userPassword == "") {
-      res.json(403).json({
-        msg: "input fields cannot be left empty",
-      });
-      return;
+        const payload = ticket.getPayload();
+        if (!payload || !payload.email) {
+          res.status(400).json({ msg: "Invalid Google token" });
+          return;
+        }
+
+        const userEmail = payload.email;
+        let existingUser = await Promoter.findOne({ userEmail });
+
+        if (existingUser?.isVerified != true) {
+          await generateOtp(userEmail);
+        }
+
+        const jwtToken = jwt.sign(
+          { userEmail },
+          process.env.JWT_SECRET || "defaultkey"
+        );
+
+        res.status(200).json({
+          token: jwtToken,
+          verificationStatus: existingUser?.isVerified,
+        });
+        return;
+      } catch (error) {
+        console.error("Google verification error:", error);
+        res.status(400).json({ msg: "Google authentication failed" });
+        return;
+      }
     }
 
-    if (!existingUser) {
-      res.status(401).json({
-        msg: "promoter doesnt exist with such email",
-      });
-      return;
-    } else {
-      if (typeof existingUser.userPassword !== "string") {
-        res.status(401).json({
-          msg: "password invalid or missing",
-        });
+    if (email && password) {
+      const existingUser = await Promoter.findOne({ userEmail: email });
+
+      if (!existingUser) {
+        res
+          .status(401)
+          .json({ msg: "Promoter does not exist with this email" });
         return;
       }
 
-      let passwordMatch = await bcrypt.compare(
-        userPassword,
+      if (
+        !existingUser.userPassword ||
+        typeof existingUser.userPassword !== "string"
+      ) {
+        res.status(401).json({ msg: "Invalid password" });
+        return;
+      }
+
+      const passwordMatch = await bcrypt.compare(
+        password,
         existingUser.userPassword
       );
-
       if (!passwordMatch) {
-        res.status(401).json({
-          msg: "password doesn't matches",
-        });
+        res.status(401).json({ msg: "Incorrect password" });
         return;
       }
 
-      let verificationStatus = existingUser.isVerified;
-
-      let payload: payload = { userEmail };
-      let token = jwt.sign(payload, process.env.JWT_SECRET || "defaultkey");
+      const jwtToken = jwt.sign(
+        { id: existingUser._id, email: existingUser.userEmail },
+        process.env.JWT_SECRET || "defaultkey",
+        { expiresIn: "7d" }
+      );
 
       res.status(200).json({
-        token,
-        verificationStatus,
+        token: jwtToken,
+        verificationStatus: existingUser.isVerified,
       });
+      return;
     }
+
+    res.status(400).json({ msg: "Invalid request, missing login credentials" });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      msg: "something wrong with the server at the moment",
-    });
+    console.error("Server error:", error);
+    res.status(500).json({ msg: "Something went wrong with the server" });
   }
 }
 
