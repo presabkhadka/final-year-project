@@ -27,6 +27,7 @@ export default function AdminDontaion() {
     null
   );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let fetchDonations = async () => {
@@ -46,6 +47,8 @@ export default function AdminDontaion() {
         setDonations(response.data.activeCampaigns);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchDonations();
@@ -186,7 +189,7 @@ export default function AdminDontaion() {
         </div>
         <main className="max-w-7xl mx-auto px-4 py-6">
           <div className="space-y-4 overflow-auto">
-            {donations?.length === 0
+            {loading
               ? Array(5)
                   .fill(0)
                   .map((_, index) => (
