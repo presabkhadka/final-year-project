@@ -71,8 +71,6 @@ export default function PromoterReview() {
     return () => clearInterval(interval);
   }, []);
 
-  if (error) return <p className="text-red-500">{error}</p>;
-
   const filteredTreasure = treasures.filter(
     (treasures) =>
       treasures.name.toLowerCase().includes(filter.toLowerCase()) ||
