@@ -209,7 +209,7 @@ export async function deleteTreasures(
   res: Response
 ): Promise<void> {
   try {
-    const treasureId = req.body.treasureId;
+    const treasureId = req.params.treasureId;
 
     if (!treasureId) {
       res.status(404).json({
