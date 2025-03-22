@@ -69,6 +69,10 @@ router.patch(
   adminMiddleware,
   updateCampaign
 );
-router.delete("/delete-donation-campaign/:donationId", adminMiddleware, deleteCamapign);
+router.delete(
+  "/delete-donation-campaign/:donationId",
+  adminMiddleware,
+  deleteCamapign
+);
 
 export { router };

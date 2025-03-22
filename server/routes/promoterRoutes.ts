@@ -15,6 +15,7 @@ import {
   treasureDetails,
   cardDetails,
   promoterDetails,
+  deleteTreasures,
 } from "../controller/promoterController";
 import promoterMiddleware from "../middleware/promoterMiddleware";
 
@@ -45,7 +46,7 @@ const upload = multer({
     }
   },
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB max file size
+    fileSize: 5 * 1024 * 1024,
   },
 });
 
@@ -74,5 +75,10 @@ promoterRouter.get("/rankings", promoterMiddleware, promoterRanking);
 promoterRouter.get("/treasure-table", promoterMiddleware, treasureDetails);
 promoterRouter.get("/card-details", promoterMiddleware, cardDetails);
 promoterRouter.get("/promoter-details", promoterMiddleware, promoterDetails);
+promoterRouter.delete(
+  "/delete-treasures/:treasureId",
+  promoterMiddleware,
+  deleteTreasures
+);
 
 export { promoterRouter };
