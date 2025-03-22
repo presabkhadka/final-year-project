@@ -32,6 +32,7 @@ export default function Promote() {
     null
   );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchTreasures = async () => {
@@ -59,6 +60,8 @@ export default function Promote() {
         }
       } catch (error) {
         console.error("Error fetching treasures:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -201,7 +204,7 @@ export default function Promote() {
 
         <main className="max-w-7xl mx-auto px-4 py-6">
           <div className="space-y-4 overflow-auto">
-            {treasures?.length === 0
+            {loading
               ? Array(5)
                   .fill(0)
                   .map((_, index) => (
