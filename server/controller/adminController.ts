@@ -418,3 +418,27 @@ export async function updateCampaign(req: Request, res: Response) {
     });
   }
 }
+
+// fn for deleting donation campaigns
+export async function deleteCamapign(req: Request, res: Response) {
+  try {
+    const user = req.user;
+    if (!user) {
+      res.status(401).json({
+        msg: "authorization failed",
+      });
+      return;
+    }
+    const donationId = req.params.donationId;
+    await Donation.deleteOne({
+      _id: donationId,
+    });
+    res.status(200).json({
+      msg: "donation campaign deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "something went wrong while deleting the donation camapaign",
+    });
+  }
+}
