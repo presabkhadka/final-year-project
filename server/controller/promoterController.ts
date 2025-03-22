@@ -584,3 +584,62 @@ export async function promoterDetails(req: Request, res: Response) {
     });
   }
 }
+
+// fn for deleting bad reviewed treasuers
+export async function deleteTreasures(req: Request, res: Response) {
+  try {
+    const user = req.user;
+    if (!user) {
+      res.status(401).json({
+        msg: "unauthorized user",
+      });
+      return;
+    }
+    const treasureId = req.params.treasureId;
+
+    if (!treasureId) {
+      res.status(404).json({
+        msg: "treasure id not found",
+      });
+      return;
+    }
+
+    const treasureExists = await Treasure.findOne({
+      _id: treasureId,
+    });
+
+    if (treasureExists) {
+      await Treasure.deleteOne({
+        _id: treasureId,
+      });
+
+      await Review.deleteMany({
+        reviewOf: treasureId,
+      });
+
+      await Promoter.updateOne(
+        {
+          userEmail: user,
+        },
+        {
+          $pull: {
+            addedTreasure: treasureId,
+          },
+        }
+      );
+
+      res.status(200).json({
+        msg: "Treasure removed successfully",
+      });
+    } else {
+      res.status(404).json({
+        msg: "treasure not found",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msg: "something went wrong while removing the treasure",
+    });
+  }
+}
