@@ -137,6 +137,29 @@ export default function Promote() {
     }
   };
 
+  const handleDeleteTreasure = async (selectedTreasure: any) => {
+    if (!selectedTreasure) {
+      console.log("no treasure selected");
+    }
+    try {
+      let token = localStorage.getItem("Authorization")?.split(" ")[1];
+      if (!token) {
+        throw new Error("No token in headers");
+      }
+      let response = await axios.delete(
+        `http://localhost:1010/promoter/delete-treasures/${selectedTreasure._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("Treasure delete successfully");
+    } catch (error) {
+      toast.error("Couldn't delete treasure.");
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen">
       <div className="sticky top-0 z-50 shadow-md">
@@ -164,7 +187,7 @@ export default function Promote() {
             <DialogContent>
               <DialogHeader>
                 <TreasureForm
-                  treasure={selectedTreasure} 
+                  treasure={selectedTreasure}
                   onSubmit={
                     selectedTreasure
                       ? handleUpdateTreasure
@@ -178,9 +201,8 @@ export default function Promote() {
 
         <main className="max-w-7xl mx-auto px-4 py-6">
           <div className="space-y-4 overflow-auto">
-            {treasures.length === 0
-              ? 
-                Array(5)
+            {treasures?.length === 0
+              ? Array(5)
                   .fill(0)
                   .map((_, index) => (
                     <div
@@ -200,7 +222,7 @@ export default function Promote() {
                       </div>
                     </div>
                   ))
-              : treasures.map((treasure: Treasure) => (
+              : treasures?.map((treasure: Treasure) => (
                   <div
                     key={treasure._id}
                     className="rounded-lg overflow-hidden border shadow-md"
@@ -239,7 +261,7 @@ export default function Promote() {
                         <div className=" flex justify-end gap-2 mt-2">
                           <button
                             onClick={() => {
-                              setSelectedTreasure(treasure); 
+                              setSelectedTreasure(treasure);
                               setIsDialogOpen(true);
                             }}
                             className="text-blue-600 border border-blue-600 hover:bg-blue-500 hover:text-white px-4 py-1 rounded-md text-sm transition-colors duration-200 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
@@ -247,7 +269,12 @@ export default function Promote() {
                             Edit
                           </button>
 
-                          <button className="text-red-600 border border-red-600 hover:bg-red-500 hover:text-white px-4 py-1 rounded-md text-sm transition-colors duration-200 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                          <button
+                            onClick={() => {
+                              handleDeleteTreasure(treasure);
+                            }}
+                            className="text-red-600 border border-red-600 hover:bg-red-500 hover:text-white px-4 py-1 rounded-md text-sm transition-colors duration-200 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                          >
                             Delete
                           </button>
                         </div>
