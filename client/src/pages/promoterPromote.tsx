@@ -164,7 +164,7 @@ export default function Promote() {
             <DialogContent>
               <DialogHeader>
                 <TreasureForm
-                  treasure={selectedTreasure} // If null, it's a new entry
+                  treasure={selectedTreasure} 
                   onSubmit={
                     selectedTreasure
                       ? handleUpdateTreasure
@@ -179,7 +179,7 @@ export default function Promote() {
         <main className="max-w-7xl mx-auto px-4 py-6">
           <div className="space-y-4 overflow-auto">
             {treasures.length === 0
-              ? // Show skeletons if treasures are loading or empty
+              ? 
                 Array(5)
                   .fill(0)
                   .map((_, index) => (
@@ -239,7 +239,7 @@ export default function Promote() {
                         <div className=" flex justify-end gap-2 mt-2">
                           <button
                             onClick={() => {
-                              setSelectedTreasure(treasure); // Load existing data
+                              setSelectedTreasure(treasure); 
                               setIsDialogOpen(true);
                             }}
                             className="text-blue-600 border border-blue-600 hover:bg-blue-500 hover:text-white px-4 py-1 rounded-md text-sm transition-colors duration-200 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5"

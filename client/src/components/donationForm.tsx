@@ -104,7 +104,7 @@ const DonationForm: React.FC<DonationFormProps> = ({ donation, onSubmit }) => {
           type="file"
           onChange={handleQRChange}
           className="w-full p-2 border rounded-md"
-          required={!donation} // Only required for new campaigns
+          required={!donation}
         />
         {donation?.donationQR && !donationQR && (
           <i className="text-xs text-gray-600">
