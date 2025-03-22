@@ -13,6 +13,7 @@ import {
   addDonation,
   fetchDonation,
   updateCampaign,
+  deleteCamapign,
 } from "../controller/adminController";
 import multer from "multer";
 import path from "path";
@@ -68,5 +69,6 @@ router.patch(
   adminMiddleware,
   updateCampaign
 );
+router.delete("/delete-donation-campaign/:donationId", adminMiddleware, deleteCamapign);
 
 export { router };
