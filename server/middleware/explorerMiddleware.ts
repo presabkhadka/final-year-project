@@ -23,6 +23,7 @@ async function explorerMiddleware(
     const cleanToken = word[1];
     const jwtPass = process.env.JWT_SECRET || "defaultkey";
     const decoded = jwt.verify(cleanToken, jwtPass);
+    const explorerEmail = (decoded as jwt.JwtPayload).userEmail;
     const existingUser = await Explorer.findOne({});
     if (!existingUser) {
       res.status(401).json({
@@ -30,6 +31,7 @@ async function explorerMiddleware(
       });
       return;
     }
+    req.user = explorerEmail;
     next();
   } catch (error) {
     res.status(401).json({
