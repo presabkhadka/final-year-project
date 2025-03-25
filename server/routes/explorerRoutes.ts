@@ -6,6 +6,7 @@ import {
   fetchDonations,
   addReviews,
   exploredTreasures,
+  leaderboards,
 } from "../controller/explorerController";
 import explorerMiddleware from "../middleware/explorerMiddleware";
 const explorerRouter = Router();
@@ -16,5 +17,6 @@ explorerRouter.get("/search-treasures", explorerMiddleware, searchTreasure);
 explorerRouter.get("/donation-campaigns", explorerMiddleware, fetchDonations);
 explorerRouter.post("/add-review/:treasureId", explorerMiddleware, addReviews);
 explorerRouter.get("/explored-history", explorerMiddleware, exploredTreasures);
+explorerRouter.get("/leaderboards", explorerMiddleware, leaderboards);
 
 export { explorerRouter };
