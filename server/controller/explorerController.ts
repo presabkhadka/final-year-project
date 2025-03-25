@@ -1,6 +1,6 @@
 import { response, type Request, type Response } from "express";
 import bcrypt from "bcrypt";
-import { Donation, Explorer, Review, Treasure } from "../db/db";
+import { Donation, Explorer, Promoter, Review, Treasure } from "../db/db";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
 import exp from "constants";
@@ -295,6 +295,29 @@ export async function exploredTreasures(req: Request, res: Response) {
     console.log(error);
     res.status(500).json({
       msg: "error while fetching your travel history",
+    });
+  }
+}
+
+// fn for fetching promoter leaderboards
+export async function leaderboards(req: Request, res: Response) {
+  try {
+    const user = req.user;
+    if (!user) {
+      res.status(401).json({
+        msg: "unauthorized request",
+      });
+      return;
+    }
+    const ranking = await Promoter.find({})
+      .select("userName points")
+      .sort({ points: 1 });
+    res.status(200).json({
+      ranking,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "something went wrong while fetching the leaderboards",
     });
   }
 }
