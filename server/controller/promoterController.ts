@@ -67,8 +67,7 @@ export async function promoterSignup(
         });
         return;
       }
-    }
-    else if (username && email && password && contact) {
+    } else if (username && email && password && contact) {
       const existingUser = await Promoter.findOne({ userEmail: email });
       if (existingUser) {
         res
@@ -177,9 +176,8 @@ export async function promoterLogin(
       }
 
       const jwtToken = jwt.sign(
-        { id: existingUser._id, email: existingUser.userEmail },
-        process.env.JWT_SECRET || "defaultkey",
-        { expiresIn: "7d" }
+        { userEmail: existingUser.userEmail },
+        process.env.JWT_SECRET || "defaultkey"
       );
 
       res.status(200).json({
