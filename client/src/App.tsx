@@ -15,6 +15,11 @@ import AdminAuthGuard from "./components/AdminAuthGuard";
 import AdminDashboard from "./pages/adminDashboard";
 import AdminReviews from "./pages/adminReviews";
 import AdminDontaion from "./pages/adminDonation";
+import Landing from "./pages/landing";
+import AboutUs from "./pages/aboutUs";
+import Leaderboards from "./pages/leaderboards";
+import ExplorerAuthGuard from "./components/ExplorerAuthGuard";
+import Explore from "./pages/explore";
 
 function App() {
   return (
@@ -22,6 +27,8 @@ function App() {
       <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
         <RouterProvider
           router={createBrowserRouter([
+            { path: "/home", element: <Landing /> },
+            { path: "/about-us", element: <AboutUs /> },
             { path: "/explorer/login", element: <Login /> },
             { path: "/promoter/login", element: <PromoterLogin /> },
             { path: "/admin/login", element: <AdminLogin /> },
@@ -30,10 +37,25 @@ function App() {
             { path: "/promoter/verify", element: <PromoterVerify /> },
 
             {
+              path: "/explorer",
+              element: <ExplorerAuthGuard />,
+              children: [
+                {
+                  path: "/explorer/explore",
+                  element: <Explore />,
+                },
+                { path: "/explorer/leaderboards", element: <Leaderboards /> },
+              ],
+            },
+
+            {
               path: "/promoter",
               element: <PromoterAuthGuard />,
               children: [
-                { path: "/promoter/dashboard", element: <PromoterDashboard /> },
+                {
+                  path: "/promoter/dashboard",
+                  element: <PromoterDashboard />,
+                },
                 { path: "/promoter/reviews", element: <PromoterReview /> },
                 { path: "/promoter/promote", element: <Promote /> },
               ],
