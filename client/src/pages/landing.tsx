@@ -1,22 +1,132 @@
-import LandingNav from "@/components/landingNav";
-import { Camera, Star, Coffee, Navigation, ChevronDown } from "lucide-react";
+import { useEffect, useState } from "react";
+import Navbar from "@/components/navbar";
+import {
+  Camera,
+  Star,
+  Coffee,
+  Navigation,
+  ChevronDown,
+  Quote,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Landing() {
   const navigate = useNavigate();
+  const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
 
-  const becomePromoter = () => {
-    navigate("/promoter/signup");
+  interface Treasure {
+    _id: string;
+    treasureName: string;
+    treasureLocation: string;
+    treasureType: string;
+    openingTime: string;
+    closingTime: string;
+    owner: string;
+    visitors: number;
+    treasureContact: string;
+    treasureDescription: string;
+    treasureImage?: {
+      data: Uint8Array;
+    };
+  }
+
+  const [treasures, setTreasures] = useState<Treasure[]>([]);
+
+  useEffect(() => {
+    const fetchTreasures = async () => {
+      let token = localStorage.getItem("Authorization")?.split(" ")[1];
+      let response = await axios.get(
+        "http://localhost:1010/explorer/fetch-treasures",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setTreasures(response.data.treasures);
+    };
+    fetchTreasures();
+    let interval = setInterval(fetchTreasures, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const [currentTreasureIndex] = useState(0);
+
+  const testimonials = [
+    {
+      name: "Sarah Johnson",
+      role: "Food Blogger",
+      image:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+      quote:
+        "Thanks to Urban Discoveries, I found the most amazing hidden cafes and restaurants that became the highlights of my food blog. The local insights are invaluable!",
+    },
+    {
+      name: "Michael Chen",
+      role: "Photography Enthusiast",
+      image:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+      quote:
+        "I've discovered incredible photo spots that I never knew existed in my own city. The community here is so helpful and passionate about sharing hidden gems.",
+    },
+    {
+      name: "Emma Rodriguez",
+      role: "Adventure Seeker",
+      image:
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+      quote:
+        "Urban Discoveries opened my eyes to amazing secret spots right in my neighborhood. Every weekend now feels like a new adventure!",
+    },
+    {
+      name: "David Thompson",
+      role: "Local Guide",
+      image:
+        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+      quote:
+        "Being able to share my favorite hidden spots with others has been incredibly rewarding. The platform makes it easy to connect with genuine explorers.",
+    },
+    {
+      name: "Lisa Zhang",
+      role: "Art Enthusiast",
+      image:
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+      quote:
+        "I've found so many amazing street art locations and underground galleries. This platform is a game-changer for anyone interested in the local art scene.",
+    },
+    {
+      name: "James Wilson",
+      role: "History Buff",
+      image:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+      quote:
+        "The historical landmarks and hidden architectural gems I've discovered through Urban Discoveries have added a whole new dimension to my city exploration.",
+    },
+  ];
+
+  const nextTestimonial = () => {
+    setCurrentTestimonialIndex((prev) =>
+      prev === testimonials.length - 3 ? 0 : prev + 1
+    );
   };
 
-  const becomeExplorer = () => {
-    navigate("/explorer/signup");
+  const prevTestimonial = () => {
+    setCurrentTestimonialIndex((prev) =>
+      prev === 0 ? testimonials.length - 3 : prev - 1
+    );
   };
+
+  useEffect(() => {
+    const interval = setInterval(nextTestimonial, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen">
       <div className="top-0 z-50 sticky overflow-hidden bg-white shadow-md dark:bg-black">
-        <LandingNav />
+        <Navbar />
       </div>
       <div
         className="h-screen relative bg-cover bg-center"
@@ -35,17 +145,6 @@ export default function Landing() {
                 Explore unique, underrated places that make our city special.
                 From hidden cafes to secret gardens, find the spots locals love.
               </p>
-
-              <div className="mt-8 flex">
-                <button
-                  onClick={() => {
-                    navigate("/about-us");
-                  }}
-                  className="bg-green-500 text-white p-4 rounded-r-full hover:bg-green-700 font-bold"
-                >
-                  About Us
-                </button>
-              </div>
             </div>
 
             <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white text-center">
@@ -85,97 +184,143 @@ export default function Landing() {
         </div>
       </div>
 
-      <div className="bg-blue-600 py-16">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Want to explore more?
+      <div className="bg-muted/80 py-16">
+        <div className="container mx-auto px-6">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            What our happy clients say?
           </h2>
-          <p className="text-blue-100 mb-8">
-            Seek for more underrated places and help others discover the city's
-            secrets too.
-          </p>
-          <button
-            onClick={becomeExplorer}
-            className="bg-white text-blue-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 animate-bounce"
-          >
-            Click here to be an explorer!
-          </button>
+          <div className="relative">
+            <button
+              onClick={prevTestimonial}
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white p-2 rounded-full shadow-lg z-10 hover:bg-gray-50 dark:bg-muted/100 transition-colors"
+            >
+              <ChevronLeft className="h-6 w-6 text-gray-600" />
+            </button>
+            <button
+              onClick={nextTestimonial}
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white p-2 rounded-full shadow-lg z-10 hover:bg-gray-50 dark:bg-muted/100 transition-colors"
+            >
+              <ChevronRight className="h-6 w-6 text-gray-600" />
+            </button>
+            <div className="overflow-hidden">
+              <div
+                className="flex transition-transform duration-500 ease-in-out"
+                style={{
+                  transform: `translateX(-${
+                    currentTestimonialIndex * 33.333
+                  }%)`,
+                }}
+              >
+                {testimonials.map((testimonial, index) => (
+                  <div
+                    key={index}
+                    className="w-full md:w-1/3 flex-shrink-0 px-4"
+                  >
+                    <div className="bg-white dark:bg-muted/80 rounded-lg p-6 shadow-lg h-full">
+                      <div className="flex items-center mb-4">
+                        <img
+                          src={testimonial.image}
+                          alt={testimonial.name}
+                          className="w-12 h-12 rounded-full object-cover mr-4"
+                        />
+                        <div>
+                          <h4 className="font-semibold">{testimonial.name}</h4>
+                          <p className="text-sm text-gray-600 dark:text-white">
+                            {testimonial.role}
+                          </p>
+                        </div>
+                      </div>
+                      <Quote className="h-8 w-8 text-blue-600 mb-2 " />
+                      <p className="text-gray-700 italic dark:text-white">
+                        {testimonial.quote}
+                      </p>
+                      <div className="mt-4 flex items-center">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className="h-5 w-5 text-yellow-400 fill-current"
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-center mt-8">
+              {[...Array(testimonials.length - 2)].map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentTestimonialIndex(index)}
+                  className={`mx-1 w-2 h-2 rounded-full transition-colors ${
+                    currentTestimonialIndex === index
+                      ? "bg-blue-600"
+                      : "bg-gray-300"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
       <div className="py-20 bg-muted/80">
         <div className="container mx-auto px-6">
           <h2 className="text-3xl font-bold text-center mb-12">
-            Featured Hidden Gems
+            Explore more treasures
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Secret Garden Cafe",
-                image:
-                  "https://images.unsplash.com/photo-1554118811-1e0d58224f24?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-                rating: 4.8,
-                category: "Cafe",
-              },
-              {
-                title: "Vintage Bookstore",
-                image:
-                  "https://images.unsplash.com/photo-1521123845560-14093637aa7d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-                rating: 4.6,
-                category: "Shopping",
-              },
-              {
-                title: "Rooftop View Point",
-                image:
-                  "https://images.unsplash.com/photo-1515263487990-61b07816b324?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-                rating: 4.9,
-                category: "Sightseeing",
-              },
-            ].map((place, index) => (
-              <div
-                key={index}
-                className="bg-muted/80 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
-              >
-                <img
-                  src={place.image}
-                  alt={place.title}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-semibold">{place.title}</h3>
-                    <div className="flex items-center">
-                      <Star className="h-5 w-5 text-yellow-400 fill-current" />
-                      <span className="ml-1  font-bold text-sm">
-                        Highly Visited
-                      </span>
-                    </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {treasures
+              .slice(currentTreasureIndex, currentTreasureIndex + 3)
+              .map((place, index) => (
+                <div
+                  key={index}
+                  className="bg-muted/80 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+                >
+                  <img
+                    src={`http://localhost:1010${place.treasureImage}`}
+                    alt={place.treasureName}
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="p-6">
+                    <h3 className="text-xl font-semibold">
+                      {place.treasureName}
+                    </h3>
+                    <p className="mt-2 inline-block bg-orange-500 text-white text-sm font-medium px-3 py-1 rounded-full dark:bg-orange-500 dark:text-white">
+                      {place.treasureType}
+                    </p>
+                    <button
+                      onClick={() => {
+                        navigate("/explorer/explore");
+                      }}
+                      className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+                    >
+                      Know More
+                    </button>
                   </div>
-                  <p className="mt-2">{place.category}</p>
-                  <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded-full hover:bg-blue-700">
-                    View Details
-                  </button>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </div>
 
-      <div className="bg-blue-600 py-16">
+      <div className="py-16 bg-muted/80">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Know a Hidden Gem?
+          <h2 className="text-3xl font-bold mb-4">
+            Discover hidden gems around you
           </h2>
-          <p className="text-blue-100 mb-8">
-            Share your favorite underrated places and help others discover the
-            city's secrets.
+          <p className="mb-8">
+            Discover underrated places and help others discover the city's
+            secrets.
           </p>
           <button
-            onClick={becomePromoter}
-            className="bg-white text-blue-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 animate-bounce"
+            onClick={() => {
+              navigate("/explorer/explore");
+            }}
+            className="bg-green-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-green-400"
           >
-            Click here to be a promoter!
+            Explore
           </button>
         </div>
       </div>
