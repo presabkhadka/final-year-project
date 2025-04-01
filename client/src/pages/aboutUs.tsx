@@ -57,7 +57,9 @@ export default function AboutUs() {
               <div className="w-16 h-16 mx-auto mb-6 flex items-center justify-center bg-blue-100 rounded-full">
                 <MapPin className="w-8 h-8 text-blue-600" />
               </div>
-              <h3 className="text-xl font-semibold mb-4 text-white">Local Expertise</h3>
+              <h3 className="text-xl font-semibold mb-4 text-white">
+                Local Expertise
+              </h3>
               <p className="text-white">
                 Curated recommendations from residents who know their cities
                 inside and out.
@@ -78,7 +80,9 @@ export default function AboutUs() {
               <div className="w-16 h-16 mx-auto mb-6 flex items-center justify-center bg-purple-100 rounded-full">
                 <Compass className="w-8 h-8 text-purple-600" />
               </div>
-              <h3 className="text-xl font-semibold mb-4 text-white">Adventure Guide</h3>
+              <h3 className="text-xl font-semibold mb-4 text-white">
+                Adventure Guide
+              </h3>
               <p className="text-white">
                 Detailed guides and tips to help you explore with confidence.
               </p>
@@ -89,7 +93,7 @@ export default function AboutUs() {
 
       <div className="py-20 bg-gray-50 dark:bg-muted/80">
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center mb-12 text-orange-500 text-orange-400">
+          <h2 className="text-3xl font-bold text-center mb-12 text-orange-500">
             Meet Our Team
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
