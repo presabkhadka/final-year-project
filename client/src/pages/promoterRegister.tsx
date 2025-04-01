@@ -220,7 +220,7 @@ const PromoterRegister: FC = () => {
     };
 
     try {
-      await axios.post("/api/promoter/signup", payload);
+      await axios.post("http://localhost:1010/promoter/signup", payload);
       toast({
         title: "Registration completed",
         description: "Promoter registered successfully",
