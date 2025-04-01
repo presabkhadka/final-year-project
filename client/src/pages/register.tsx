@@ -1,9 +1,14 @@
 import React, { FC, useState } from "react";
+import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
 
 interface RegisterFormInterface {
   showPassword: boolean;
   togglePasswordVisibility: () => void;
   handleSubmit: (e: React.FormEvent) => void;
+  handleGoogleLogin: (response: CredentialResponse) => void;
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
   password: string;
@@ -18,6 +23,7 @@ const RegisterForm: FC<RegisterFormInterface> = ({
   showPassword,
   togglePasswordVisibility,
   handleSubmit,
+  handleGoogleLogin,
   email,
   setEmail,
   password,
@@ -28,7 +34,10 @@ const RegisterForm: FC<RegisterFormInterface> = ({
   setContact,
 }) => {
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-4 w-full max-w-md"
+    >
       <div className="flex flex-col">
         <label htmlFor="username" className="mb-2 font-medium">
           Username
@@ -137,15 +146,12 @@ const RegisterForm: FC<RegisterFormInterface> = ({
       </button>
       <div className="flex flex-col items-center gap-2 mt-4">
         <p className="text-gray-500">Or Signup With</p>
-        <button className="flex items-center gap-2 border border-black p-2 rounded-lg hover:bg-gray-100">
-          <img src="/google.png" alt="Google" className="h-6" />
-          Signup with Google
-        </button>
+        <GoogleLogin onSuccess={handleGoogleLogin} />
       </div>
       <div className="text-center mt-4">
         <p>
           Already have an account?{" "}
-          <a href="/login" className="text-blue-500 font-semibold">
+          <a href="/explorer/login" className="text-blue-500 font-semibold">
             Login
           </a>
         </p>
@@ -160,35 +166,70 @@ const Register: FC = () => {
   const [password, setPassword] = useState<string>("");
   const [contact, setContact] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [type, setType] = useState<string>("");
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const togglePasswordVisibility = () => {
     setShowPassword((prevState) => !prevState);
   };
 
+  const handleGoogleLogin = (response: CredentialResponse) => {
+    const { credential } = response;
+
+    if (!credential) {
+      toast({
+        title: "Google Login Failed",
+        description: "No credentials received from Google",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    axios
+      .post("http://localhost:1010/explorer/signup", {
+        tokenId: credential,
+      })
+      .then((res) => {
+        console.log(res.data);
+        toast({
+          title: "Google Login Successful",
+          description: "You have been registered successfully",
+        });
+        navigate("/explorer/login");
+      })
+      .catch((error) => {
+        console.error("Error during Google login:", error);
+        toast({
+          title: "Google Login Failed",
+          description: "Something went wrong with Google authentication",
+          variant: "destructive",
+        });
+      });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const payload = {
+      name,
+      email,
+      password,
+      contact,
+      type,
+    };
     try {
-      const response = await fetch("http://localhost:1010/explorer/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: name,
-          email,
-          password,
-          contact,
-        }),
-      })
-      if(response.ok) {
-        const data = await response.json();
-        console.log(data);
-      } else {
-        const errorData = await response.json();
-        console.log(errorData);
-    } 
-    }catch (error) {
-      console.log(error);
+      await axios.post("http://localhost:1010/explorer/signup", payload);
+      toast({
+        title: "Registration completed",
+        description: "Explorer registered successfully",
+      });
+      navigate("/explorer/login");
+    } catch (error) {
+      toast({
+        title: "Registration Failed",
+        description: "Something went wrong while registering the explorer",
+        variant: "destructive",
+      });
     }
   };
 
@@ -207,6 +248,7 @@ const Register: FC = () => {
           showPassword={showPassword}
           togglePasswordVisibility={togglePasswordVisibility}
           handleSubmit={handleSubmit}
+          handleGoogleLogin={handleGoogleLogin}
           email={email}
           setEmail={setEmail}
           password={password}
