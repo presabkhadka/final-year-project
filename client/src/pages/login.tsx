@@ -2,11 +2,14 @@ import axios from "axios";
 import { FC, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
 
 interface loginFormInterface {
   showPassword: boolean;
   togglePasswordVisibility: () => void;
   handleSubmit: (e: React.FormEvent) => void;
+  handleGoogleLoginSuccess: (response: any) => void;
+
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
   password: string;
@@ -17,6 +20,7 @@ const LoginForm: FC<loginFormInterface> = ({
   showPassword,
   togglePasswordVisibility,
   handleSubmit,
+  handleGoogleLoginSuccess,
   email,
   setEmail,
   password,
@@ -123,10 +127,11 @@ const LoginForm: FC<loginFormInterface> = ({
 
       <div className="flex flex-col items-center gap-2 mt-4">
         <p className="text-gray-500">Or Login With</p>
-        <button className="flex items-center gap-2 border border-black p-2 rounded-lg hover:bg-gray-100">
-          <img src="/google.png" alt="Google" className="h-6" />
-          Login with Google
-        </button>
+        <GoogleLogin
+          onSuccess={handleGoogleLoginSuccess}
+          onError={() => toast.error("Google login failed. Please try again.")}
+          useOneTap
+        />
       </div>
 
       <div className="text-center mt-4">
@@ -153,26 +158,30 @@ const Login: FC = () => {
     setShowPassword((prevState) => !prevState);
   };
 
+  const handleGoogleLoginSuccess = async (response: any) => {
+    try {
+      const res = await axios.post("http://localhost:1010/explorer/login", {
+        tokenId: response.credential,
+      });
+      console.log(response.credential);
+
+      const { token } = res.data;
+      localStorage.setItem("Authorization", `Bearer ${token}`);
+      localStorage.setItem("UserRole", "explorer");
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      toast.success("Logged in successfully!");
+      navigate("/home");
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.msg || "Google login failed. Please try again.";
+      toast.error(errorMessage);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      //     const response = await fetch("http://localhost:1010/explorer/login", {
-      //       method: "POST",
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //       },
-      //       body: JSON.stringify({ email, password }),
-      //     });
-      //     if (response.ok) {
-      //       const data = await response.json();
-      //       console.log(data);
-      //     } else {
-      //       const errorData = await response.json();
-      //       setErrorMessage(errorData.message);
-      //       alert(errorData.message)
-      //     }
-
       const response = await axios.post(
         "http://localhost:1010/explorer/login",
         {
@@ -187,7 +196,7 @@ const Login: FC = () => {
       localStorage.setItem("Authorization", bearerToken);
       axios.defaults.headers.common["Authorization"] = bearerToken;
       toast.success("Logged in successfully!");
-      navigate("/explorer/landing");
+      navigate("/home");
     } catch (error) {
       setErrorMessage("Something went wrong. Please try again later.");
     }
@@ -209,6 +218,7 @@ const Login: FC = () => {
           showPassword={showPassword}
           togglePasswordVisibility={togglePasswordVisibility}
           handleSubmit={handleSubmit}
+          handleGoogleLoginSuccess={handleGoogleLoginSuccess}
           email={email}
           setEmail={setEmail}
           password={password}
