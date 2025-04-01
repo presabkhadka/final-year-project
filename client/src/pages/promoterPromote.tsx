@@ -165,7 +165,7 @@ export default function Promote() {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="sticky top-0 z-50 shadow-md">
+      <div className="sticky top-0 z-50 shadow-md dark:bg-black">
         <PromoterNavbar />
       </div>
       <div className="flex-1 overflow-auto p-4">
