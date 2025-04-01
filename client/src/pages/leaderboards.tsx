@@ -41,7 +41,7 @@ function Leaderboards() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="top-0 z-50 sticky overflow-hidden bg-white shadow-md">
+      <div className="top-0 z-50 sticky overflow-hidden bg-white shadow-md dark:bg-black">
         <Navbar />
       </div>
 
@@ -75,7 +75,7 @@ function Leaderboards() {
 
       <div className="flex-grow overflow-auto">
         <div className="container mx-auto shadow-md">
-          <Table className="w-full table-auto bg-white rounded-lg">
+          <Table className="w-full table-auto bg-white dark:bg-muted/80 rounded-lg">
             <TableHeader>
               <TableRow className="bg-green-500 text-black shadow-md">
                 <TableHead className="p-3  border">Ranking</TableHead>
@@ -110,7 +110,7 @@ function Leaderboards() {
         </div>
       </div>
 
-      <footer className="bg-black text-white mt-auto">
+      <footer className="bg-black text-white mt-auto border-t">
         <div className="container mx-auto px-6">
           <div className="py-8 text-center">
             <p>&copy; 2025 Urban Discoveries. All rights reserved.</p>
