@@ -704,3 +704,35 @@ export async function deleteTreasures(req: Request, res: Response) {
     });
   }
 }
+
+// fn for fetching top 3 treasures of a promoter
+export async function topTreasures(req: Request, res: Response) {
+  const user = req.user;
+  if (!user) {
+    res.status(401).json({
+      msg: "invalid authorization",
+    });
+    return;
+  }
+  try {
+    let promoter = await Promoter.findOne({
+      userEmail: user,
+    });
+
+    let topTreasure = await Treasure.find({
+      owner: promoter?._id,
+    })
+      .select("treasureName treasureLocation treasureType visitors")
+      .sort({
+        visitors: -1,
+      });
+
+    res.status(200).json({
+      topTreasure,
+    });
+  } catch (error) {
+    res.status(500).json({
+      msg: "something went wrong while fetching the top 3 treasures",
+    });
+  }
+}
