@@ -184,6 +184,26 @@ export default function Landing() {
         </div>
       </div>
 
+      <div className="py-16 bg-blue-500">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-3xl font-bold mb-4">
+            Support meaningful causes around you
+          </h2>
+          <p className="mb-8">
+            Discover impactful donation campaigns and help make a difference in
+            your community.
+          </p>
+          <button
+            onClick={() => {
+              navigate("/explorer/donation-campaigns");
+            }}
+            className="bg-green-500 text-white px-4 py-2 rounded-full font-semibold hover:bg-green-400"
+          >
+            See Campaigns
+          </button>
+        </div>
+      </div>
+
       <div className="bg-muted/80 py-16">
         <div className="container mx-auto px-6">
           <h2 className="text-3xl font-bold text-center mb-12">
@@ -305,7 +325,7 @@ export default function Landing() {
         </div>
       </div>
 
-      <div className="py-16 bg-muted/80">
+      <div className="py-16 bg-blue-500">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold mb-4">
             Discover hidden gems around you
