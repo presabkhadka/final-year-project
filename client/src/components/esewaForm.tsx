@@ -2,17 +2,21 @@ import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import CryptoJS from "crypto-js";
 
-export default function EsewaForm() {
+interface FormProps {
+  amount: string;
+}
+
+export default function EsewaForm({ amount }: FormProps) {
   const [formData, setformData] = useState({
-    amount: "0",
+    amount,
     tax_amount: "0",
-    total_amount: "10",
+    total_amount: amount,
     transaction_uuid: uuidv4(),
     product_service_charge: "0",
     product_delivery_charge: "0",
     product_code: "EPAYTEST",
-    success_url: "http://localhost:5173/paymentsuccess",
-    failure_url: "http://localhost:5173/paymentfailure",
+    success_url: "http://localhost:5173/explorer/payment-successful",
+    failure_url: "http://localhost:5173/explorer/payment-failure",
     signed_field_names: "total_amount,transaction_uuid,product_code",
     signature: "",
     secret: "8gBm/:&EnhH.1/q",
@@ -48,106 +52,37 @@ export default function EsewaForm() {
       action="https://rc-epay.esewa.com.np/api/epay/main/v2/form"
       method="POST"
     >
-      <h1>Checkout</h1>
-      <div className="field">
-        <label htmlFor="">Amount</label>
-        <input
-          type="text"
-          id="amount"
-          name="amount"
-          autoComplete="off"
-          value={formData.amount}
-          onChange={({ target }) =>
-            setformData({
-              ...formData,
-              amount: target.value,
-              total_amount: target.value,
-            })
-          }
-          required
-        />
-      </div>
+      <input type="hidden" name="amount" value={formData.amount} required />
+      <input type="hidden" name="tax_amount" value={formData.tax_amount} />
+      <input type="hidden" name="total_amount" value={formData.total_amount} />
       <input
         type="hidden"
-        id="tax_amount"
-        name="tax_amount"
-        value={formData.tax_amount}
-        required
-      />
-      <input
-        type="hidden"
-        id="total_amount"
-        name="total_amount"
-        value={formData.total_amount}
-        required
-      />
-      <input
-        type="hidden"
-        id="transaction_uuid"
         name="transaction_uuid"
         value={formData.transaction_uuid}
-        required
       />
+      <input type="hidden" name="product_code" value={formData.product_code} />
       <input
         type="hidden"
-        id="product_code"
-        name="product_code"
-        value={formData.product_code}
-        required
-      />
-      <input
-        type="hidden"
-        id="product_service_charge"
         name="product_service_charge"
         value={formData.product_service_charge}
-        required
       />
       <input
         type="hidden"
-        id="product_delivery_charge"
         name="product_delivery_charge"
         value={formData.product_delivery_charge}
-        required
       />
+      <input type="hidden" name="success_url" value={formData.success_url} />
+      <input type="hidden" name="failure_url" value={formData.failure_url} />
       <input
         type="hidden"
-        id="success_url"
-        name="success_url"
-        value={formData.success_url}
-        required
-      />
-      <input
-        type="hidden"
-        id="failure_url"
-        name="failure_url"
-        value={formData.failure_url}
-        required
-      />
-      <input
-        type="hidden"
-        id="signed_field_names"
         name="signed_field_names"
         value={formData.signed_field_names}
-        required
       />
-      <input
-        type="hidden"
-        id="signature"
-        name="signature"
-        value={formData.signature}
-        required
-      />
+      <input type="hidden" name="signature" value={formData.signature} />
 
-      <div className="field">
-        <label htmlFor="">First name</label>
-        <input type="text" />
-      </div>
-
-      <div className="field">
-        <label htmlFor="">Last name</label>
-        <input type="text" />
-      </div>
-      <input className="btn" value="Pay via E-Sewa" type="submit" />
+      <button type="submit" className="btn bg-green-500 text-white px-4 py-2 rounded-lg">
+        Pay via E-Sewa
+      </button>
     </form>
   );
 }
