@@ -16,6 +16,7 @@ import {
   cardDetails,
   promoterDetails,
   deleteTreasures,
+  topTreasures,
 } from "../controller/promoterController";
 import promoterMiddleware from "../middleware/promoterMiddleware";
 
@@ -80,5 +81,6 @@ promoterRouter.delete(
   promoterMiddleware,
   deleteTreasures
 );
+promoterRouter.get("/top-treasures", promoterMiddleware, topTreasures);
 
 export { promoterRouter };
