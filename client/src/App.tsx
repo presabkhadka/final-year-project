@@ -20,6 +20,8 @@ import AboutUs from "./pages/aboutUs";
 import Leaderboards from "./pages/leaderboards";
 import ExplorerAuthGuard from "./components/ExplorerAuthGuard";
 import Explore from "./pages/explore";
+import DonationCampaign from "./pages/donationCampaign";
+import ContactUs from "./pages/contactUs";
 
 function App() {
   return (
@@ -45,6 +47,11 @@ function App() {
                   element: <Explore />,
                 },
                 { path: "/explorer/leaderboards", element: <Leaderboards /> },
+                {
+                  path: "/explorer/donation-campaigns",
+                  element: <DonationCampaign />,
+                },
+                { path: "/explorer/contact", element: <ContactUs /> },
               ],
             },
 
