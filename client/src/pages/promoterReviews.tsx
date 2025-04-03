@@ -4,7 +4,6 @@ import Skeleton from "react-loading-skeleton";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
