@@ -1,7 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Target, ArrowRight } from "lucide-react";
+import { Target } from "lucide-react";
 import Navbar from "@/components/navbar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import EsewaForm from "@/components/esewaForm";
 
 interface Campaign {
   _id: string;
@@ -15,6 +24,9 @@ interface Campaign {
 
 function DonationCampaign() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchCampaigns = async () => {
@@ -70,11 +82,26 @@ function DonationCampaign() {
                     Goal: ${campaign.donationGoal}
                   </span>
                 </div>
-
-                <button className="mt-4 w-full bg-black text-white px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center hover:bg-gray-800 transition-colors">
-                  Donate Now
-                  <ArrowRight className="w-4 h-4 ml-2 flex-shrink-0" />
-                </button>
+                <div className="flex gap-2 items-center border p-2 mt-2 rounded-lg bg-black text-white justify-center">
+                  <Dialog>
+                    <DialogTrigger
+                      className="w-full"
+                      onClick={() => setSelectedCampaign(campaign)}
+                    >
+                      Donate Now
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>
+                          You will be redirected to esewa payment
+                        </DialogTitle>
+                        <DialogDescription>
+                          <EsewaForm amount={selectedCampaign?.donationGoal} />
+                        </DialogDescription>
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
+                </div>
               </div>
             </div>
           ))}
