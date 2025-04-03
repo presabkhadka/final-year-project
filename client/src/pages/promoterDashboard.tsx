@@ -20,11 +20,27 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Crown, MessageSquare } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function PromoterDashboard() {
+  interface TopTreasuers {
+    _id: string;
+    treasureName: string;
+    treasureLocation: string;
+    treasureType: string;
+  }
+
   const [totalTreasure, setTotalTreasure] = useState(0);
   const [goodTreasure, setGoodTreasure] = useState(0);
   const [badTreasure, setBadTreasure] = useState(0);
+  const [topTreasure, setTopTreasure] = useState<TopTreasuers[]>([]);
 
   const dynamicChartData = [
     { type: "Positive Reviews", goodCount: goodTreasure },
@@ -125,6 +141,33 @@ export default function PromoterDashboard() {
     return () => clearInterval(interval);
   }, []);
 
+  // ue for top treasures
+  useEffect(() => {
+    const fetchTopTreasure = async () => {
+      try {
+        let token = localStorage.getItem("Authorization")?.split(" ")[1];
+        if (!token) {
+          throw new Error("no authorization token in headers");
+        }
+
+        const response = await axios.get(
+          "http://localhost:1010/promoter/top-treasures",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setTopTreasure(response.data.topTreasure);
+      } catch (error) {
+        throw new Error("couldn't fetch top treasure");
+      }
+    };
+    fetchTopTreasure();
+    let interval = setInterval(fetchTopTreasure, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="grid grid-cols-1 h-screen md:grid md:grid-cols-12 gap-x-4">
       <div className="col-span-full">
@@ -132,7 +175,7 @@ export default function PromoterDashboard() {
           <PromoterNavbar />
         </div>
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 p-4">
-          <div className="rounded-xl shadow-lg bg-muted/80 flex justify-center items-center hover:shadow-xl min-h-[10rem] border-2 border-green-500">
+          <div className="rounded-xl shadow-lg  flex justify-center items-center hover:shadow-xl min-h-[10rem] border hover:border-green-500">
             {totalTreasure === 0 ? (
               <Skeleton height={100} width="80%" />
             ) : (
@@ -150,7 +193,7 @@ export default function PromoterDashboard() {
             )}
           </div>
 
-          <div className="rounded-xl shadow-lg bg-muted/80 flex justify-center items-center hover:shadow-xl min-h-[10rem] border-2 border-purple-500">
+          <div className="rounded-xl shadow-lg  flex justify-center items-center hover:shadow-xl min-h-[10rem] border hover:border-purple-500">
             {goodTreasure === 0 ? (
               <Skeleton height={100} width="80%" />
             ) : (
@@ -168,7 +211,7 @@ export default function PromoterDashboard() {
             )}
           </div>
 
-          <div className="rounded-xl shadow-lg bg-muted/80 flex justify-center items-center hover:shadow-xl col-span-1 sm:col-span-2 md:col-span-1 min-h-[10rem] border-2 border-red-500">
+          <div className="rounded-xl shadow-lg  flex justify-center items-center hover:shadow-xl col-span-1 sm:col-span-2 md:col-span-1 min-h-[10rem] border hover:border-red-500">
             {badTreasure === 0 ? (
               <Skeleton height={100} width="80%" />
             ) : (
@@ -187,11 +230,11 @@ export default function PromoterDashboard() {
           </div>
         </div>
         <div className="grid grid-cols-12 gap-4 w-full p-4">
-          <div className="col-span-full md:col-span-8 rounded-xl shadow-lg hover:shadow-xl border border-slate-500">
+          <div className="col-span-full md:col-span-8 rounded-xl shadow-lg hover:shadow-xl border hover:border-orange-500">
             {dynamicChartData.length === 0 ? (
               <Skeleton height={300} width="100%" />
             ) : (
-              <Card className="bg-muted/80">
+              <Card>
                 <CardHeader>
                   <CardTitle>Ratings Chart</CardTitle>
                 </CardHeader>
@@ -225,11 +268,11 @@ export default function PromoterDashboard() {
               </Card>
             )}
           </div>
-          <div className="col-span-full md:col-span-4 rounded-xl shadow-lg hover:shadow-xl border border-slate-500">
+          <div className="col-span-full md:col-span-4 rounded-xl shadow-lg hover:shadow-xl border hover:border-blue-500">
             {dynamicChartData.length === 0 ? (
               <Skeleton height={300} width="100%" />
             ) : (
-              <Card className="flex flex-col bg-muted/80">
+              <Card>
                 <CardHeader>
                   <CardTitle>Radial Chart</CardTitle>
                 </CardHeader>
@@ -301,6 +344,55 @@ export default function PromoterDashboard() {
                 </CardContent>
               </Card>
             )}
+          </div>
+          <div className="col-span-full flex flex-col gap-2">
+            <div className="shadow-lg p-4 border rounded-lg hover:border-pink-500">
+              <h1 className="font-bold text-2xl text-center">Top Treasures</h1>
+            </div>
+            <Table className="w-full table-auto">
+              <TableHeader>
+                <TableRow className="bg-blue-500 text-white dark:bg-blue-800">
+                  <TableHead className="p-3 border dark:border-gray-600">
+                    Treasure Name
+                  </TableHead>
+                  <TableHead className="p-3 border dark:border-gray-600">
+                    Treasure Location
+                  </TableHead>
+                  <TableHead className="p-3 border dark:border-gray-600">
+                    Treasure Type
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {topTreasure.length > 0 ? (
+                  topTreasure.map((treasure) => (
+                    <TableRow
+                      className="border-b-2 last:border-0 even:bg-muted/100 dark:even:bg-gray-700"
+                      key={treasure._id}
+                    >
+                      <TableCell className="p-3 border dark:border-gray-600">
+                        {treasure.treasureName}
+                      </TableCell>
+                      <TableCell className="p-3 border dark:border-gray-600">
+                        {treasure.treasureLocation}
+                      </TableCell>
+                      <TableCell className="p-3 border dark:border-gray-600">
+                        {treasure.treasureType}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={3}
+                      className="text-center p-4 text-gray-500 dark:text-gray-400"
+                    >
+                      No data available
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
           </div>
         </div>
       </div>
