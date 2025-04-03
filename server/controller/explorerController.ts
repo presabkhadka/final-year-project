@@ -107,7 +107,6 @@ export async function explorerLogin(req: Request, res: Response) {
     const { email, password, tokenId } = req.body;
 
     if (tokenId) {
-      // Handle Google login
       try {
         const { userName, userEmail } = await verifyGoogleToken(tokenId);
         let existingUser = await Explorer.findOne({ userEmail });
@@ -160,10 +159,7 @@ export async function explorerLogin(req: Request, res: Response) {
 
       const token = jwt.sign(
         { userEmail: email },
-        process.env.JWT_SECRET || "defaultkey",
-        {
-          expiresIn: "7d",
-        }
+        process.env.JWT_SECRET || "defaultkey"
       );
 
       res.status(200).json({ token, msg: "Login successful" });
@@ -364,7 +360,7 @@ export async function leaderboards(req: Request, res: Response) {
     }
     const ranking = await Promoter.find({})
       .select("userName points")
-      .sort({ points: 1 });
+      .sort({ points: -1 });
     res.status(200).json({
       ranking,
     });
