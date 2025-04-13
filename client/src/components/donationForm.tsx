@@ -18,6 +18,9 @@ const DonationForm: React.FC<DonationFormProps> = ({ donation, onSubmit }) => {
   const [donationGoal, setDonationGoal] = useState(
     donation?.donationGoal || ""
   );
+  const [treasureName, setTreasureName] = useState(
+    donation?.treasureName || ""
+  );
   const [donationQR, setDonationQR] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -37,6 +40,7 @@ const DonationForm: React.FC<DonationFormProps> = ({ donation, onSubmit }) => {
     formData.append("donationTitle", donationTitle);
     formData.append("donationDescription", donationDescription);
     formData.append("donationGoal", donationGoal);
+    formData.append("treasureName", treasureName);
     if (donationQR) {
       formData.append("donationQR", donationQR);
     }
@@ -91,6 +95,20 @@ const DonationForm: React.FC<DonationFormProps> = ({ donation, onSubmit }) => {
           value={donationGoal}
           onChange={(e) => setDonationGoal(e.target.value)}
           placeholder="Donation Goal Amount"
+          className="w-full p-2 border rounded-md"
+          required
+        />
+      </div>
+
+      <div className="flex flex-col gap-1 col-span-full">
+        <label htmlFor="treasureName" className="font-medium">
+          Treasure Name
+        </label>
+        <Input
+          type="text"
+          value={treasureName}
+          onChange={(e) => setTreasureName(e.target.value)}
+          placeholder="Treasure Name"
           className="w-full p-2 border rounded-md"
           required
         />
