@@ -24,6 +24,7 @@ import DonationCampaign from "./pages/donationCampaign";
 import ContactUs from "./pages/contactUs";
 import PaymentSuccess from "./pages/paymentSuccess";
 import PaymentFailure from "./pages/paymentFailure";
+import TreasureDetail from "./pages/treasureDetail";
 
 function App() {
   return (
@@ -61,6 +62,10 @@ function App() {
                 {
                   path: "/explorer/payment-failure",
                   element: <PaymentFailure />,
+                },
+                {
+                  path: "/explorer/treasure/:id",
+                  element: <TreasureDetail />,
                 },
               ],
             },
