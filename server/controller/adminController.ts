@@ -118,13 +118,35 @@ export async function addDonation(req: Request, res: Response) {
     let donationDescription = req.body.donationDescription;
     let donationGoal = req.body.donationGoal;
     let donationQR = req.file ? `/uploads/${req.file.filename}` : null;
+    let treasureName = req.body.treasureName;
 
-    if (!(donationTitle || donationDescription || donationGoal || donationQR)) {
+    if (
+      !(
+        donationTitle ||
+        donationDescription ||
+        donationGoal ||
+        donationQR ||
+        !treasureName
+      )
+    ) {
       res.status(400).json({
         msg: "please make sure none of the input fields are empty",
       });
       return;
     }
+
+    let treasure = await Treasure.findOne({
+      treasureName,
+    });
+
+    if (!treasure) {
+      res.status(404).json({
+        msg: "no such treasure found in our db",
+      });
+      return;
+    }
+
+    let treasureId = treasure._id;
 
     let exisitingCampaign = await Donation.findOne({
       donationTitle: donationTitle,
@@ -142,6 +164,7 @@ export async function addDonation(req: Request, res: Response) {
       donationDescription,
       donationGoal,
       donationQR,
+      treasure: treasureId,
     });
 
     res.status(200).json({
