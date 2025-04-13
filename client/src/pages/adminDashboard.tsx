@@ -123,20 +123,20 @@ export default function AdminDashboard() {
   }, []);
 
   const chartData = [
-    { month: "January", desktop: 186, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-    { month: "March", desktop: 237, mobile: 120 },
-    { month: "April", desktop: 73, mobile: 190 },
-    { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 214, mobile: 140 },
+    {
+      label: "Users",
+      explorer: explorer ?? 0,
+      promoter: promoter ?? 0,
+    },
   ];
+
   const chartConfig = {
-    desktop: {
-      label: "Desktop",
+    explorer: {
+      label: "Explorer",
       color: "hsl(var(--chart-1))",
     },
-    mobile: {
-      label: "Mobile",
+    promoter: {
+      label: "Promoter",
       color: "hsl(var(--chart-2))",
     },
   } satisfies ChartConfig;
@@ -181,33 +181,32 @@ export default function AdminDashboard() {
             </h1>
           </CardWrapper>
           <div className="col-span-full">
-            <Card className="bg-muted/80">
+            <Card className="bg-muted/80 dark:bg-black border hover:border-pink-500">
               <CardHeader>
-                <CardTitle>Ratings Chart</CardTitle>
+                <CardTitle>User Ratio</CardTitle>
               </CardHeader>
               <CardContent className="rounded-xl">
                 <ChartContainer config={chartConfig}>
                   <BarChart accessibilityLayer data={chartData}>
                     <CartesianGrid vertical={false} />
                     <XAxis
-                      dataKey="month"
+                      dataKey="label"
                       tickLine={false}
                       tickMargin={10}
                       axisLine={false}
-                      tickFormatter={(value) => value.slice(0, 3)}
                     />
                     <ChartTooltip
                       cursor={false}
                       content={<ChartTooltipContent indicator="dashed" />}
                     />
                     <Bar
-                      dataKey="desktop"
-                      fill="var(--color-desktop)"
+                      dataKey="explorer"
+                      fill="var(--color-explorer)"
                       radius={4}
                     />
                     <Bar
-                      dataKey="mobile"
-                      fill="var(--color-mobile)"
+                      dataKey="promoter"
+                      fill="var(--color-promoter)"
                       radius={4}
                     />
                   </BarChart>
@@ -221,7 +220,7 @@ export default function AdminDashboard() {
   );
   function CardWrapper({ children }: { children: React.ReactNode }) {
     return (
-      <div className="rounded-xl shadow-lg bg-muted/80 flex flex-col justify-center items-center hover:shadow-xl min-h-[10rem] gap-2">
+      <div className="rounded-xl shadow-lg bg-muted/80 dark:bg-black flex flex-col justify-center items-center hover:shadow-xl min-h-[10rem] gap-2 border hover:border-green-500">
         {children}
       </div>
     );
