@@ -3,6 +3,7 @@ import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
+import { Input } from "@/components/ui/input";
 
 interface RegisterFormInterface {
   showPassword: boolean;
@@ -42,7 +43,7 @@ const RegisterForm: FC<RegisterFormInterface> = ({
         <label htmlFor="username" className="mb-2 font-medium">
           Username
         </label>
-        <input
+        <Input
           type="text"
           id="username"
           className="border p-2 rounded-lg"
@@ -56,7 +57,7 @@ const RegisterForm: FC<RegisterFormInterface> = ({
         <label htmlFor="email" className="mb-2 font-medium">
           Email
         </label>
-        <input
+        <Input
           type="email"
           id="email"
           className="border p-2 rounded-lg"
@@ -70,7 +71,7 @@ const RegisterForm: FC<RegisterFormInterface> = ({
         <label htmlFor="contact" className="mb-2 font-medium">
           Phone Number
         </label>
-        <input
+        <Input
           type="text"
           id="contact"
           className="border p-2 rounded-lg"
@@ -84,7 +85,7 @@ const RegisterForm: FC<RegisterFormInterface> = ({
         <label htmlFor="password" className="mb-2 font-medium">
           Password
         </label>
-        <input
+        <Input
           type={showPassword ? "text" : "password"}
           id="password"
           className="border p-2 rounded-lg pr-10"
