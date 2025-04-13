@@ -2,6 +2,7 @@ import Navbar from "@/components/navbar";
 import axios from "axios";
 import { Clock, MapPin, Phone, Users } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Explore() {
   interface Treasure {
@@ -21,6 +22,8 @@ export default function Explore() {
   }
 
   const [treasures, setTreasures] = useState<Treasure[]>([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTreasures = async () => {
@@ -58,7 +61,7 @@ export default function Explore() {
         </div>
       </div>
 
-      <div className="flex-grow flex justify-center items-center w-full py-16">
+      <div className="flex-grow flex justify-center items-center w-full py-16 dark:bg-muted/80">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {treasures.map((treasure) => (
             <div
@@ -107,8 +110,18 @@ export default function Explore() {
                   {treasure.treasureDescription}
                 </p>
 
-                <div className="inline-block bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full dark:bg-orange-500 dark:text-white">
-                  {treasure.treasureType}
+                <div className="flex justify-between items-center">
+                  <div className="inline-block bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full dark:bg-orange-500 dark:text-white">
+                    {treasure.treasureType}
+                  </div>
+                  <button
+                    className="border border-green-500 px-4 py-2 rounded-lg  hover:bg-green-500"
+                    onClick={() => {
+                      navigate(`/explorer/treasure/${treasure._id}`);
+                    }}
+                  >
+                    Explore
+                  </button>
                 </div>
               </div>
             </div>
