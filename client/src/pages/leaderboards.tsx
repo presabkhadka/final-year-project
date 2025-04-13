@@ -73,7 +73,7 @@ function Leaderboards() {
         </div>
       </div>
 
-      <div className="flex-grow overflow-auto">
+      <div className="flex-grow overflow-auto dark:bg-muted/80">
         <div className="container mx-auto shadow-md">
           <Table className="w-full table-auto bg-white dark:bg-muted/80 rounded-lg">
             <TableHeader>
@@ -87,7 +87,7 @@ function Leaderboards() {
               {promoters.length > 0 ? (
                 promoters.map((promoter, index) => (
                   <TableRow
-                    className="border-b-2 last:border-0  even:bg-muted/80"
+                    className="border-b-2 last:border-0  even:bg-slate-600"
                     key={index}
                   >
                     <TableCell className="p-3 ">{index + 1}</TableCell>
