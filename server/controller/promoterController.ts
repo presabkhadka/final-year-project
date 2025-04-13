@@ -2,10 +2,11 @@ import { type Request, type Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
-import { Otp, Promoter, Review, Treasure } from "../db/db";
+import { Donation, Otp, Promoter, Review, Treasure } from "../db/db";
 import otpGenerator from "otp-generator";
 import nodemailer from "nodemailer";
 import { OAuth2Client } from "google-auth-library";
+import { treasureReviews } from "./adminController";
 
 dotenv.config();
 
@@ -205,6 +206,8 @@ export async function addTreasure(req: Request, res: Response) {
       treasureType,
       treasureOpeningTime,
       treasureClosingTime,
+      latitude,
+      longitude,
     } = req.body;
     const treasureImage = req.file ? `/uploads/${req.file.filename}` : null;
 
@@ -218,12 +221,19 @@ export async function addTreasure(req: Request, res: Response) {
       "treasureType",
       "treasureOpeningTime",
       "treasureClosingTime",
+      "latitude",
+      "longitude",
     ];
     const isEmpty = requiredFields.some((field) => !req.body[field]?.trim());
     const isImageMissing = !treasureImage;
 
     if (isEmpty || isImageMissing) {
       res.status(400).json({ msg: "Input fields cannot be left empty" });
+      return;
+    }
+
+    if (isNaN(latitude) || isNaN(longitude)) {
+      res.status(400).json({ msg: "Invalid location coordinates" });
       return;
     }
 
@@ -245,6 +255,10 @@ export async function addTreasure(req: Request, res: Response) {
       openingTime: treasureOpeningTime,
       closingTime: treasureClosingTime,
       owner: promoter?._id,
+      location: {
+        type: "Point",
+        coordinates: [parseFloat(longitude), parseFloat(latitude)],
+      },
     });
 
     await Promoter.updateOne(
@@ -736,3 +750,68 @@ export async function topTreasures(req: Request, res: Response) {
     });
   }
 }
+
+// fn for fetching a particular treasure
+export async function particularTreasure(req: Request, res: Response) {
+  try {
+    const treasureId = req.params.treasureId;
+    if (!treasureId) {
+      res.status(400).json({
+        msg: "no treasure id in params",
+      });
+      return;
+    }
+    let treasure = await Treasure.findOne({
+      _id: treasureId,
+    });
+
+    if (!treasure) {
+      res.status(404).json({
+        msg: "treasure not found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      treasure,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({
+        msg: error.message,
+      });
+    }
+  }
+}
+
+// fn for fetching donation campaign of related treasure
+// export async function fetchCampaigns(req: Request, res: Response) {
+//   try {
+//     let user = req.user;
+//     if (!user) {
+//       res.status(401).json({
+//         msg: "unauthorized access",
+//       });
+//       return;
+//     }
+
+//     let promoter = await Promoter.findOne({
+//       userEmail: user,
+//     });
+
+//     if (!promoter) {
+//       res.status(404).json({
+//         msg: "promoter not found",
+//       });
+//       return;
+//     }
+
+//     let promoterId = promoter?._id;
+
+//     let treasure = await Treasure.fi
+
+//     let campaign = await Donation.findOne({
+//       treas
+//     });
+//   } catch (error) {}
+// }
