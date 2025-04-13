@@ -156,7 +156,7 @@ export default function AdminDontaion() {
         <AdminNavbar />
       </div>
       <div className="flex-1 overflow-auto p-4">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center  border shadow-md rounded-xl">
+        <div className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center  border shadow-md rounded-xl hover:border-blue-500">
           <div className="flex items-center space-x-3">
             <CircleDollarSign className="h-7 w-7 text-blue-600" />
             <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
@@ -213,7 +213,7 @@ export default function AdminDontaion() {
               : donations?.map((donation: Donation) => (
                   <div
                     key={donation._id}
-                    className="rounded-lg overflow-hidden border shadow-md"
+                    className="rounded-lg overflow-hidden border shadow-md hover:border-blue-500"
                   >
                     <div className="flex">
                       <div className="w-1/3">
