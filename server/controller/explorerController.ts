@@ -256,6 +256,12 @@ export async function addReviews(req: Request, res: Response) {
       _id: treasureId,
     });
 
+    if (!reviewComments || !reviewType) {
+      res.status(400).json({
+        msg: "input fields cannot be left empty",
+      });
+    }
+
     const newReview = await Review.create({
       reviewType,
       reviewComments,
@@ -452,5 +458,75 @@ export async function landingTreasures(req: Request, res: Response) {
     res.status(500).json({
       msg: "something went wrong while fetching the treasures",
     });
+  }
+}
+
+// fn for fetching a particular treasure
+export async function particularTreasure(req: Request, res: Response) {
+  try {
+    const treasureId = req.params.treasureId;
+    if (!treasureId) {
+      res.status(400).json({
+        msg: "no treasure id in params",
+      });
+      return;
+    }
+    let treasure = await Treasure.findOne({
+      _id: treasureId,
+    });
+
+    if (!treasure) {
+      res.status(404).json({
+        msg: "treasure not found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      treasure,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({
+        msg: error.message,
+      });
+    }
+  }
+}
+
+// fn for fetching a particular treasure reviews
+export async function particularTreasureReviews(req: Request, res: Response) {
+  try {
+    const treasureId = req.params.treasureId;
+    if (!treasureId) {
+      res.status(400).json({
+        msg: "no treasure id in params",
+      });
+      return;
+    }
+    let treasure = await Treasure.findOne({
+      _id: treasureId,
+    });
+
+    if (!treasure) {
+      res.status(404).json({
+        msg: "treasure not found",
+      });
+      return;
+    }
+
+    let reviews = await Review.find({
+      reviewOf: treasureId,
+    }).populate("author");
+
+    res.status(200).json({
+      reviews,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({
+        msg: error.message,
+      });
+    }
   }
 }
