@@ -10,6 +10,8 @@ import {
   fetchExplorer,
   fetchTreasure,
   landingTreasures,
+  particularTreasure,
+  particularTreasureReviews,
 } from "../controller/explorerController";
 import explorerMiddleware from "../middleware/explorerMiddleware";
 const explorerRouter = Router();
@@ -24,5 +26,7 @@ explorerRouter.get("/leaderboards", explorerMiddleware, leaderboards);
 explorerRouter.get("/fetch-details", explorerMiddleware, fetchExplorer);
 explorerRouter.get("/fetch-treasures", explorerMiddleware, fetchTreasure);
 explorerRouter.get("/landing-treasures", explorerMiddleware, landingTreasures);
+explorerRouter.get("/treasure/:treasureId", explorerMiddleware, particularTreasure)
+explorerRouter.get("/treasure-reviews/:treasureId", explorerMiddleware, particularTreasureReviews)
 
 export { explorerRouter };
