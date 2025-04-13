@@ -86,6 +86,10 @@ const donationSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Explorer",
   },
+  treasure: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Treasure",
+  },
 });
 
 const reviewSchema = new mongoose.Schema({
