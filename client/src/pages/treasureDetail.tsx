@@ -3,15 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Navbar from "@/components/navbar";
-import {
-  MessageCircle,
-  ThumbsUp,
-  Share2,
-  Clock,
-  MapPin,
-  Phone,
-  Tag,
-} from "lucide-react";
+import { MessageCircle, Clock, MapPin, Phone, Tag } from "lucide-react";
 
 interface Treasure {
   _id: string;
