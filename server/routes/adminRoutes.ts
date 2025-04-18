@@ -14,6 +14,7 @@ import {
   fetchDonation,
   updateCampaign,
   deleteCamapign,
+  allTreasures,
 } from "../controller/adminController";
 import multer from "multer";
 import path from "path";
@@ -56,7 +57,7 @@ router.post(
   addDonation
 );
 router.get("/filter-reviews", adminMiddleware, reviewReviews);
-router.post("/delete-treasure", adminMiddleware, deleteTreasures);
+router.delete("/delete-treasure/:treasureId", adminMiddleware, deleteTreasures);
 router.get("/total-explorer", adminMiddleware, totalExplorer);
 router.get("/total-promoter", adminMiddleware, totalPromoter);
 router.get("/total-treasure", adminMiddleware, totalTreasure);
@@ -74,5 +75,6 @@ router.delete(
   adminMiddleware,
   deleteCamapign
 );
+router.get("/treasures", adminMiddleware, allTreasures);
 
 export { router };
