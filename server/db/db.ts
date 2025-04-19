@@ -75,6 +75,8 @@ const treasureSchema = new mongoose.Schema({
     ref: "Review",
   },
   visitors: Number,
+  latitude: String,
+  longitude: String,
 });
 
 const donationSchema = new mongoose.Schema({
@@ -89,6 +91,10 @@ const donationSchema = new mongoose.Schema({
   treasure: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Treasure",
+  },
+  treasureOwner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Promoter",
   },
 });
 
@@ -128,6 +134,13 @@ const otpSchema = new mongoose.Schema({
   },
 });
 
+const notificationSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
+  message: String,
+});
+
 export const Explorer = mongoose.model("Explorer", explorerSchema);
 
 export const Promoter = mongoose.model("Promoter", promoterSchema);
@@ -144,6 +157,8 @@ export const Kyc = mongoose.model("KYC", kycSchema);
 
 export const Otp = mongoose.model("OTP", otpSchema);
 
+export const Notification = mongoose.model("Notification", notificationSchema);
+
 module.exports = {
   Explorer,
   Promoter,
@@ -153,4 +168,5 @@ module.exports = {
   Review,
   kycSchema,
   Otp,
+  Notification,
 };
