@@ -4,12 +4,15 @@ import {
   Admin,
   Donation,
   Explorer,
+  Notification,
   Promoter,
   Review,
   Treasure,
 } from "../db/db";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { io, getSocketIdByUserId } from "../socket/socket";
+import nodemailer from "nodemailer";
 
 dotenv.config();
 
@@ -121,13 +124,11 @@ export async function addDonation(req: Request, res: Response) {
     let treasureName = req.body.treasureName;
 
     if (
-      !(
-        donationTitle ||
-        donationDescription ||
-        donationGoal ||
-        donationQR ||
-        !treasureName
-      )
+      !donationTitle ||
+      !donationDescription ||
+      !donationGoal ||
+      !donationQR ||
+      !treasureName
     ) {
       res.status(400).json({
         msg: "please make sure none of the input fields are empty",
@@ -143,10 +144,19 @@ export async function addDonation(req: Request, res: Response) {
       res.status(404).json({
         msg: "no such treasure found in our db",
       });
+
       return;
     }
 
     let treasureId = treasure._id;
+
+    let promoterId = await treasure?.owner;
+
+    let promoter = await Promoter.findOne({
+      _id: promoterId,
+    });
+
+    let promoterEmail = await promoter?.userEmail;
 
     let exisitingCampaign = await Donation.findOne({
       donationTitle: donationTitle,
@@ -165,10 +175,63 @@ export async function addDonation(req: Request, res: Response) {
       donationGoal,
       donationQR,
       treasure: treasureId,
+      treasureOwner: promoterId,
     });
+
+    let notification = await Notification.create({
+      userId: promoterId,
+      message: `Donation campaign created for ${treasureName}`,
+    });
+
+    const socketId = await getSocketIdByUserId(promoterEmail!);
+    if (socketId) {
+      io.to(socketId).emit("donationNotification", notification);
+    }
 
     res.status(200).json({
       donation,
+    });
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: promoterEmail!,
+      subject: "Donation Campaign",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 20px; background: #ffffff; border-radius: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); text-align: center;">
+          
+          <div style="background: linear-gradient(90deg, #007BFF, #00ADEF); padding: 15px; border-radius: 10px 10px 0 0;">
+            <h2 style="color: #ffffff; margin: 0;">Urban Discoveries</h2>
+            <p style="color: #ffffff; font-size: 14px;">Donation Campaign Started</p>
+          </div>
+      
+          <div style="padding: 20px;">
+            <p style="font-size: 16px; color: #333;">Hello,</p>
+            <p style="font-size: 16px; color: #555;">Donation campaign has been started for following treasure:</p>
+            
+            <p style="font-size: 32px; font-weight: bold; color: #007BFF; background: #F0F8FF; display: inline-block; padding: 10px 20px; border-radius: 8px; letter-spacing: 3px;">
+              ${treasureName}
+            </p>
+      
+            <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+            
+            <p style="font-size: 12px; color: #777;">
+              If you did not request this, please ignore this email or contact support.
+            </p>
+          </div>
+      
+          <div style="background: #f8f8f8; padding: 10px; border-radius: 0 0 10px 10px; font-size: 12px; color: #666;">
+            <p>© 2025 Urban Discoveries. All Rights Reserved.</p>
+          </div>
+        </div>
+      `,
     });
   } catch (error) {
     res.status(500).json({
@@ -245,6 +308,12 @@ export async function deleteTreasures(
       _id: treasureId,
     });
 
+    let promoter = await Promoter.findOne({
+      addedTreasure: treasureId,
+    });
+
+    let promoterEmail = await promoter?.userEmail;
+
     if (treasureExists) {
       await Treasure.deleteOne({
         _id: treasureId,
@@ -254,6 +323,17 @@ export async function deleteTreasures(
         reviewOf: treasureId,
       });
 
+      await Promoter.updateOne(
+        {
+          userEmail: promoterEmail,
+        },
+        {
+          $pull: {
+            addedTreasure: treasureId,
+          },
+        }
+      );
+
       res.status(200).json({
         msg: "Treasure removed successfully",
       });
@@ -262,6 +342,48 @@ export async function deleteTreasures(
         msg: "treasure not found",
       });
     }
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: promoterEmail!,
+      subject: "Treasure deleted",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 20px; background: #ffffff; border-radius: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); text-align: center;">
+          
+          <div style="background: linear-gradient(90deg, #007BFF, #00ADEF); padding: 15px; border-radius: 10px 10px 0 0;">
+            <h2 style="color: #ffffff; margin: 0;">Urban Discoveries</h2>
+            <p style="color: #ffffff; font-size: 14px;">Treasure Deletion</p>
+          </div>
+      
+          <div style="padding: 20px;">
+            <p style="font-size: 16px; color: #333;">Hello,</p>
+            <p style="font-size: 16px; color: #555;">Your following treasure is deleted:</p>
+            
+            <p style="font-size: 32px; font-weight: bold; color: #007BFF; background: #F0F8FF; display: inline-block; padding: 10px 20px; border-radius: 8px; letter-spacing: 3px;">
+              ${treasureExists?.treasureName}
+            </p>
+      
+            <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+            
+            <p style="font-size: 12px; color: #777;">
+              If you did not request this, please ignore this email or contact support.
+            </p>
+          </div>
+      
+          <div style="background: #f8f8f8; padding: 10px; border-radius: 0 0 10px 10px; font-size: 12px; color: #666;">
+            <p>© 2025 Urban Discoveries. All Rights Reserved.</p>
+          </div>
+        </div>
+      `,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -463,5 +585,27 @@ export async function deleteCamapign(req: Request, res: Response) {
     res.status(500).json({
       msg: "something went wrong while deleting the donation camapaign",
     });
+  }
+}
+
+// fn for fetching all the treasures
+export async function allTreasures(req: Request, res: Response) {
+  try {
+    let treasures = await Treasure.find({}).populate("owner");
+    if (!treasures) {
+      res.status(200).json({
+        msg: "There are currently no treasure registered",
+      });
+      return;
+    }
+    res.status(200).json({
+      treasures,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({
+        msg: error.message,
+      });
+    }
   }
 }
