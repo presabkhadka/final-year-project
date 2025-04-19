@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import multer from "multer";
 import path from "path";
-import {
+import relatedCampaigns, {
   promoterSignup,
   promoterLogin,
   addTreasure,
@@ -17,6 +17,8 @@ import {
   promoterDetails,
   deleteTreasures,
   topTreasures,
+  getNotifications,
+  deleteNotification,
 } from "../controller/promoterController";
 import promoterMiddleware from "../middleware/promoterMiddleware";
 
@@ -82,5 +84,11 @@ promoterRouter.delete(
   deleteTreasures
 );
 promoterRouter.get("/top-treasures", promoterMiddleware, topTreasures);
-
+promoterRouter.get("/notifications", promoterMiddleware, getNotifications);
+promoterRouter.delete(
+  "/delete-notifications",
+  promoterMiddleware,
+  deleteNotification
+);
+promoterRouter.get("/donation-campaigns", promoterMiddleware, relatedCampaigns);
 export { promoterRouter };
