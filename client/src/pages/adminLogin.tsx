@@ -170,7 +170,7 @@ const AdminLogin: FC = () => {
       if (response.data.success != true) {
         toast.error("Please check your credentials properly.");
       } else {
-        navigate("/admin/dashboard");
+        window.location.href = "/admin/dashboard";
         toast.success("Logged in successfully");
       }
     } catch (error) {
