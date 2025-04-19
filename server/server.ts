@@ -6,48 +6,17 @@ import { explorerRouter } from "./routes/explorerRoutes";
 import { promoterRouter } from "./routes/promoterRoutes";
 import "./types/index";
 import path from "path";
-import { WebSocketServer } from "ws";
 import { createServer } from "http";
 import jwt from "jsonwebtoken";
+import { initializeSocket } from "./socket/socket"; 
 
 dotenv.config();
 const port = 1010;
 const app = express();
 
-const server = createServer(app);
-
-export const ws = new WebSocketServer({ server });
-
-ws.on("connection", (socket, req) => {
-  try {
-    const url = new URL(req.url!, `http://${req.headers.host}`);
-    const token = url.searchParams.get("token");
-
-    if (!token) {
-      console.log("No token provided. Closing connection.");
-      socket.close();
-      return;
-    }
-
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || "defaultKey"
-    ) as { userEmail: string };
-
-    (socket as any).userEmail = decoded.userEmail;
-    console.log(`User connected: ${decoded.userEmail}`);
-
-    socket.on("close", () => {
-      console.log(`User disconnected: ${decoded.userEmail}`);
-    });
-  } catch (error) {
-    console.log("WebSocket authentication failed:", error);
-    socket.close();
-  }
-});
+const server = createServer(app); 
 
 app.use(cors());
-
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -56,15 +25,14 @@ app.use((req, res, next) => {
 });
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/admin", router);
-
 app.use("/explorer", explorerRouter);
-
 app.use("/promoter", promoterRouter);
 
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);
+
+  initializeSocket(server);
 });
