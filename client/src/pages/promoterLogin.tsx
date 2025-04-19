@@ -186,7 +186,11 @@ const PromoterLogin: FC = () => {
       localStorage.setItem("UserRole", "promoter");
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       toast.success("Logged in successfully!");
-      navigate(verificationStatus ? "/promoter/dashboard" : "/promoter/verify");
+      navigate(
+        verificationStatus
+          ? (window.location.href = "/promoter/dashboard")
+          : (window.location.href = "/promoter/verify")
+      );
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.msg || "Google login failed. Please try again.";
