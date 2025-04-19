@@ -17,6 +17,8 @@ interface Treasure {
   treasureContact: string;
   treasureDescription: string;
   treasureImage?: string;
+  latitude: string;
+  longitude: string;
 }
 
 interface Review {
@@ -204,6 +206,15 @@ export default function TreasureDetail() {
               </div>
             </div>
           </div>
+
+          <iframe
+            width="100%"
+            height="450"
+            loading="lazy"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+            src={`https://www.google.com/maps?q=${treasure.latitude},${treasure.longitude}&hl=es;z=14&output=embed`}
+          />
 
           {/* Reviews Section */}
           <div className="p-6">
