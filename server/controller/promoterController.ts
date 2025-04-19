@@ -2,11 +2,17 @@ import { type Request, type Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
-import { Donation, Otp, Promoter, Review, Treasure } from "../db/db";
+import {
+  Donation,
+  Notification,
+  Otp,
+  Promoter,
+  Review,
+  Treasure,
+} from "../db/db";
 import otpGenerator from "otp-generator";
 import nodemailer from "nodemailer";
 import { OAuth2Client } from "google-auth-library";
-import { treasureReviews } from "./adminController";
 
 dotenv.config();
 
@@ -232,11 +238,6 @@ export async function addTreasure(req: Request, res: Response) {
       return;
     }
 
-    if (isNaN(latitude) || isNaN(longitude)) {
-      res.status(400).json({ msg: "Invalid location coordinates" });
-      return;
-    }
-
     const existingTreasure = await Treasure.findOne({ treasureName });
     if (existingTreasure) {
       res.status(409).json({ msg: "Treasure already exists" });
@@ -255,10 +256,8 @@ export async function addTreasure(req: Request, res: Response) {
       openingTime: treasureOpeningTime,
       closingTime: treasureClosingTime,
       owner: promoter?._id,
-      location: {
-        type: "Point",
-        coordinates: [parseFloat(longitude), parseFloat(latitude)],
-      },
+      latitude,
+      longitude,
     });
 
     await Promoter.updateOne(
@@ -573,7 +572,16 @@ export async function treasureDetails(req: Request, res: Response) {
         msg: "user not found",
       });
     }
-    const treasures = await Treasure.find();
+
+    const currentUser = await Promoter.findOne({
+      userEmail: user,
+    });
+
+    const promoter = await currentUser?._id;
+
+    const treasures = await Treasure.find({
+      owner: promoter,
+    });
     const treasureData = await Promise.all(
       treasures.map(async (treasure) => {
         const goodReviews = await Review.countDocuments({
@@ -784,34 +792,105 @@ export async function particularTreasure(req: Request, res: Response) {
   }
 }
 
-// fn for fetching donation campaign of related treasure
-// export async function fetchCampaigns(req: Request, res: Response) {
-//   try {
-//     let user = req.user;
-//     if (!user) {
-//       res.status(401).json({
-//         msg: "unauthorized access",
-//       });
-//       return;
-//     }
+// fn for fetching notifications
+export async function getNotifications(req: Request, res: Response) {
+  try {
+    let user = req.user;
+    let currentUser = await Promoter.findOne({
+      userEmail: user,
+    });
+    let promoterId = await currentUser?._id;
 
-//     let promoter = await Promoter.findOne({
-//       userEmail: user,
-//     });
+    let notifications = await Notification.find({
+      userId: promoterId,
+    });
 
-//     if (!promoter) {
-//       res.status(404).json({
-//         msg: "promoter not found",
-//       });
-//       return;
-//     }
+    if (notifications.length === 0) {
+      res.status(200).json({
+        msg: "No notification at the moment",
+      });
+      return;
+    }
 
-//     let promoterId = promoter?._id;
+    res.status(200).json({
+      notifications,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({
+        msg: error.message,
+      });
+    }
+  }
+}
 
-//     let treasure = await Treasure.fi
+// fn for deleting the notification
+export async function deleteNotification(req: Request, res: Response) {
+  try {
+    let user = req.user;
+    let currentUser = await Promoter.findOne({
+      userEmail: user,
+    });
+    let promoterId = await currentUser?._id;
 
-//     let campaign = await Donation.findOne({
-//       treas
-//     });
-//   } catch (error) {}
-// }
+    let notification = await Notification.find({
+      userId: promoterId,
+    });
+    if (notification.length === 0) {
+      res.status(200).json({
+        msg: "No notifications there to delete at the moment",
+      });
+      return;
+    } else {
+      await Notification.deleteMany({ userId: promoterId });
+      res.status(200).json({
+        msg: "Notifications cleared successfully",
+      });
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({
+        msg: error.message,
+      });
+    }
+  }
+}
+
+// fn for fetching realted donation campaigns
+export default async function relatedCampaigns(req: Request, res: Response) {
+  try {
+    let user = req.user;
+    if (!user) {
+      res.status(401).json({
+        msg: "Unauthorized access",
+      });
+      return;
+    }
+    let promoter = await Promoter.findOne({
+      userEmail: user,
+    });
+
+    let promoterId = await promoter?._id;
+
+    let relatedCampaigns = await Donation.find({
+      treasureOwner: promoterId,
+    });
+
+    if (!relatedCampaigns) {
+      res.status(404).json({
+        msg: "No any donation campaigns related to your treasured found in our db",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      relatedCampaigns,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).json({
+        msg: error.message,
+      });
+    }
+  }
+}
