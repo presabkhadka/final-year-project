@@ -19,6 +19,8 @@ export default function Explore() {
     treasureImage?: {
       data: Uint8Array;
     };
+    latitude: string;
+    longitude: string;
   }
 
   const [treasures, setTreasures] = useState<Treasure[]>([]);
