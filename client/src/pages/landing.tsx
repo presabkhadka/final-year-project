@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Navbar from "@/components/navbar";
 import {
   Camera,
@@ -12,10 +12,18 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Landing() {
   const navigate = useNavigate();
   const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
+  const heroRef = useRef(null);
+  const featuresRef = useRef(null);
+  const testimonialRef = useRef(null);
+  const treasuresRef = useRef(null);
 
   interface Treasure {
     _id: string;
@@ -34,6 +42,58 @@ export default function Landing() {
   }
 
   const [treasures, setTreasures] = useState<Treasure[]>([]);
+
+  useEffect(() => {
+    gsap.from(heroRef.current?.querySelector("h1"), {
+      y: 100,
+      opacity: 0,
+      duration: 1,
+      ease: "power3.out",
+    });
+
+    gsap.from(heroRef.current?.querySelector("p"), {
+      y: 50,
+      opacity: 0,
+      duration: 1,
+      delay: 0.3,
+      ease: "power3.out",
+    });
+
+    gsap.from(featuresRef.current?.querySelectorAll(".feature-card"), {
+      scrollTrigger: {
+        trigger: featuresRef.current,
+        start: "top center",
+      },
+      y: 50,
+      opacity: 0,
+      duration: 0.6,
+      stagger: 0.2,
+      ease: "power2.out",
+    });
+
+    gsap.from(testimonialRef.current, {
+      scrollTrigger: {
+        trigger: testimonialRef.current,
+        start: "top center",
+      },
+      y: 50,
+      opacity: 0,
+      duration: 0.8,
+      ease: "power2.out",
+    });
+
+    gsap.from(treasuresRef.current?.querySelectorAll(".treasure-card"), {
+      scrollTrigger: {
+        trigger: treasuresRef.current,
+        start: "top center",
+      },
+      y: 50,
+      opacity: 0,
+      duration: 0.6,
+      stagger: 0.2,
+      ease: "power2.out",
+    });
+  }, []);
 
   useEffect(() => {
     const fetchTreasures = async () => {
@@ -129,6 +189,7 @@ export default function Landing() {
         <Navbar />
       </div>
       <div
+        ref={heroRef}
         className="h-screen relative bg-cover bg-center"
         style={{
           backgroundImage:
@@ -155,10 +216,10 @@ export default function Landing() {
         </div>
       </div>
 
-      <div className="py-20 bg-muted/80">
+      <div ref={featuresRef} className="py-20 bg-muted/80">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-3 gap-12">
-            <div className="text-center">
+            <div className="feature-card text-center">
               <Camera className="h-12 w-12 mx-auto text-blue-600" />
               <h3 className="mt-4 text-xl font-semibold">Photogenic Spots</h3>
               <p className="mt-2">
@@ -166,14 +227,14 @@ export default function Landing() {
                 about.
               </p>
             </div>
-            <div className="text-center">
+            <div className="feature-card text-center">
               <Coffee className="h-12 w-12 mx-auto text-blue-600" />
               <h3 className="mt-4 text-xl font-semibold">Local Favorites</h3>
               <p className="mt-2">
                 Experience authentic local culture at neighborhood gems.
               </p>
             </div>
-            <div className="text-center">
+            <div className="feature-card text-center">
               <Navigation className="h-12 w-12 mx-auto text-blue-600" />
               <h3 className="mt-4 text-xl font-semibold">Guided Tours</h3>
               <p className="mt-2">
@@ -204,7 +265,7 @@ export default function Landing() {
         </div>
       </div>
 
-      <div className="bg-muted/80 py-16">
+      <div ref={testimonialRef} className="bg-muted/80 py-16">
         <div className="container mx-auto px-6">
           <h2 className="text-3xl font-bold text-center mb-12">
             What our happy clients say?
@@ -284,7 +345,7 @@ export default function Landing() {
         </div>
       </div>
 
-      <div className="py-20 bg-muted/80">
+      <div ref={treasuresRef} className="py-20 bg-muted/80">
         <div className="container mx-auto px-6">
           <h2 className="text-3xl font-bold text-center mb-12">
             Explore more treasures
@@ -296,7 +357,7 @@ export default function Landing() {
               .map((place, index) => (
                 <div
                   key={index}
-                  className="bg-muted/80 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+                  className="treasure-card bg-muted/80 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
                 >
                   <img
                     src={`http://localhost:1010${place.treasureImage}`}
