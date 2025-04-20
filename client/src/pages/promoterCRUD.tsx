@@ -30,6 +30,8 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure, onSubmit }) => {
   const [closingTime, setClosingTime] = useState(
     treasure?.treasureClosingTime || ""
   );
+  const [latitude, setLatitude] = useState(treasure?.latitude || "");
+  const [longitude, setLongitude] = useState(treasure?.longitude || "");
   const [treasureImage, setTreasureImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -53,6 +55,8 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure, onSubmit }) => {
     formData.append("treasureType", treasureType);
     formData.append("treasureOpeningTime", openingTime);
     formData.append("treasureClosingTime", closingTime);
+    formData.append("latitude", latitude);
+    formData.append("longitude", longitude);
     if (treasureImage) {
       formData.append("treasureImage", treasureImage);
     }
@@ -149,6 +153,32 @@ const TreasureForm: React.FC<TreasureFormProps> = ({ treasure, onSubmit }) => {
           value={closingTime}
           onChange={(e) => setClosingTime(e.target.value)}
           className="w-full p-2 border rounded-md"
+          required
+        />
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <label htmlFor="latitude" className="font-medium">
+          Treasure Latitude
+        </label>
+        <Textarea
+          value={latitude}
+          onChange={(e) => setLatitude(e.target.value)}
+          placeholder="latitude"
+          className="w-full p-2 border rounded-md resize-none"
+          required
+        />
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <label htmlFor="longitude" className="font-medium">
+          Treasure Longitude
+        </label>
+        <Textarea
+          value={longitude}
+          onChange={(e) => setLongitude(e.target.value)}
+          placeholder="longitude"
+          className="w-full p-2 border rounded-md resize-none"
           required
         />
       </div>
