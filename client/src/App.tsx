@@ -25,76 +25,83 @@ import ContactUs from "./pages/contactUs";
 import PaymentSuccess from "./pages/paymentSuccess";
 import PaymentFailure from "./pages/paymentFailure";
 import TreasureDetail from "./pages/treasureDetail";
+import { SocketProvider } from "./context/SocketContext";
+import AdminTreasures from "./pages/adminTreasures";
+import PromoterDonationCampaign from "./pages/promoterDonationCampaign";
 
 function App() {
   return (
     <>
-      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-        <RouterProvider
-          router={createBrowserRouter([
-            { path: "/home", element: <Landing /> },
-            { path: "/about-us", element: <AboutUs /> },
-            { path: "/explorer/login", element: <Login /> },
-            { path: "/promoter/login", element: <PromoterLogin /> },
-            { path: "/admin/login", element: <AdminLogin /> },
-            { path: "/explorer/signup", element: <Register /> },
-            { path: "/promoter/signup", element: <PromoterRegister /> },
-            { path: "/promoter/verify", element: <PromoterVerify /> },
+      <SocketProvider>
+        <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+          <RouterProvider
+            router={createBrowserRouter([
+              { path: "/home", element: <Landing /> },
+              { path: "/about-us", element: <AboutUs /> },
+              { path: "/explorer/login", element: <Login /> },
+              { path: "/promoter/login", element: <PromoterLogin /> },
+              { path: "/admin/login", element: <AdminLogin /> },
+              { path: "/explorer/signup", element: <Register /> },
+              { path: "/promoter/signup", element: <PromoterRegister /> },
+              { path: "/promoter/verify", element: <PromoterVerify /> },
 
-            {
-              path: "/explorer",
-              element: <ExplorerAuthGuard />,
-              children: [
-                {
-                  path: "/explorer/explore",
-                  element: <Explore />,
-                },
-                { path: "/explorer/leaderboards", element: <Leaderboards /> },
-                {
-                  path: "/explorer/donation-campaigns",
-                  element: <DonationCampaign />,
-                },
-                { path: "/explorer/contact", element: <ContactUs /> },
-                {
-                  path: "/explorer/payment-successful",
-                  element: <PaymentSuccess />,
-                },
-                {
-                  path: "/explorer/payment-failure",
-                  element: <PaymentFailure />,
-                },
-                {
-                  path: "/explorer/treasure/:id",
-                  element: <TreasureDetail />,
-                },
-              ],
-            },
+              {
+                path: "/explorer",
+                element: <ExplorerAuthGuard />,
+                children: [
+                  {
+                    path: "/explorer/explore",
+                    element: <Explore />,
+                  },
+                  { path: "/explorer/leaderboards", element: <Leaderboards /> },
+                  {
+                    path: "/explorer/donation-campaigns",
+                    element: <DonationCampaign />,
+                  },
+                  { path: "/explorer/contact", element: <ContactUs /> },
+                  {
+                    path: "/explorer/payment-successful",
+                    element: <PaymentSuccess />,
+                  },
+                  {
+                    path: "/explorer/payment-failure",
+                    element: <PaymentFailure />,
+                  },
+                  {
+                    path: "/explorer/treasure/:id",
+                    element: <TreasureDetail />,
+                  },
+                ],
+              },
 
-            {
-              path: "/promoter",
-              element: <PromoterAuthGuard />,
-              children: [
-                {
-                  path: "/promoter/dashboard",
-                  element: <PromoterDashboard />,
-                },
-                { path: "/promoter/reviews", element: <PromoterReview /> },
-                { path: "/promoter/promote", element: <Promote /> },
-              ],
-            },
-            {
-              path: "/admin",
-              element: <AdminAuthGuard />,
-              children: [
-                { path: "/admin/dashboard", element: <AdminDashboard /> },
-                { path: "/admin/reviews", element: <AdminReviews /> },
-                { path: "/admin/donation", element: <AdminDontaion /> },
-              ],
-            },
-          ])}
-        ></RouterProvider>
-        <Toaster position="bottom-right" />
-      </ThemeProvider>
+              {
+                path: "/promoter",
+                element: <PromoterAuthGuard />,
+                children: [
+                  {
+                    path: "/promoter/dashboard",
+                    element: <PromoterDashboard />,
+                  },
+                  { path: "/promoter/reviews", element: <PromoterReview /> },
+                  { path: "/promoter/promote", element: <Promote /> },
+                  {path: "/promoter/donation-campaign", element: <PromoterDonationCampaign/>}
+                ],
+              },
+              {
+                path: "/admin",
+                element: <AdminAuthGuard />,
+                children: [
+                  { path: "/admin/dashboard", element: <AdminDashboard /> },
+                  { path: "/admin/reviews", element: <AdminReviews /> },
+                  { path: "/admin/donation", element: <AdminDontaion /> },
+                  { path: "/admin/treasures", element: <AdminTreasures /> },
+                ],
+              },
+            ])}
+          ></RouterProvider>
+          <Toaster position="bottom-right" />
+        </ThemeProvider>
+      </SocketProvider>
     </>
   );
 }
