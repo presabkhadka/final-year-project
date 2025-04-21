@@ -53,7 +53,7 @@ export default function AdminNavbar() {
   const handleLogout = () => {
     localStorage.removeItem("Authorization");
     localStorage.removeItem("UserRole");
-    navigate("/admin/login");
+    window.location.href = "/admin/login";
     toast.success("Logged out successfully");
   };
 
@@ -117,6 +117,18 @@ export default function AdminNavbar() {
                     }
                   >
                     Donations
+                  </NavLink>
+                  <NavLink
+                    to={"/admin/treasures"}
+                    className={({ isActive }) =>
+                      `flex p-2 items-center gap-4 hover:outline-none hover:text-black cursor-pointer ${
+                        isActive
+                          ? "text-green-500 text-lg font-semibold"
+                          : "text-gray-600 font-semibold text-lg"
+                      }`
+                    }
+                  >
+                    Treasures
                   </NavLink>
                 </div>
               </SheetDescription>
@@ -226,6 +238,18 @@ export default function AdminNavbar() {
           }
         >
           Donations
+        </NavLink>
+        <NavLink
+          to={"/admin/treasures"}
+          className={({ isActive }) =>
+            `flex p-2 items-center gap-4 hover:outline-none  cursor-pointer ${
+              isActive
+                ? "text-green-500 text-lg font-semibold"
+                : "text-gray-600 font-semibold text-lg hover:text-lime-300"
+            }`
+          }
+        >
+          Treasures
         </NavLink>
       </div>
       <div className="hidden lg:flex lg:justify-end lg:gap-4">
