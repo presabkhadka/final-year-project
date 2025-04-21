@@ -54,6 +54,8 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, []);
 
+  
+
   const handleLogout = () => {
     localStorage.removeItem("Authorization");
     localStorage.removeItem("UserRole");
