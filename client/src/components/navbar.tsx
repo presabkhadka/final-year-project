@@ -16,6 +16,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { ModeToggle } from "./mode-toggle";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function Navbar() {
   interface ExplorerDetails {
@@ -54,13 +55,12 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, []);
 
-  
-
   const handleLogout = () => {
     localStorage.removeItem("Authorization");
     localStorage.removeItem("UserRole");
     navigate("/explorer/login");
     setIsLoggedIn(false);
+    toast.success("Logged out successfully");
   };
 
   return (
