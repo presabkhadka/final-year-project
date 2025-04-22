@@ -117,23 +117,6 @@ const LoginForm: FC<loginFormInterface> = ({
       <button className="bg-blue-500 p-2 rounded-lg text-white font-semibold hover:bg-blue-600">
         Login
       </button>
-
-      <div className="flex flex-col items-center gap-2 mt-4">
-        <p className="text-gray-500">Or Login With</p>
-        <button className="flex items-center gap-2 border border-black p-2 rounded-lg hover:bg-gray-100">
-          <img src="/google.png" alt="Google" className="h-6" />
-          Login with Google
-        </button>
-      </div>
-
-      <div className="text-center mt-4">
-        <p>
-          Don't have an account?{" "}
-          <a href="/promoter/signup" className="text-blue-500 font-semibold">
-            Sign Up
-          </a>
-        </p>
-      </div>
     </form>
   );
 };
