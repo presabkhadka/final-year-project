@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import AdminNavbar from "../components/AdminNavbar";
 import TreasureGrid from "../components/TreasureGrid";
-import { PlusCircle, RefreshCw } from "lucide-react";
+import {  RefreshCw } from "lucide-react";
 
 interface Treasure {
   _id: string;
