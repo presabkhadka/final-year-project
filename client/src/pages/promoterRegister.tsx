@@ -212,11 +212,10 @@ const PromoterRegister: FC = () => {
     e.preventDefault();
 
     const payload = {
-      name,
+      username: name,
       email,
       password,
       contact,
-      type,
     };
 
     try {
