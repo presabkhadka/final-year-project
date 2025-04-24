@@ -212,11 +212,10 @@ const Register: FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const payload = {
-      name,
+      username: name,
       email,
       password,
       contact,
-      type,
     };
     try {
       await axios.post("http://localhost:1010/explorer/signup", payload);
