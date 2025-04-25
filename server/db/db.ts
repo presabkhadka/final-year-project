@@ -115,15 +115,6 @@ const reviewSchema = new mongoose.Schema({
   },
 });
 
-const kycSchema = new mongoose.Schema({
-  kycPhoto: Buffer,
-  kycDetail: String,
-  owner: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Promoter",
-  },
-});
-
 const otpSchema = new mongoose.Schema({
   email: String,
   otp: Number,
@@ -153,8 +144,6 @@ export const Donation = mongoose.model("Donation", donationSchema);
 
 export const Review = mongoose.model("Review", reviewSchema);
 
-export const Kyc = mongoose.model("KYC", kycSchema);
-
 export const Otp = mongoose.model("OTP", otpSchema);
 
 export const Notification = mongoose.model("Notification", notificationSchema);
@@ -166,7 +155,6 @@ module.exports = {
   Treasure,
   Donation,
   Review,
-  kycSchema,
   Otp,
   Notification,
 };
