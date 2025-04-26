@@ -312,10 +312,11 @@ export async function addReviews(req: Request, res: Response) {
       msg: "review added successfully",
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      msg: "something went wrong while adding the reviews, please try again later!",
-    });
+    if (error instanceof Error) {
+      res.status(500).json({
+        msg: error.message,
+      });
+    }
   }
 }
 
