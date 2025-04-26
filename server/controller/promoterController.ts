@@ -720,10 +720,11 @@ export async function deleteTreasures(req: Request, res: Response) {
       });
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      msg: "something went wrong while removing the treasure",
-    });
+    if(error instanceof Error){
+      res.status(500).json({
+        msg: error.message
+      })
+    }
   }
 }
 
