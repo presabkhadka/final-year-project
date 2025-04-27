@@ -11,6 +11,14 @@ async function explorerMiddleware(
   next: NextFunction
 ): Promise<void> {
   const token = req.headers.authorization;
+
+  if (!token) {
+    res.status(401).json({
+      msg: "No token present in the headers",
+    });
+    return;
+  }
+
   const word = token?.split(" ");
 
   if (word?.length !== 2 || word[0] !== "Bearer") {
