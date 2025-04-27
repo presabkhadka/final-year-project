@@ -31,6 +31,7 @@ async function promoterMiddleware(
       res.status(401).json({
         msg: "promoter not found in db",
       });
+      console.log("🚀 ~ promoterEmail:", promoterEmail)
       return;
     }
 
