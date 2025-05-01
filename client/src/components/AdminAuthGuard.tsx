@@ -5,7 +5,7 @@ const isAuthenticated = () => {
   return !!localStorage.getItem("Authorization");
 };
 
-// get the user role
+// get the user role from the headers
 const getUserRole = () => {
   return localStorage.getItem("UserRole");
 };
