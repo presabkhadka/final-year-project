@@ -1,9 +1,11 @@
 import { Navigate, Outlet } from "react-router-dom";
 
+// check if token is present or not
 const isAuthenticated = () => {
   return !!localStorage.getItem("Authorization");
 };
 
+// get the user role
 const getUserRole = () => {
   return localStorage.getItem("UserRole");
 };
