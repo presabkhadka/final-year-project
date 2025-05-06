@@ -31,7 +31,7 @@ app.use("/admin", router);
 app.use("/explorer", explorerRouter);
 app.use("/promoter", promoterRouter);
 
-server.listen(port, () => {
+server.listen(port, '127.0.0.1', () => {
   console.log(`Server running on port ${port}`);
 
   initializeSocket(server);
