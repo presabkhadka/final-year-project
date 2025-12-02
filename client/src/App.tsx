@@ -8,13 +8,13 @@ import PromoterDashboard from "./pages/promoterDashboard";
 import { Toaster } from "@/components/ui/toaster";
 import AdminLogin from "./pages/adminLogin";
 import { ThemeProvider } from "./components/theme-provider";
-import { MantineProvider } from '@mantine/core';
+import PromoterReview from "./pages/promoterReviews";
+import Promote from "./pages/promoterPromote";
 
 function App() {
   return (
     <>
-    <MantineProvider>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
         <RouterProvider
           router={createBrowserRouter([
             { path: "/explorer/login", element: <Login /> },
@@ -24,11 +24,12 @@ function App() {
             { path: "/promoter/signup", element: <PromoterRegister /> },
             { path: "/promoter/verify", element: <PromoterVerify /> },
             { path: "/promoter/dashboard", element: <PromoterDashboard /> },
+            { path: "/promoter/reviews", element: <PromoterReview /> },
+            { path: "/promoter/promote", element: <Promote /> },
           ])}
         ></RouterProvider>
         <Toaster />
       </ThemeProvider>
-      </MantineProvider>
     </>
   );
 }
